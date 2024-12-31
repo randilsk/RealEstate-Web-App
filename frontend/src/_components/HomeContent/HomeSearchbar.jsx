@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 function HomeSearchbar() {
@@ -7,7 +8,7 @@ function HomeSearchbar() {
         Enter an address, city, district, province
       </div>
       <div className="w-[46px] h-[43px] flex justify-center items-center flex-shrink-0">
-        <img
+        <Image
           src="/icons/search-icon.svg"
           alt="Search Icon"
           className="w-6 h-6"

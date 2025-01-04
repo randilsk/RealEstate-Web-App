@@ -16,7 +16,7 @@ function HeroSection() {
       {/* Left Section */}
       <div className="flex flex-col gap-5 w-1/2">
         {/* Title Text */}
-        <div className="ml-[135px] mt-[170px]">
+        <div className="ml-[135px] mt-[80px]">
           <div className="inline-block text-left">
             {phrases.map((phrase, index) => (
               <span key={index} className={`${commonStyles} ${phrase.color}`}>
@@ -45,7 +45,7 @@ function HeroSection() {
 
       {/* Right Section */}
       <div className="w-1/2 flex justify-end">
-        <div className="mt-[75px]">
+        <div className="mt-[1px]">
           <Image
             className="w-[833px] h-[571px]"
             src="/images/home-page-image.png"

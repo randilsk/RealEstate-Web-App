@@ -1,6 +1,7 @@
 import Bluebar from "../_components/Bluebar.jsx";
 import Header from "../_components/Header.jsx";
 import HeroSection from "../_components/HomeContent/HeroSection.jsx";
+import HomeRecommendation from "../_components/HomeContent/HomeRecommendation.jsx";
 
 export default function Home() {
   return (
@@ -9,8 +10,8 @@ export default function Home() {
         <Bluebar />
         <Header />
         <HeroSection />
+        <HomeRecommendation />
       </div>
-      <div className="bg-main-blue">wregqethq</div>
     </>
   );
 }

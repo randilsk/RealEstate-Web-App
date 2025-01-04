@@ -13,7 +13,7 @@ const NavItem = ({ children, isBold }) => (
 function Header() {
   return (
     <div
-      className="fixed top-0 left-0 right-0 h-navbar px-[30px] py-1 bg-[#3b50df] mt-5 rounded-[50px] flex justify-between items-center font-poppins mx-auto"
+      className="h-navbar px-[30px] py-1 bg-[#3b50df] mt-5 rounded-[50px] flex justify-between items-center font-poppins mx-auto"
       style={{ maxWidth: "calc(100% - 200px)" }}
     >
       <div className="flex justify-start items-center gap-7">

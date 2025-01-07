@@ -28,7 +28,7 @@ function HomeRecommendation() {
           {/* Text Section */}
           <div className="w-1/2 flex flex-col justify-start items-start">
             <div className="self-stretch h-80 flex flex-col justify-start items-start gap-px">
-              <div className="self-stretch h-[203px] p-2.5 flex justify-end items-center gap-2.5">
+              <div className="self-stretch h-[203px] p-2.5 flex justify-end items-center gap-2.5 pt-0">
                 <div className="w-full">
                   <span className="text-[#ffe000] text-[71px] font-bold font-] leading-[77.39px]">
                     Explore

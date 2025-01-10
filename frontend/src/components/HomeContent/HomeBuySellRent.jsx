@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 function HomeBuySellRent() {
   return (
-    <div className="bg-main-bg flex justify-between items-center my-40 mx-52 mb-24">
+    <div className="bg-main-bg flex justify-between items-center my-40 mx-52 mb-24 h-screen">
       {/* Card 1: Buy a property */}
-      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5">
+      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white border rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
           src="/images/buy-home.png"
           width={180}
@@ -31,7 +31,7 @@ function HomeBuySellRent() {
       </div>
 
       {/* Card 2: Sell a property */}
-      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5">
+      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
           src="/images/sell-home.png"
           width={180}
@@ -48,13 +48,13 @@ function HomeBuySellRent() {
         </p>
         <div className="pt-9">
           <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
-            Sell
+            Sell Today
           </Button>
         </div>
       </div>
 
       {/* Card 3: Rent a property */}
-      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5">
+      <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
           src="/images/rent-home.png"
           width={180}

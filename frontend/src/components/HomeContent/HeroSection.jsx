@@ -51,7 +51,7 @@ function HeroSection() {
         <div className="w-full bg-main-bg relative">
           <Image
             className="object-cover"
-            src="/images/home-page-image2.png"
+            src="/images/home-image/home-page-image2.png"
             alt="Home Page Image"
             width={1000}
             height={1000}

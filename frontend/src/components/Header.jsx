@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const NavItem = ({ children, isBold }) => (
@@ -17,8 +18,10 @@ function Header() {
       style={{ maxWidth: "calc(100% - 200px)" }}
     >
       <div className="flex justify-start items-center gap-7">
-        <NavItem>Buy</NavItem>
-        <NavItem>Sell</NavItem>
+        <NavItem className="hover:cursor-pointer">Buy</NavItem>
+        <NavItem>
+          <Link href={"/sell"}>Sell</Link>{" "}
+        </NavItem>
         <NavItem>Rent</NavItem>
       </div>
       <div className="p-2.5 flex justify-center items-center gap-2.5">

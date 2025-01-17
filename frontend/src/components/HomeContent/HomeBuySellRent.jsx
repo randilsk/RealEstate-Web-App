@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 function HomeBuySellRent() {
   return (
-    <div className="bg-main-bg flex justify-between items-center my-40 mx-52 mb-24 h-screen">
+    <div className="bg-main-bg flex justify-between items-center my-40 mx-36 mb-24 h-screen">
       {/* Card 1: Buy a property */}
       <div className="w-[377px] h-[485px] px-[43px] py-4 bg-white border rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image

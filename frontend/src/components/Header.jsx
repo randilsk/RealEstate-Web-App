@@ -18,7 +18,9 @@ function Header() {
       style={{ maxWidth: "calc(100% - 200px)" }}
     >
       <div className="flex justify-start items-center gap-7">
-        <NavItem className="hover:cursor-pointer">Buy</NavItem>
+        <NavItem className="hover:cursor-pointer">
+          <Link href={"/buy"}>Buy</Link>
+        </NavItem>
         <NavItem>
           <Link href={"/sell"}>Sell</Link>{" "}
         </NavItem>

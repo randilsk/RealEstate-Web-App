@@ -46,10 +46,14 @@ function Header_varient() {
             </div>
           </div>
           <div className="self-stretch items-center gap-2.5 inline-flex justify-between">
-            <div className="px-[27.50px] py-2.5 opacity-90 bg-[#bcbbba] rounded-[50px] flex items-center gap-[15px]">
-              <div className="flex items-center opacity-75 text-black text-lg w-full">
-                <div className="flex-grow">
-                  Enter a address, city, district, province
+            <div className="px-5 py-1 opacity-90 bg-[#d9d9d9] rounded-[50px] w-96 flex items-center gap-[15px]">
+              <div className="flex items-center justify-between opacity-75 text-black text-lg w-full">
+                <div className="text-left w-80">
+                  <input
+                    type="text"
+                    placeholder="Enter address, city, district, province"
+                    className="w-full p-2 bg-transparent border-none outline-none flex justify-start"
+                  />
                 </div>
                 <div>
                   <Image
@@ -62,7 +66,7 @@ function Header_varient() {
                 </div>
               </div>
             </div>
-            <div className="w-auto px-9 py-2.5 bg-[#abadbf] rounded-[50px] flex items-center gap-2.5">
+            <div className="w-auto px-9 py-2.5 bg-[#d9d9d9] rounded-[50px] flex items-center gap-2.5">
               <div className="text-black text-xl flex items-center justify-between w-full">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -87,7 +91,7 @@ function Header_varient() {
               </div>
             </div>
 
-            <div className="w-auto px-9 py-2.5 bg-[#abadbf] rounded-[50px] flex items-center gap-2.5">
+            <div className="w-auto px-9 py-2.5 bg-[#d9d9d9] rounded-[50px] flex items-center gap-2.5">
               <div className="text-black text-xl flex items-center">
                 Price
                 <Image
@@ -99,7 +103,7 @@ function Header_varient() {
                 />
               </div>
             </div>
-            <div className="w-auto px-9 py-2.5 bg-[#abadbf] rounded-[50px] flex items-center gap-2.5">
+            <div className="w-auto px-9 py-2.5 bg-[#d9d9d9] rounded-[50px] flex items-center gap-2.5">
               <div className="text-black text-xl flex items-center justify-between w-full">
                 Beds & Baths
                 <Image
@@ -111,7 +115,7 @@ function Header_varient() {
                 />
               </div>
             </div>
-            <div className="w-auto px-9 py-2.5 bg-[#abadbf] rounded-[50px] flex items-center gap-2.5">
+            <div className="w-auto px-9 py-2.5 bg-[#d9d9d9] rounded-[50px] flex items-center gap-2.5">
               <div className="text-black text-xl flex items-center">
                 More
                 <Image

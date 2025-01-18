@@ -1,6 +1,8 @@
 import React from "react";
 import FileUploader from "../FileUploader";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 import {
   Select,
@@ -166,6 +168,34 @@ function Listing() {
               </div>
             </div>
           </div>
+          <hr className="border-1 border-black py-3" />
+          <div className="pb-8">
+            {" "}
+            <div className="pb-4 text-black text-2xl font-bold font-poppins ">
+              Contact Information
+            </div>
+            <p>
+              Potential buyers will contact you through the email address you
+              use to register on <br /> UrbanNest. You must also add your phone
+              number to the listing here.
+            </p>
+            <p className="py-3 font-semibold">Phone number</p>
+            <input
+              type="number"
+              placeholder="+94 xxxxxxxxx"
+              className="px-2 w-96 outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+            />
+          </div>
+          <hr className="border-1 border-black py-3" />
+          <div className="pb-7">
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms" />
+              <Label htmlFor="terms">Accept terms and conditions</Label>
+            </div>
+          </div>
+          <Button className="bg-transparent border-black text-black hover:bg-main-blue hover:text-white w-52 font-bold border-2 hover:border-main-blue">
+            Post for Sell
+          </Button>
         </div>
       </div>
     </>

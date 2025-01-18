@@ -18,9 +18,9 @@ function HomeBuySellRent() {
           Buy a property
         </h3>
         <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
-          Whether it's a dream home or the land to build it on, explore with
-          immersive photos and exclusive listings you won’t find anywhere else.
-          Start your journey to something extraordinary.
+          Whether it&apos;s a dream home or the land to build it on, explore
+          with immersive photos and exclusive listings you won&apos;t find
+          anywhere else. Start your journey to something extraordinary.
         </p>
         <div className="pt-5">
           {" "}
@@ -43,8 +43,9 @@ function HomeBuySellRent() {
           Sell a property
         </h3>
         <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
-          Whether it’s a home, land, or both, we’re here to guide you every step
-          of the way toward a successful sale. Let us help you make it happen.
+          Whether it&apos;s a home, land, or both, we&apos;re here to guide you
+          every step of the way toward a successful sale. Let us help you make
+          it happen.
         </p>
         <div className="pt-9">
           <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
@@ -67,8 +68,8 @@ function HomeBuySellRent() {
         </h3>
         <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
           From cozy apartments to spacious homes, find rentals that suit your
-          lifestyle. Start your search here for the place you’ll love to call
-          home.
+          lifestyle. Start your search here for the place you&apos;ll love to
+          call home.
         </p>
         <div className="pt-[38px]">
           <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">

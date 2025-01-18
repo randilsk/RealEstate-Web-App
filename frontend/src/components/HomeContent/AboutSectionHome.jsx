@@ -13,10 +13,11 @@ function AboutSectionHome() {
             landowners and seekers through a user-friendly, map-based platform
             tailored specifically for Sri Lanka. We provide innovative tools and
             features that empower users to discover, list, and manage land
-            properties with ease. Whether you're looking to buy land or list
-            your property, our platform is designed to enhance your experience,
-            offering reliable information and seamless navigation. Join us as we
-            revolutionize the way land is bought and sold in our community.
+            properties with ease. Whether you&apos;re looking to buy land or
+            list your property, our platform is designed to enhance your
+            experience, offering reliable information and seamless navigation.
+            Join us as we revolutionize the way land is bought and sold in our
+            community.
           </p>
         </div>
 

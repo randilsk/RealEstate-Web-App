@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Button } from "../ui/button";
+
 import {
   Select,
   SelectContent,
@@ -13,7 +15,7 @@ function AddressBar() {
     <>
       <div className="flex flex-col items-center justify-center h-[80vh]">
         <div className="h-48 w-5/6 px-[31px] pt-0.5 bg-[#d9d9d9] rounded-[14px] mx-auto">
-          <div className="text-black text-3xl font-poppins mt-10 mb-4">
+          <div className="text-main-blue text-3xl font-poppins mt-10 mb-4">
             List Your Property for Sale by Owner
           </div>
           <hr className="border-main-blue border-2 " />
@@ -35,7 +37,7 @@ function AddressBar() {
             <div className="flex justify-between ">
               <Select>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="District" />
+                  <SelectValue placeholder="District" className="" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ampara">Ampara</SelectItem>

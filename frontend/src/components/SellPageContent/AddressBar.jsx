@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "../ui/button";
 import {
@@ -10,6 +12,31 @@ import {
 } from "@/components/ui/select";
 
 function AddressBar() {
+  const router = useRouter();
+
+  // State for address and city inputs
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+
+  // Handle the "Continue" button click
+  const handleContinue = () => {
+    // Check if address and city are filled
+    if (!address || !city) {
+      alert("Please enter both address and city.");
+      return;
+    }
+
+    // Combine the address and city
+    //const fullAddress = `${address}, ${city}`;
+
+    // Navigate to the LocationConfirmation page with the address as a query parameter
+    router.push(
+      `/sell/location_confirmation?address=${encodeURIComponent(
+        address
+      )}&city=${encodeURIComponent(city)}`
+    );
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-[80vh]">
@@ -23,7 +50,9 @@ function AddressBar() {
               <input
                 type="text"
                 className="bg-white h-10 w-full text-left px-4  outline-none rounded-[7px]"
-                placeholder="Enter a address, city, district, province"
+                placeholder="Enter a street address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
             <div className="flex justify-between ">
@@ -31,6 +60,8 @@ function AddressBar() {
                 type="text"
                 className="bg-white h-10 text-left w-[200px] px-4 outline-none rounded-[7px]"
                 placeholder="City"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
               />
             </div>
             <div className="flex justify-between ">
@@ -75,7 +106,10 @@ function AddressBar() {
               />
             </div>
             <div className="flex justify-between ">
-              <Button className="bg-main-blue border-main-blue text-white hover:bg-white hover:text-main-blue font-bold border-2">
+              <Button
+                className="bg-main-blue border-main-blue text-white hover:bg-white hover:text-main-blue font-bold border-2"
+                onClick={handleContinue}
+              >
                 Continue
               </Button>
             </div>

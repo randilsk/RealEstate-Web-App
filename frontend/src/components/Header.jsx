@@ -32,7 +32,9 @@ function Header() {
       <div className="flex justify-start items-center gap-7">
         <NavItem isBold={true}>Home</NavItem>
         <NavItem>Help</NavItem>
+        <Link href="/sign_in">
         <NavItem>Sign In</NavItem>
+      </Link>
       </div>
     </div>
   );

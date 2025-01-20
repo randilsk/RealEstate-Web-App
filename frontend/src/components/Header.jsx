@@ -30,7 +30,9 @@ function Header() {
         <div className="text-white text-[26px] font-bold">UrbanNest</div>
       </div>
       <div className="flex justify-start items-center gap-7">
-        <NavItem isBold={true}>Home</NavItem>
+        <NavItem isBold={true}>
+          <Link href={"/"}>Home</Link>{" "}
+        </NavItem>
         <NavItem>Help</NavItem>
         <NavItem>Sign In</NavItem>
       </div>

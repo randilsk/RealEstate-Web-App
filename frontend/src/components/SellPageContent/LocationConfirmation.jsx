@@ -61,7 +61,7 @@ function LocationConfirmation() {
             <div className="w-11/12 h-5/6 bg-gray-500">
               {coordinates ? (
                 <GoogleMap
-                  mapContainerStyle={{ width: "100%", height: "400px" }}
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
                   center={coordinates}
                   zoom={15}
                 >

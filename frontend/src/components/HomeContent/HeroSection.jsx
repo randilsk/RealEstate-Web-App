@@ -30,7 +30,7 @@ function HeroSection() {
         </div>
 
         {/* Search Bar */}
-        <div className="justify-between h-[55px] w-full md:w-[500px] px-4 md:px-[23px] py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-4 md:gap-[15px] opacity-90 ml-4 md:ml-[135px]">
+        <div className="justify-between h-[55px] w-2/4  px-4 md:px-[23px] py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-4 md:gap-[15px] opacity-90 ml-4 md:ml-[135px]">
           <div className="text-left w-80">
             <input
               type="text"

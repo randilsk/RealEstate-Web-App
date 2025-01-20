@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
@@ -59,17 +60,14 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-  
+
       if (!res.ok) {
         dispatch(signInFailure(data.message || "Failed to sign in"));
         return;
       }
-  
+
       dispatch(signInSuccess(data));
-      // Replace router.push with router.replace for a complete navigation
-      router.replace('/');
-      // Force a hard reload to ensure all state is updated
-      window.location.href = '/api/';
+      router.push("/");
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")
@@ -81,7 +79,7 @@ export default function SignIn() {
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"
       style={{
-        backgroundImage: `url(${signInImage.src})`,
+        backgroundImage: url(${signInImage.src}),
       }}
     >
       <div

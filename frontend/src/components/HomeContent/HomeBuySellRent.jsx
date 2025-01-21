@@ -8,7 +8,7 @@ function HomeBuySellRent() {
       {/* Card 1: Buy a property */}
       <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white border rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
-          src="/images/buy-home.png"
+          src="/images/home-image/buy-home.png"
           width={180}
           height={200}
           alt="Buy a property"
@@ -33,7 +33,7 @@ function HomeBuySellRent() {
       {/* Card 2: Sell a property */}
       <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
-          src="/images/sell-home.png"
+          src="/images/home-image/sell-home.png"
           width={180}
           height={200}
           alt="Sell a property"
@@ -59,7 +59,7 @@ function HomeBuySellRent() {
       {/* Card 3: Rent a property */}
       <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
         <Image
-          src="/images/rent-home.png"
+          src="/images/home-image/rent-home.png"
           width={180}
           height={200}
           alt="Rent a property"

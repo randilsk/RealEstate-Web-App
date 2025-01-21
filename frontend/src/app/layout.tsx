@@ -1,33 +1,29 @@
-// import type { Metadata } from "next";
-// import localFont from "next/font/local";
+// src/app/layout.tsx
 import "./globals.css";
 import { Inter } from "next/font/google";
-
-//const geistSans = localFont({
-//  src: "./fonts/GeistVF.woff",
-//  variable: "--font-geist-sans",
-//  weight: "100 900",
-//});
-//const geistMono = localFont({
-//  src: "./fonts/GeistMonoVF.woff",
-//  variable: "--font-geist-mono",
-//  weight: "100 900",
-//});
+import { Providers } from "./providers";
 
 const poppins = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"], // Add weights you need
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-poppins",
 });
 
+export const metadata = {
+  title: "UrbanNest",
+  description: "This is a Real Estate Web App",
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>{children}</body>
+      <body className={`${poppins.variable} antialiased`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

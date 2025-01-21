@@ -1,7 +1,19 @@
-import type { NextConfig } from "next";
+import { source } from "framer-motion/client";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3000/api/:path*',
+      },
+      {
+        source: '/home/:path*',
+        destination: 'http://localhost:3000/*',
+      }
+    ];
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

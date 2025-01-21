@@ -34,7 +34,9 @@ function Header() {
           <Link href={"/"}>Home</Link>{" "}
         </NavItem>
         <NavItem>Help</NavItem>
+        <Link href="/sign_in">
         <NavItem>Sign In</NavItem>
+      </Link>
       </div>
     </div>
   );

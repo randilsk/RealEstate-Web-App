@@ -47,9 +47,12 @@ export default function SignIn() {
       [e.target.id]: e.target.value,
     });
   };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const [formData, setFormData] = useState({ username: "", password: "" });
+  
     try {
       dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
@@ -60,21 +63,21 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-
+  
       if (!res.ok) {
         dispatch(signInFailure(data.message || "Failed to sign in"));
         return;
       }
-
+  
       dispatch(signInSuccess(data));
-      router.push("/");
+      // Redirect to the home page upon successful sign-in
+      router.replace('/home');
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")
       );
     }
   };
-
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"

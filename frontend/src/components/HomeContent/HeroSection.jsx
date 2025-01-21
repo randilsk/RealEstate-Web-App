@@ -30,9 +30,13 @@ function HeroSection() {
         </div>
 
         {/* Search Bar */}
-        <div className="h-[55px] w-full md:w-[500px] px-4 md:px-[23px] py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-4 md:gap-[15px] opacity-90 ml-4 md:ml-[135px]">
-          <div className="flex-grow text-black text-base md:text-lg font-normal font-poppins opacity-75">
-            Enter an address, city, district, province
+        <div className="justify-between h-[55px] w-2/4  px-4 md:px-[23px] py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-4 md:gap-[15px] opacity-90 ml-4 md:ml-[135px]">
+          <div className="text-left w-80">
+            <input
+              type="text"
+              placeholder="Enter address, city, district, province"
+              className="w-full p-2 bg-transparent border-none outline-none flex justify-start placeholder:text-gray-800"
+            />
           </div>
           <div className="w-[46px] h-[43px] flex justify-center items-center flex-shrink-0">
             <Image

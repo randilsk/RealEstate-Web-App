@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function SellPageHeroSection() {
   return (
@@ -10,7 +11,7 @@ function SellPageHeroSection() {
           perfect buyer
           <div className="flex justify-center items-center mb-10">
             <Button className="bg-transparent border-white text-white hover:bg-main-bg hover:text-black w-52 font-bold border-2">
-              Post your advertisement
+              <Link href={"/sell/add_address"}>Post your advertisement </Link>
             </Button>
           </div>
         </div>

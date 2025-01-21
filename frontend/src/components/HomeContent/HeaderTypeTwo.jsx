@@ -10,8 +10,12 @@ function HeaderTypeTwo() {
         </div>
       </div>
       <div className="w-[450px] h-[55px] px-[23px] py-1.5 bg-[#bcbbba] rounded-full flex items-center gap-[15px] opacity-90 ml-auto">
-        <div className="text-black text-lg font-normal font-poppins opacity-75">
-          Enter an address, city, district, province
+        <div className="text-left w-80">
+          <input
+            type="text"
+            placeholder="Enter address, city, district, province"
+            className="w-full p-2 bg-transparent border-none outline-none flex justify-start placeholder:text-gray-800"
+          />
         </div>
         <div className="w-[46px] h-[43px] relative flex justify-end items-center">
           <Image

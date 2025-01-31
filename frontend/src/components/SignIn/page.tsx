@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { ThunkDispatch } from "@reduxjs/toolkit"; // For typing Redux dispatch
 import { AnyAction } from "redux";
@@ -14,6 +12,7 @@ import {
   signInFailure,
 } from "../../redux/Features/user/userSlice";
 import OAuth from "../../components/signInComponents/OAuth";
+//import Image from "next/image";
 
 // Properly import the image
 import signInImage from "../../../../frontend/public/images/sign_in-images/signIn_Image.png";
@@ -52,7 +51,7 @@ export default function SignIn() {
     const dispatch = useDispatch();
     const router = useRouter();
     const [formData, setFormData] = useState({ username: "", password: "" });
-  
+
     try {
       dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
@@ -63,15 +62,15 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-  
+
       if (!res.ok) {
         dispatch(signInFailure(data.message || "Failed to sign in"));
         return;
       }
-  
+
       dispatch(signInSuccess(data));
       // Redirect to the home page upon successful sign-in
-      router.replace('/home');
+      router.replace("/home");
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")
@@ -82,7 +81,7 @@ export default function SignIn() {
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"
       style={{
-        backgroundImage: url(${signInImage.src}),
+        backgroundImage: "url(${signInImage.src})",
       }}
     >
       <div

@@ -3,7 +3,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { ThunkDispatch } from "@reduxjs/toolkit"; // For typing Redux dispatch
 import { AnyAction } from "redux";
@@ -16,6 +15,7 @@ import OAuth from "../../components/signInComponents/OAuth";
 
 // Properly import the image
 import signInImage from "../../../../frontend/public/images/sign_in-images/signIn_Image.png";
+//import Image from "next/image";
 
 // Define types for the form data and root state
 interface FormData {
@@ -59,17 +59,17 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-  
+
       if (!res.ok) {
         dispatch(signInFailure(data.message || "Failed to sign in"));
         return;
       }
-  
+
       dispatch(signInSuccess(data));
       // Replace router.push with router.replace for a complete navigation
-      router.replace('/');
+      router.replace("/");
       // Force a hard reload to ensure all state is updated
-      window.location.href = '/api/';
+      window.location.href = "/api/";
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")

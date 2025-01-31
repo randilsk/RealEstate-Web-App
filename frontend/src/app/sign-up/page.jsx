@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import OAuth from "../../components/signInComponents/OAuth";
 import bgimage from "../../../public/images/sign_in-images/signIn_Image.png";
+//import Image from "next/image";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -22,7 +22,7 @@ export default function SignUp() {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();  //prevent page from reloading after submit
+    e.preventDefault(); //prevent page from reloading after submit
     try {
       setLoading(true);
       const res = await fetch("/api/auth/signup", {

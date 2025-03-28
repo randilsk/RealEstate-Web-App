@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
 import { User } from "lucide-react";
+import { img } from "framer-motion/client";
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
   <div 
@@ -45,10 +46,12 @@ function Header() {
         <NavItem>Help</NavItem>
         {currentUser ? (
           <Link href="/profile">
-            <NavItem>
-              <User className="text-white w-6 h-6" />
-            </NavItem>
-          </Link>
+          <img  src={currentUser.avatar} alt="/profile" className="w-10 h-10 rounded-full" />
+          {/* // 
+          //   <NavItem>
+          //     <User className="text-white w-6 h-6" />
+          //   </NavItem> */}
+           </Link>
         ) : (
           <Link href="/sign_in">
             <NavItem>Sign In</NavItem>

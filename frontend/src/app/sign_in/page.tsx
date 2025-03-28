@@ -69,7 +69,7 @@ export default function SignIn() {
       // Replace router.push with router.replace for a complete navigation
       router.replace('/');
       // Force a hard reload to ensure all state is updated
-      window.location.href = '/';
+      window.location.href = '/api/';
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")

@@ -24,6 +24,9 @@ function Listing() {
           <div className="font-semibold  font-poppins pb-1">
             address entered should be loaded to here....
           </div>
+          <div className="font-semibold  font-poppins pb-1">
+            correct latitude and longitude should be loaded to here....
+          </div>
           <div className="pb-2">list your details below</div>
           <hr className="border-1 border-black py-3" />
           <div className="py-3 text-black text-2xl font-bold font-poppins ">
@@ -71,10 +74,11 @@ function Listing() {
               </div>
               <div className="flex justify-between gap-6 pb-10">
                 <div className="pt-4 flex-1">
-                  <p className="py-2">Beds</p>
+                  <p className="py-2">Bed Rooms</p>
                   <input
                     type="number"
                     placeholder=""
+                    min="0"
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
                   />
                 </div>
@@ -84,6 +88,7 @@ function Listing() {
                     type="number"
                     placeholder=""
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+                    min="0"
                   />
                 </div>
                 <div className="pt-4 flex-1">
@@ -92,6 +97,7 @@ function Listing() {
                     type="number"
                     placeholder=""
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+                    min="0"
                   />
                 </div>
                 <div className="pt-4 flex-1">
@@ -120,6 +126,7 @@ function Listing() {
                     type="number"
                     placeholder=""
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+                    min="0"
                   />
                 </div>
                 <div className="pt-4 flex-1">
@@ -128,6 +135,7 @@ function Listing() {
                     type="number"
                     placeholder=""
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+                    min="0"
                   />
                 </div>
                 <div className="pt-4 flex-1">
@@ -152,6 +160,7 @@ function Listing() {
                     type="number"
                     placeholder=""
                     className="px-2 w-full outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
+                    min="0"
                   />
                 </div>
               </div>
@@ -180,7 +189,7 @@ function Listing() {
             </p>
             <p className="py-3 font-semibold">Phone number</p>
             <input
-              type="number"
+              type="tel"
               placeholder="+94 xxxxxxxxx"
               className="px-2 w-96 outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
             />

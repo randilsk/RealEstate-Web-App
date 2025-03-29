@@ -1,8 +1,10 @@
+"use client";
 import React from "react";
 import FileUploader from "../FileUploader";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 import {
   Select,
@@ -14,6 +16,12 @@ import {
 } from "@/components/ui/select";
 
 function Listing() {
+  const searchParams = useSearchParams();
+
+  const address = searchParams.get("address");
+  const city = searchParams.get("city");
+  const district = searchParams.get("district");
+
   return (
     <>
       <div className="flex justify-center mt-6">
@@ -21,8 +29,11 @@ function Listing() {
           <div className=" text-black text-2xl font-bold font-poppins pb-1">
             List Your Property for Sale by Owner
           </div>
-          <div className="font-semibold  font-poppins pb-1">
-            address entered should be loaded to here....
+          <div className="font-regular font-poppinspb-1">
+            Address:{" "}
+            {address && city && district
+              ? `${address}, ${city}, ${district}`
+              : "Address not provided."}
           </div>
           <div className="font-semibold  font-poppins pb-1">
             correct latitude and longitude should be loaded to here....

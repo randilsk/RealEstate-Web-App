@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRouter from "./routes/auth.route.js";
 import ListingRoute from "./routes/AddListingRoute.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -17,6 +18,12 @@ mongoose
   });
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3001", // Replace with your frontend URL
+  })
+);
 
 // Middleware to parse JSON requests
 app.use(express.json());

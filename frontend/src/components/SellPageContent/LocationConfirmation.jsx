@@ -15,13 +15,17 @@ function LocationConfirmation() {
   const [coordinates, setCoordinates] = useState(null);
 
   const handleProceedToListing = () => {
-    router.push(
-      `/sell/listing?address=${encodeURIComponent(
-        address
-      )}&city=${encodeURIComponent(city)}&district=${encodeURIComponent(
-        district
-      )}`
-    );
+    if (coordinates) {
+      router.push(
+        `/sell/listing?address=${encodeURIComponent(
+          address
+        )}&city=${encodeURIComponent(city)}&district=${encodeURIComponent(
+          district
+        )}&lat=${coordinates.lat}&lng=${coordinates.lng}`
+      );
+    } else {
+      alert("Coordinates not available.");
+    }
   };
 
   const { isLoaded } = useJsApiLoader({

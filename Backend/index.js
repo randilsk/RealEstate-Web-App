@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRouter from "./routes/auth.route.js";
+import ListingRoute from "./routes/AddListingRoute.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -17,6 +19,13 @@ mongoose
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:3001", // Replace with your frontend URL
+  })
+);
+
+// Middleware to parse JSON requests
 app.use(express.json());
 
 app.listen(3000, () => {
@@ -25,13 +34,15 @@ app.listen(3000, () => {
 
 app.use("/api/user", UserRoute);
 app.use("/api/auth", AuthRouter);
+app.use("/api/listing", ListingRoute);
 
+//global error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
-  const massage = err.message || "Internal Server Error";
+  const message = err.message || "Internal Server Error";
   return res.status(statusCode).json({
     success: false,
     statusCode,
-    massage,
+    message,
   });
 });

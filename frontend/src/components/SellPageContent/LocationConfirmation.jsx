@@ -1,15 +1,32 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import Link from "next/link";
 
 function LocationConfirmation() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const address = searchParams.get("address");
   const city = searchParams.get("city");
+  const district = searchParams.get("district");
   const [coordinates, setCoordinates] = useState(null);
+
+  const handleProceedToListing = () => {
+    if (coordinates) {
+      router.push(
+        `/sell/listing?address=${encodeURIComponent(
+          address
+        )}&city=${encodeURIComponent(city)}&district=${encodeURIComponent(
+          district
+        )}&lat=${coordinates.lat}&lng=${coordinates.lng}`
+      );
+    } else {
+      alert("Coordinates not available.");
+    }
+  };
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -72,7 +89,10 @@ function LocationConfirmation() {
               )}
             </div>
             <div className="flex gap-4 py-5">
-              <Button className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
+              <Button
+                className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2"
+                onClick={handleProceedToListing}
+              >
                 <Link href={"/sell/listing"}>Yes, Correct Location</Link>
               </Button>
               <Button className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">

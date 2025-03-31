@@ -1,8 +1,10 @@
+"use client";
 import React from "react";
 import FileUploader from "../FileUploader";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 import {
   Select,
@@ -14,6 +16,15 @@ import {
 } from "@/components/ui/select";
 
 function Listing() {
+  const searchParams = useSearchParams();
+
+  const address = searchParams.get("address");
+  const city = searchParams.get("city");
+  const district = searchParams.get("district");
+
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
+
   return (
     <>
       <div className="flex justify-center mt-6">
@@ -21,13 +32,20 @@ function Listing() {
           <div className=" text-black text-2xl font-bold font-poppins pb-1">
             List Your Property for Sale by Owner
           </div>
-          <div className="font-semibold  font-poppins pb-1">
-            address entered should be loaded to here....
+          {/*address entered in addressbar*/}
+          <div className="font-regular font-poppinspb-1">
+            Address:{" "}
+            {address && city && district
+              ? `${address}, ${city}, ${district}`
+              : "Address not provided."}
           </div>
-          <div className="font-semibold  font-poppins pb-1">
-            correct latitude and longitude should be loaded to here....
+          {/*lattitude and longitude from the locaton confirmation*/}
+          <div className="font-regular  font-poppins pb-1">
+            {lat && lng
+              ? "Lattitude: " + lat + " Longitude: " + lng
+              : "Coordinates not provided."}
           </div>
-          <div className="pb-2">list your details below</div>
+          <div className="pb-2 font-semibold">List your details below</div>
           <hr className="border-1 border-black py-3" />
           <div className="py-3 text-black text-2xl font-bold font-poppins ">
             Set Your Price

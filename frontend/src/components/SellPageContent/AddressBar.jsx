@@ -17,34 +17,33 @@ function AddressBar() {
   // State for address and city inputs
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
+  const [district, setDistrict] = useState(""); // Add state for district
 
-  // Handle the "Continue" button click
   const handleContinue = () => {
-    // Check if address and city are filled
-    if (!address || !city) {
-      alert("Please enter both address and city.");
+    // Check if address, city, and district are filled
+    if (!address || !city || !district) {
+      alert("Please enter address, city, and district.");
       return;
     }
 
-    // Combine the address and city
-    //const fullAddress = `${address}, ${city}`;
-
-    // Navigate to the LocationConfirmation page with the address as a query parameter
+    // Navigate to the LocationConfirmation page with the address, city, and district as query parameters
     router.push(
       `/sell/location_confirmation?address=${encodeURIComponent(
         address
-      )}&city=${encodeURIComponent(city)}`
+      )}&city=${encodeURIComponent(city)}&district=${encodeURIComponent(
+        district
+      )}`
     );
   };
 
   return (
     <>
-      <div className="flex  flex-col items-center justify-center h-[80vh] ">
-        <div className=" w-10/12  bg-[#d9d9d9] rounded-[14px] ">
-          <div className="flex flex-col w-full h-full md:flex-row gap-0 items-center">
+      <div className="flex  flex-col items-center justify-center mt-5">
+        <div className=" w-4/6  bg-[#d9d9d9] rounded-[14px] ">
+          <div className="flex flex-col w-full h-full md:flex-row gap-0 items-center px-5 py-3">
             {/* Address form  left column*/}
             <div className=" items-center w-2/5 px-10 py-10">
-              <div className="text-main-blue text-[1.3rem] font-poppins ">
+              <div className="text-main-blue text-[1.3rem] font-poppins">
                 Sell Your Property Directly - No Agent Needed!
               </div>
               <hr className="border-main-blue border-2 " />
@@ -69,11 +68,13 @@ function AddressBar() {
                   />
                 </div>
                 <div className="flex justify-between flex-1">
-                  <Select>
+                  <Select onValueChange={(value) => setDistrict(value)}>
+                    {" "}
+                    {/* Update district state */}
                     <SelectTrigger className="">
-                      <SelectValue placeholder="District" className="" />
+                      <SelectValue placeholder="District" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent side="bottom" position="popper">
                       <SelectItem value="ampara">Ampara</SelectItem>
                       <SelectItem value="anuradhapura">Anuradhapura</SelectItem>
                       <SelectItem value="badulla">Badulla</SelectItem>
@@ -121,17 +122,18 @@ function AddressBar() {
               </div>
               <div>
                 Enter your property address to get started! Our smart listing
-                tool will help you add details, upload photos, and connect with
-                potential buyers—all in just a few easy steps.
+                tool will help you add details along with map integration,
+                upload photos, and connect with potential buyers—all in just a
+                few easy steps.
               </div>
             </div>
             {/* Image right column*/}
-            <div className="flex-1 w-full h-full relative flex items-center justify-center pr-10 py-10">
+            <div className="flex-1 w-full h-full relative flex items-center justify-center  py-10">
               <Image
                 src="/images/sell-image/add-address.jpg"
                 alt="Placeholder image"
-                width={5000} // Set the desired height
-                height={5000} // Set the desired height
+                width={475} // Set the desired height
+                height={475} // Set the desired height
                 className="rounded-2xl object-cover m-0"
               />
             </div>

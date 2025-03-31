@@ -1,7 +1,7 @@
 import React from 'react';
-import DBSideBar from '../../components/DBSideBar';
-import DBmap from '../../components/DBmap';
-import DBMainContent from '../../components/DBMainContent';
+import DBSideBar from '../../components/Admin/DBSideBar';
+import DBmap from '../../components/Admin/DBmap';
+import DBMainContent from '../../components/Admin/DBMainContent';
 
 
 function Dashboard() {

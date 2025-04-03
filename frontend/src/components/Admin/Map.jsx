@@ -3,18 +3,15 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function Map({ latitude = 0, longitude = 0 }) {
-  // If latitude or longitude is undefined, use default values (0, 0)
-  if (latitude === undefined || longitude === undefined) {
-    return <div>Loading...</div>; // Fallback UI if coordinates are not yet available
-  }
-
+export default function Map({ listings }) {
   return (
-    <MapContainer center={[latitude, longitude]} zoom={13} style={{ height: "400px", width: "100%" }}>
+    <MapContainer center={[-33.8688, 151.2093]} zoom={12} style={{ height: "400px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={[latitude, longitude]}>
-        <Popup>A marker</Popup>
-      </Marker>
+      {listings.map((listing) => (
+        <Marker key={listing.id} position={[listing.latitude, listing.longitude]}>
+          <Popup>{listing.title} - {listing.location}</Popup>
+        </Marker>
+      ))}
     </MapContainer>
   );
 }

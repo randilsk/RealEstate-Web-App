@@ -1,18 +1,5 @@
 import React from "react";
-import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle } from 'react-icons/fa';
-
-// Reusable Card Component
-const StatCard = ({ title, value, icon: Icon, href }) => {
-    return (
-        <a href={href} className="bg-white p-4 rounded-lg shadow text-center hover:bg-gray-100 transition duration-200 block">
-            <div className="text-2xl mb-2 flex justify-center text-blue-600">
-                <Icon />
-            </div>
-            <p className="text-gray-600">{title}</p>
-            <p className="text-xl font-bold">{value}</p>
-        </a>
-    );
-};
+import { FaBell, FaUserCircle, FaCheck, FaTimes } from 'react-icons/fa';
 
 function DBMainContent() {
     return (
@@ -28,15 +15,6 @@ function DBMainContent() {
 
             {/* Dashboard */}
             <div className="p-10">
-                {/* Cards Section */}
-                <div className="grid grid-cols-4 gap-10">
-                    <StatCard title="Total Listings" value="120" icon={FaTachometerAlt} href="/listings" />
-                    <StatCard title="Active Users" value="450" icon={FaUsers} href="/users" />
-                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
-                    <StatCard title="Pending Approvals" value="15" icon={FaCog} href="/Admin/ApproveAdds" />
-                </div>
-
-                {/* Recent Properties Table */}
                 <div className="bg-white mt-6 p-6 rounded-lg shadow">
                     <h3 className="text-xl font-bold mb-4">Recent Properties</h3>
                     <table className="w-full border-collapse border border-gray-300">
@@ -47,6 +25,7 @@ function DBMainContent() {
                                 <th className="border p-2">Location</th>
                                 <th className="border p-2">Price</th>
                                 <th className="border p-2">Status</th>
+                                <th className="border p-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,6 +35,14 @@ function DBMainContent() {
                                 <td className="border p-2">Colombo</td>
                                 <td className="border p-2">Rs. 30M</td>
                                 <td className="border p-2">Approved</td>
+                                <td className="border p-2 flex gap-2">
+                                    <button className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
+                                        <FaCheck />
+                                    </button>
+                                    <button className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600">
+                                        <FaTimes />
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
                                 <td className="border p-2">002</td>
@@ -63,6 +50,14 @@ function DBMainContent() {
                                 <td className="border p-2">Kandy</td>
                                 <td className="border p-2">Rs. 40M</td>
                                 <td className="border p-2">Pending</td>
+                                <td className="border p-2 flex gap-2">
+                                    <button className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
+                                        <FaCheck />
+                                    </button>
+                                    <button className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600">
+                                        <FaTimes />
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

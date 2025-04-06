@@ -1,11 +1,19 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../../lib/firebase"; // Adjust the import path as needed
 import axios from "axios"; // Import axios for API calls
-
+import { useRouter } from "next/navigation";
+import { 
+  signOutUserStart, 
+  signOutUserSuccess, 
+  signOutUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure
+} from "../../redux/Features/user/userSlice";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -13,9 +21,13 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
+  const [signOutError, setSignOutError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
-
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
@@ -82,14 +94,51 @@ export default function Profile() {
     }
   };
 
-  const handleDeleteAccount = () => {
-    // Implement delete account logic
-    console.log("Delete account clicked");
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      try {
+        dispatch(deleteUserStart());
+        
+        const response = await axios.delete(`/api/auth/delete/${currentUser._id}`);
+        
+        if (response.status === 200) {
+          dispatch(deleteUserSuccess());
+          setDeleteSuccess(true);
+          
+          // Clear local storage
+          localStorage.removeItem('persist:root');
+          
+          // Redirect to home page
+          router.push('/');
+        }
+      } catch (error) {
+        dispatch(deleteUserFailure(error.response?.data?.message || error.message));
+        setDeleteError("Failed to delete account. Please try again.");
+        console.error("Delete account failed", error);
+      }
+    }
   };
 
-  const handleSignOut = () => {
-    // Implement sign out logic
-    console.log("Sign out clicked");
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      
+      const response = await axios.get('/api/auth/signout');
+      
+      if (response.status === 200) {
+        dispatch(signOutUserSuccess());
+        
+        // Clear local storage
+        localStorage.removeItem('persist:root'); 
+        
+        // Redirect to home page or login page
+        router.push('/sign-in');
+      }
+    } catch (error) {
+      dispatch(signOutUserFailure(error.response?.data?.message || error.message));
+      setSignOutError("Failed to sign out. Please try again.");
+      console.error("Sign out failed", error);
+    }
   };
 
   return (
@@ -160,6 +209,15 @@ export default function Profile() {
           Sign Out
         </span>
       </div>
+      {signOutError && (
+        <p className="text-red-700 text-center mt-2">{signOutError}</p>
+      )}
+      {deleteError && (
+        <p className="text-red-700 text-center mt-2">{deleteError}</p>
+      )}
+      {deleteSuccess && (
+        <p className="text-green-700 text-center mt-2">Account deleted successfully!</p>
+      )}
     </div>
   );
 }

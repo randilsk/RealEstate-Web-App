@@ -69,4 +69,29 @@ export const google = async(req,res,next) => {
     next(error);
   }
 }
+
+export const signout = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json({ message: 'User has been signed out' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    
+    if (!deletedUser) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    
+    res.clearCookie('access_token');
+    res.status(200).json({ message: 'User has been deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
  

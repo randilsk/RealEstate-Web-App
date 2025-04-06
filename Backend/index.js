@@ -45,17 +45,17 @@ app.use("/api/listing", ListingRoute);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
-  
+
   // Log the error for debugging
   console.error(`Error: ${statusCode} - ${message}`);
   if (err.stack) {
     console.error(err.stack);
   }
-  
+
   return res.status(statusCode).json({
     success: false,
     statusCode,
     message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 });

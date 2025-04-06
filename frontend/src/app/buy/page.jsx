@@ -1,14 +1,20 @@
 import React from "react";
 import Bluebar from "@/components/Bluebar.jsx";
-import Header_varient from "../../components/Header_varient.jsx";
+import Header_varient_1 from "../../components/Header_varient_1.jsx";
 import MapSection from "../../components/BuyPageContent/MapSection.jsx";
+import CardSection from "../../components/BuyPageContent/CardSection.jsx";
 
 function page() {
   return (
     <>
-      <Bluebar />
-      <Header_varient />
-      <MapSection />
+      <div className="h-screen w-screen ">
+        <Bluebar />
+        <Header_varient_1 />
+        <div className="flex h-screen">
+          <MapSection />
+          <CardSection />
+        </div>
+      </div>
     </>
   );
 }

@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/select";
 
 function Listing() {
+  const router = useRouter(); // Initialize router
   const searchParams = useSearchParams();
 
   // Pre-fill address, city, district, lat, and lng from searchParams
@@ -64,6 +66,7 @@ function Listing() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form data being sent:", formData); // Log form data for debugging
     try {
       const response = await axios.post(
         "http://localhost:3000/api/listing",
@@ -71,6 +74,7 @@ function Listing() {
       );
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
+      router.push("/sell/list_review"); // Navigate to list_review page
     } catch (error) {
       console.error("Error adding listing:", error.message); // Log the error message
       if (error.response) {

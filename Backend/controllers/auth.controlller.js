@@ -69,4 +69,43 @@ export const google = async(req,res,next) => {
     next(error);
   }
 }
+
+export const signout = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json({ message: 'User has been signed out' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    
+    // Check if the user exists before attempting to delete
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    
+    // Delete the user
+    const deletedUser = await User.findByIdAndDelete(userId);
+    
+    // Clear the authentication cookie
+    res.clearCookie('access_token');
+    
+    // Log the deletion for audit purposes
+    console.log(`User deleted: ${userId}`);
+    
+    // Return success response
+    res.status(200).json({ 
+      success: true,
+      message: 'User has been deleted successfully' 
+    });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    next(error);
+  }
+};
  

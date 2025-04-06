@@ -3,7 +3,7 @@ import React from "react";
 function MapSection() {
   return (
     <>
-      <aside className="w-1/2 h-screen bg-gray-100 mt-10">
+      <aside className="w-1/2 h-screen bg-gray-100 mt-10 overflow-hidden">
         {/* Replace this with your real map implementation */}
         <iframe
           src="https://maps.google.com/maps?q=atlanta&t=&z=10&ie=UTF8&iwloc=&output=embed"

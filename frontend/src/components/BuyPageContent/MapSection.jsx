@@ -1,20 +1,15 @@
 import React from "react";
-import Image from "next/image";
 
 function MapSection() {
   return (
     <>
-      <div className="pt-10 mt-10 mr-10">
-        <div>
-          <Image
-            className="w-[850px] h-[600px]"
-            src="/images/buy-image/map-image.png"
-            width={720}
-            height={650}
-            alt="Placeholder image"
-          />
-        </div>
-      </div>
+      <aside className="w-7/12 h-screen bg-gray-100 mt-10">
+        {/* Replace this with your real map implementation */}
+        <iframe
+          src="https://maps.google.com/maps?q=atlanta&t=&z=10&ie=UTF8&iwloc=&output=embed"
+          className="w-full h-full"
+        ></iframe>
+      </aside>
     </>
   );
 }

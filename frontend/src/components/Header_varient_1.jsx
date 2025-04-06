@@ -14,7 +14,7 @@ import {
 
 const NavItem = ({ label, bold, className = "" }) => (
   <div
-    className={`text-white text-xl font-poppins ${
+    className={`text-white text-lg font-poppins ${
       bold ? "font-bold" : ""
     } ${className}`}
   >
@@ -23,8 +23,8 @@ const NavItem = ({ label, bold, className = "" }) => (
 );
 
 const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-14 px-4 bg-[#d9d9d9] rounded-[50px] font-poppins">
-    <span className="text-black text-xl font-normal">{label}</span>
+  <div className="flex items-center justify-between w-full h-10 px-4 bg-[#d9d9d9] rounded-[50px] font-poppins">
+    <span className="text-black text-lg font-normal">{label}</span>
     <div>
       <Image
         src="/icons/dropdown-icon.png"
@@ -40,8 +40,8 @@ const FilterButton = ({ label }) => (
 function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
   return (
-    <div className="flex justify-center items-center w-full h-36 bg-white">
-      <div className="w-[1228px] h-36 px-10 py-2.5 bg-main-blue rounded-[50px] flex flex-col justify-center gap-2.5 font-poppins mt-10">
+    <div className="flex justify-center items-center w-full h-32 bg-white">
+      <div className="w-5/6 h-36 px-10 py-2 bg-main-blue rounded-[50px] flex flex-col justify-center gap-2.5 font-poppins mt-10">
         {/* Top Nav */}
         <div className="flex justify-between items-center">
           <div className="flex gap-6">
@@ -76,8 +76,8 @@ function Header_varient_1() {
         {/* Filters */}
         <div className="flex gap-2.5 items-center">
           {/* Search bar */}
-          <div className="flex items-center w-[453px] h-14 px-6 bg-[#d9d9d9] opacity-90 rounded-[50px] relative">
-            <span className="text-black text-lg font-normal opacity-75">
+          <div className="flex items-center w-[453px] h-10 px-6 bg-[#d9d9d9] opacity-90 rounded-[50px] relative">
+            <span className="text-black text-base font-normal opacity-75">
               Enter an address, city, district, province
             </span>
             <div className="absolute right-0 pr-5">
@@ -93,16 +93,62 @@ function Header_varient_1() {
 
           {/* Filter Buttons */}
           <div className="w-40">
-            <FilterButton label="For Sale" />
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="For Sale" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-main-bg w-auto">
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="w-40">
-            <FilterButton label="Price" />
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="Price" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-main-bg w-auto">
+                <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <div className="w-56">
-            <FilterButton label="Beds and Baths" />
+          <div className="w-60">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="Beds and Baths" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-main-bg w-auto">
+                <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-black" />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuLabel>Number of bathrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-black" />
+                <DropdownMenuItem>Team</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="w-32">
-            <FilterButton label="More" />
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="More" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-main-bg w-auto">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

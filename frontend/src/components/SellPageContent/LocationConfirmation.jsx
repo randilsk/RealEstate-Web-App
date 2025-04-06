@@ -69,7 +69,7 @@ function LocationConfirmation() {
             Location Confirmation
           </div>
           <div className="px-7 py-2 text-black text-[15px] font-poppins">
-            {`Address: ${address}, City: ${city}`}
+            {`Address: ${address}, City: ${city}, District: ${district}`}
           </div>
           <div className="px-7 ">
             <hr className="border-1 border-black" />
@@ -96,7 +96,24 @@ function LocationConfirmation() {
                 <Link href={"/sell/listing"}>Yes, Correct Location</Link>
               </Button>
               <Button className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
-                No, Change Location
+                <Link
+                  href={
+                    coordinates
+                      ? `/sell/location_changing?lat=${coordinates.lat}&lng=${
+                          coordinates.lng
+                        }&address=${encodeURIComponent(
+                          address
+                        )} &city=${encodeURIComponent(
+                          city
+                        )}&district=${encodeURIComponent(district)}`
+                      : "#"
+                  }
+                  onClick={() => {
+                    if (!coordinates) alert("Coordinates not available.");
+                  }}
+                >
+                  No, Change Location
+                </Link>
               </Button>
             </div>
           </div>

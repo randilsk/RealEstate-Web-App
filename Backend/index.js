@@ -3,11 +3,21 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRouter from "./routes/auth.route.js";
+import cors from 'cors';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
+const app = express();
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cors()); // Enable CORS
+  
+app.use(express.json());
+
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect("mongodb+srv://sdnt2:sdnt2@cluster0.7ex8l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -15,11 +25,7 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-const app = express();
-
-app.use(express.json());
-
-app.listen(3000, () => {
+  app.listen(3000, () => {  // change the port to 5000
   console.log("Server is running on port 3000");
 });
 

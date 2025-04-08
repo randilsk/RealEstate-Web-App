@@ -18,7 +18,7 @@ function HomeRecommendation() {
           <div className="w-1/2 flex justify-start items-center">
             <Image
               className="object-cover"
-              src="/images/home-recommendation.png"
+              src="/images/home-image/home-recommendation.png"
               alt="Home Page Image"
               width={500}
               height={400}

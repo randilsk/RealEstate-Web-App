@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-
-const userSchema = new mongoose.Schema({
+//define userSchema1
+const userSchema1 = new mongoose.Schema({
   username:{
     type:String,
     required:true,
@@ -24,7 +24,116 @@ const userSchema = new mongoose.Schema({
 },{timestamps:true});
 
 
-const User =mongoose.model('User',userSchema);
+//define userSchema2
+const userSchema2 = new mongoose.Schema({
+  username: {
+    type: String,
+    required: [true, 'Username is required'], // Ensure it's required
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+  },
+  petname: {
+    type: String,
+    required: [true, 'Password is required']
+  }
+
+});
 
 
-export default User;
+// Define the Property schema
+const propertySchema = new mongoose.Schema({
+
+  price: {
+    type: Number,
+    required: [true, 'Price is required'],
+  },
+
+  photos: {
+    type: [String], // Store URLs or file paths
+    required: true,
+  },
+  homeType: {
+    type: String,
+    required: true,
+  },
+  beds: {
+    type: Number,
+    required: true,
+  },
+  attachedBathrooms: {
+    type: Number,
+    required: true,
+  },
+  detachedBathrooms: {
+    type: Number,
+    required: true,
+  },
+  floors: {
+    type: Number,
+    required: true,
+  },
+  houseArea: {
+    type: Number,
+    required: true,
+  },
+  landArea: {
+    type: Number,
+    required: true,
+  },
+  parkingAvailability: {
+    type: String,
+    required: true,
+  },
+  buildYear: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+}, { timestamps: true });
+
+
+// Create models
+const User = mongoose.model("User", userSchema1);
+const User3 = mongoose.model("User3", userSchema2);
+const Property = mongoose.model("Property", propertySchema);
+
+
+// Export models
+export { User,User3,Property,};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+     // const UserModel = mongoose.model('User', userSchema);
+      //export default UserModel;
+/*
+export const User1 = mongoose.model('User1', userSchema1);
+export const User2 = mongoose.model('User2', userSchema2);
+
+export default User1;
+*/

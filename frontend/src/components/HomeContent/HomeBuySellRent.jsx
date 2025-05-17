@@ -2,84 +2,86 @@ import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-function HomeBuySellRent() {
-  return (
-    <div className="bg-main-bg flex justify-between items-center my-40 mx-36 mb-24 h-auto gap-10 ">
-      {/* Card 1: Buy a property */}
-      <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white border rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
-        <Image
-          src="/images/home-image/buy-home.png"
-          width={180}
-          height={200}
-          alt="Buy a property"
-          className="p-2.5"
-        />
-        <h3 className="text-center text-black text-[21px] font-bold font-poppins leading-[29.40px]">
-          Buy a property
-        </h3>
-        <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
-          Whether it&apos;s a dream home or the land to build it on, explore
-          with immersive photos and exclusive listings you won&apos;t find
-          anywhere else. Start your journey to something extraordinary.
-        </p>
-        <div className="pt-5">
-          {" "}
-          <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
-            <Link href={"/buy"}>Explore Properties </Link>
-          </Button>
-        </div>
-      </div>
 
-      {/* Card 2: Sell a property */}
-      <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
+const PropertyCard = ({ 
+  title, 
+  description, 
+  imageSrc, 
+  imageAlt, 
+  buttonText, 
+  buttonLink 
+}) => (
+  <article 
+    className="w-full max-w-[280px] sm:max-w-sm mx-auto bg-white rounded-xl sm:rounded-2xl md:rounded-[38px] shadow-lg flex flex-col items-center justify-between p-3 sm:p-6 md:p-8 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+    role="article"
+  >
+    <div className="flex flex-col items-center space-y-3 sm:space-y-6">
+      <div className="relative w-[120px] h-[140px] sm:w-[160px] sm:h-[180px] md:w-[180px] md:h-[200px] transition-transform duration-300 hover:scale-105">
         <Image
-          src="/images/home-image/sell-home.png"
-          width={180}
-          height={200}
-          alt="Sell a property"
-          className="p-2.5"
+          src={imageSrc}
+          fill
+          alt={imageAlt}
+          className="object-contain p-2"
+          priority
         />
-        <h3 className="text-center text-black text-[21px] font-bold font-poppins leading-[29.40px] pt-10">
-          Sell a property
-        </h3>
-        <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
-          Whether it&apos;s a home, land, or both, we&apos;re here to guide you
-          every step of the way toward a successful sale. Let us help you make
-          it happen.
-        </p>
-        <div className="pt-9">
-          <Link href={"/sell"}>
-            <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2 ">
-              Sell Today
-            </Button>
-          </Link>
-        </div>
       </div>
-
-      {/* Card 3: Rent a property */}
-      <div className="w-2/3 h-[485px] px-[43px] py-4 bg-white rounded-[38px] shadow-md flex flex-col items-center gap-2.5 hover:border-red-2 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-colors duration-600">
-        <Image
-          src="/images/home-image/rent-home.png"
-          width={180}
-          height={200}
-          alt="Rent a property"
-          className="p-2.5"
-        />
-        <h3 className="text-center text-black text-[21px] font-bold font-poppins leading-[29.40px]">
-          Rent a property
-        </h3>
-        <p className="text-center text-black text-sm font-light font-poppins leading-tight pt-4">
-          From cozy apartments to spacious homes, find rentals that suit your
-          lifestyle. Start your search here for the place you&apos;ll love to
-          call home.
-        </p>
-        <div className="pt-[38px]">
-          <Button className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
-            Find Rentals
-          </Button>
-        </div>
-      </div>
+      <h3 className="text-center text-black text-lg sm:text-xl md:text-2xl font-bold font-poppins">
+        {title}
+      </h3>
+      <p className="text-center text-gray-600 text-xs sm:text-sm font-light font-poppins leading-relaxed max-w-[240px] sm:max-w-[280px]">
+        {description}
+      </p>
     </div>
+    <div className="w-full flex justify-center pt-3 sm:pt-6">
+      <Button 
+        className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-[200px] sm:w-52 font-bold border-2 transition-all duration-300 hover:shadow-md text-xs sm:text-base py-1.5 sm:py-2 h-8 sm:h-10"
+        aria-label={`${buttonText} - ${title}`}
+      >
+        <Link href={buttonLink} className="w-full h-full flex items-center justify-center">
+          {buttonText}
+        </Link>
+      </Button>
+    </div>
+  </article>
+);
+
+function HomeBuySellRent() {
+  const propertyCards = [
+    {
+      title: "Buy a property",
+      description: "Whether it's a dream home or the land to build it on, explore with immersive photos and exclusive listings you won't find anywhere else. ",
+      imageSrc: "/images/home-image/buy-home.png",
+      imageAlt: "Buy a property illustration",
+      buttonText: "Explore Properties",
+      buttonLink: "/buy"
+    },
+    {
+      title: "Sell a property",
+      description: "Whether it's a home, land, or both, we're here to guide you every step of the way toward a successful sale. Let us help you make it happen.",
+      imageSrc: "/images/home-image/sell-home.png",
+      imageAlt: "Sell a property illustration",
+      buttonText: "Sell Today",
+      buttonLink: "/sell"
+    },
+    {
+      title: "Rent a property",
+      description: "From cozy apartments to spacious homes, find rentals that suit your lifestyle. Start your search here for the place you'll love to call home.",
+      imageSrc: "/images/home-image/rent-home.png",
+      imageAlt: "Rent a property illustration",
+      buttonText: "Find Rentals",
+      buttonLink: "/rent"
+    }
+  ];
+
+  return (
+    <section 
+      className="bg-main-bg flex flex-col md:flex-row justify-center items-center gap-8 md:gap-6 lg:gap-8 py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12"
+      aria-label="Property services"
+    >
+      {propertyCards.map((card, index) => (
+        <PropertyCard key={index} {...card} />
+      ))}
+    </section>
   );
 }
 

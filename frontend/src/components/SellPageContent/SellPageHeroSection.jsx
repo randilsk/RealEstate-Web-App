@@ -21,13 +21,15 @@ function SellPageHeroSection() {
   };
 
   return (
-    <div>
-      <div className="items-center justify-center flex text-center font-bold text-[76px] text-white font-inter h-[80vh] flex-col">
-        Every home deserves the <br />
-        perfect buyer
-        <div className="flex justify-center items-center mb-10">
+    <div className="w-full">
+      <div className="flex flex-col items-center justify-center text-center h-[80vh] px-4 sm:px-6 md:px-8">
+        <div className="font-bold font-inter text-3xl sm:text-4xl md:text-5xl lg:text-[76px] text-white">
+          Every home deserves the <br className="hidden sm:block" />
+          perfect buyer
+        </div>
+        <div className="flex justify-center items-center mt-6 sm:mt-8 md:mt-10">
           <Button
-            className="bg-transparent border-white text-white hover:bg-main-bg hover:text-black w-52 font-bold border-2"
+            className="bg-transparent border-white text-white hover:bg-main-bg hover:text-black w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
             onClick={handlePostAdClick}
           >
             Post your advertisement

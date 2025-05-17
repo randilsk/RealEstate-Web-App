@@ -12,7 +12,7 @@ function HeroSection() {
     "block font-extrabold font-poppins leading-tight";
 
   return (
-    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative px-4 md:px-8 lg:px-12">
+    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative pl-4 pr-5 md:(pl-8 pr-5) lg:pl-12 pr-5">
       {/* Left Section */}
       <div className="flex flex-col flex-1 gap-4 md:gap-5 w-full md:w-1/2">
         {/* Title Text */}

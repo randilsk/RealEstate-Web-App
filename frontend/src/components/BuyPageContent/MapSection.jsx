@@ -101,7 +101,7 @@ function MapSection() {
     );
 
   return (
-    <aside className="w-1/2 h-screen bg-gray-100 mt-10 overflow-hidden">
+    <aside className="w-1/2 h-screen bg-gray-100  overflow-hidden">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}

@@ -9,19 +9,19 @@ function HeroSection() {
   ];
 
   const commonStyles =
-    "block text-left font-extrabold font-poppins leading-tight";
+    "block font-extrabold font-poppins leading-tight";
 
   return (
-    <div className="pt-12 flex  relative">
+    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative px-4 md:px-8 lg:px-12">
       {/* Left Section */}
-      <div className="flex flex-col flex-1 gap-5 w-full md:w-1/2">
+      <div className="flex flex-col flex-1 gap-4 md:gap-5 w-full md:w-1/2">
         {/* Title Text */}
-        <div className="ml-4 md:ml-[135px] mt-10 md:mt-[80px]">
-          <div className="inline-block text-left">
+        <div className="mt-6 md:mt-10 lg:mt-[80px]">
+          <div className="inline-block text-center md:text-left w-full md:w-auto">
             {phrases.map((phrase, index) => (
               <span
                 key={index}
-                className={`${commonStyles} ${phrase.color} text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[76px]`}
+                className={`${commonStyles} ${phrase.color} text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[76px]`}
               >
                 {phrase.text}
               </span>
@@ -30,35 +30,36 @@ function HeroSection() {
         </div>
 
         {/* Search Bar */}
-        <div className="justify-between h-[55px] w-2/4  px-4 md:px-[23px] py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-4 md:gap-[15px] opacity-90 ml-4 md:ml-[135px]">
-          <div className="text-left w-80">
+        <div className="w-full md:w-3/4 lg:w-2/4 h-[45px] md:h-[55px] px-3 md:px-[23px] py-1 md:py-1.5 bg-[#bcbbba] rounded-[50px] flex items-center gap-3 md:gap-[15px] opacity-90 mx-auto md:mx-0">
+          <div className="flex-1 min-w-0">
             <input
               type="text"
               placeholder="Enter address, city, district, province"
-              className="w-full p-2 bg-transparent border-none outline-none flex justify-start placeholder:text-gray-800"
+              className="w-full p-1.5 md:p-2 bg-transparent border-none outline-none flex justify-start placeholder:text-gray-800 text-sm md:text-base"
             />
           </div>
-          <div className="w-[46px] h-[43px] flex justify-center items-center flex-shrink-0">
+          <div className="w-[36px] h-[36px] md:w-[46px] md:h-[43px] flex justify-center items-center flex-shrink-0">
             <Image
               src="/icons/search-icon.svg"
               alt="Search Icon"
               width={24}
               height={24}
-              className="w-6 h-6"
+              className="w-4 h-4 md:w-6 md:h-6"
             />
           </div>
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 flex  mt-5 md:mt-0 relative">
-        <div className="w-full bg-main-bg relative">
+      <div className="flex-1 flex mt-8 md:mt-0 relative">
+        <div className="w-full h-full relative">
           <Image
-            className="object-cover"
+            className="object-contain md:object-cover w-full h-auto"
             src="/images/home-image/home-page-image2.png"
             alt="Home Page Image"
             width={1000}
             height={1000}
+            priority
           />
         </div>
       </div>

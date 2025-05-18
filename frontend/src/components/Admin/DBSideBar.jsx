@@ -26,11 +26,13 @@ function DBSideBar() {
             <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/transaction"}><FaUsers /> Transaction</Link>
                 
             </li>
-            <li className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md">
-                <FaChartLine /> Reports
+            <li >
+            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/reports"}><FaUsers /> Reports</Link>
+                
             </li>
-            <li className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md">
-                <FaCog /> Settings
+            <li >
+            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/settings"}><FaUsers /> Settings</Link>
+                
             </li>
         </ul>
     </div>

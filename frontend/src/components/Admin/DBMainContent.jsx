@@ -31,8 +31,8 @@ function DBMainContent() {
                 {/* Cards Section */}
                 <div className="grid grid-cols-4 gap-10">
                     <StatCard title="Total Listings" value="120" icon={FaTachometerAlt} href="/listings" />
-                    <StatCard title="Active Users" value="450" icon={FaUsers} href="/users" />
-                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
+                    <StatCard title="Active Users" value="450" icon={FaUsers} href="Admin/users" />
+                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="Admin/transaction" />
                     <StatCard title="Pending Approvals" value="15" icon={FaCog} href="/Admin/ApproveAdds" />
                 </div>
 

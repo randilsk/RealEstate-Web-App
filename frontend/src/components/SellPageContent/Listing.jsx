@@ -48,8 +48,8 @@ function Listing() {
     buildYear: "",
     description: "",
     phone: "",
-    email: "user@example.com", // Replace with the logged-in user's email
-    user: "64f8c0e2b5d6c9a5e8f12345", // Replace with the logged-in user's ID
+    email: "user@example.com", // dummy to be edited
+    user: "64f8c0e2b5d6c9a5e8f12345", // dummy to be edited
   });
 
   // Handle input changes

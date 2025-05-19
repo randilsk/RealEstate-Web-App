@@ -22,15 +22,15 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3001", // Replace with your frontend URL
-    credentials: true, // Allow cookies to be sent with requests
+    origin: "http://localhost:3001", 
+    credentials: true, 
   })
 );
+ests
 
-// Middleware to parse JSON requests
 app.use(express.json());
 
-// Middleware to parse cookies
+
 app.use(cookieParser());
 
 app.listen(3000, () => {
@@ -41,21 +41,21 @@ app.use("/api/user", UserRoute);
 app.use("/api/auth", AuthRouter);
 app.use("/api/listing", ListingRoute);
 
-//global error handling middleware
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
-
-  // Log the error for debugging
+  
+  
   console.error(`Error: ${statusCode} - ${message}`);
   if (err.stack) {
     console.error(err.stack);
   }
-
+  
   return res.status(statusCode).json({
     success: false,
     statusCode,
     message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 });

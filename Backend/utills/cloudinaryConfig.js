@@ -43,7 +43,7 @@ export const uploadToCloudinary = async (filePath) => {
       folder: 'property-listings', // Folder in your Cloudinary account
       transformation: [
         { 
-          width: 800,  // Resize large images
+          width: 800,  
           height: 600, 
           crop: 'limit' 
         }

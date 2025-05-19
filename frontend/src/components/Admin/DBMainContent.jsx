@@ -146,7 +146,7 @@ function DBMainContent() {
     
     const fetchListings = async () => {
         try {
-            const response = await axios.get('/api/auth/getallListing');
+            const response = await axios.get('/api/listing/getallListing');
             setListings(response.data);
             setListCount(response.data.length);
         } catch (error) {

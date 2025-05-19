@@ -3,6 +3,7 @@ import { signup, signin, google, signout, deleteUser } from '../controllers/auth
 import { verifyToken } from '../middleware/auth.middleware.js';
 import { getUsers } from '../controllers/getusers.js';
 
+
 const router = express.Router();  
 
 router.post('/signup', signup);

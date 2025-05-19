@@ -116,6 +116,7 @@ function DBtransaction() {
         </div>
       </div>
       <hr></hr>
+      <br />
     </div>
   );
 }

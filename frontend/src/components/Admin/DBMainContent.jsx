@@ -1,9 +1,11 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import Link from 'next/link';
+import React, { useState, useEffect } from "react"; //Hook Componets
 import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes } from 'react-icons/fa';
-import axios from 'axios';
+import axios from 'axios';      //call API
 
-// Modal Component
+
+// Modal Component to pop up Active User
 const UserModal = ({ isOpen, onClose, users }) => {
     if (!isOpen) return null;
 
@@ -73,6 +75,7 @@ function DBMainContent() {
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // fetch data from backend
     const fetchUsers = async () => {
         try {
             const response = await axios.get('/api/auth/users');
@@ -85,6 +88,7 @@ function DBMainContent() {
         }
     };
 
+    //refrech the fetched data
     useEffect(() => {
         fetchUsers();
         const interval = setInterval(fetchUsers, 30000);
@@ -118,7 +122,10 @@ function DBMainContent() {
                         onClick={handleUserCardClick}
                     />
                     <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
-                    <StatCard title="Pending Approvals" value="15" icon={FaCog} href="/Admin/ApproveAdds" />
+                    <Link href="Admin/ApproveAdds" className="w-full">
+  <StatCard title="Pending Approvals" value="15" icon={FaCog} />
+</Link>
+
                 </div>
 
                 {/* Recent Properties Table */}

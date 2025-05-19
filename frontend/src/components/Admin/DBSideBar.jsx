@@ -19,7 +19,7 @@ function DBSideBar() {
                 <FaBuilding /> Properties
             </li>
             <li >
-            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/users"}><FaUsers /> Users</Link>
+            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/ApproveAdds"}><FaUsers /> approvals</Link>
                 
             </li>
             <li >

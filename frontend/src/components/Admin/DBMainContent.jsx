@@ -172,32 +172,76 @@ function DBMainContent() {
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
-            <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-                <input type="text" placeholder="Enter an address, city, district, province" className="p-2 border rounded-md w-1/3 text-black" />
-                <div className="flex gap-4 text-xl">
-                    <FaBell />
-                    <FaUserCircle />
-                </div>
-            </div>
+            
+<div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+    <div className="w-1/3">
+        {/* Empty div for spacing */}
+    </div>
+    <div className="w-1/3 flex justify-center">
+        <input 
+            type="text" 
+            placeholder="Enter an address, city, district, province" 
+            className="p-2 border rounded-md w-full text-black" 
+        />
+    </div>
+    <div className="w-1/3 flex justify-end gap-4 text-xl">
+        <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+        <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
+    </div>
+</div>
+
+
+
+
+
 
             {/* Dashboard */}
             <div className="p-10">
                 {/* Cards Section */}
-                <div className="grid grid-cols-4 gap-10">
+                <div className="flex flex-wrap items-center justify-between mb-8">
+                    <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
+                    <div className="flex gap-2 mt-4 sm:mt-0">
+                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Today</button>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Monthly</button>
+                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Yearly</button>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard 
                         title="Total Listings" 
                         value={loading ? "Loading..." : listCount}  
                         icon={FaTachometerAlt} 
-                        onClick={handleListCardClick} 
+                        onClick={handleListCardClick}
+                        iconColor="text-blue-600"
+                        percentChange="+12.5% from last month"
+                        trend="up"
                     />
                     <StatCard 
                         title="Active Users" 
                         value={loading ? "Loading..." : userCount} 
                         icon={FaUsers} 
                         onClick={handleUserCardClick}
+                        iconColor="text-indigo-600"
+                        percentChange="+8.3% from last month"
+                        trend="up"
                     />
-                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
-                    <StatCard title="Pending Approvals" value="15" icon={FaCog} href="/Admin/ApproveAdds" />
+                    <StatCard 
+                        title="Revenue" 
+                        value="$12,000" 
+                        icon={FaDollarSign} 
+                        iconColor="text-green-600"
+                        percentChange="+5.2% from last month"
+                        trend="up"
+                    />
+                    <StatCard 
+                        title="Pending Approvals" 
+                        value="15" 
+                        icon={FaCog} 
+                        iconColor="text-amber-600"
+                        percentChange="-2.1% from last month"
+                        trend="down"
+                    />
                 </div>
 
                 {/* Recent Properties Table */}
@@ -251,3 +295,7 @@ function DBMainContent() {
 }
 
 export default DBMainContent;
+
+
+
+                

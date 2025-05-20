@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:3000/api";
 // Fetch all listings
 export const fetchAllListings = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/listing`);
+    const response = await axios.get(`${API_BASE_URL}/listing/getallListing`);
     return response.data;
   } catch (error) {
     console.error("Error fetching listings:", error);

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FaBell, FaUserCircle, FaSave, FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 
 const SIDEBAR_BG = "bg-[#3B50DF]";
-const SIDEBAR_TEXT = "text-white";
 const SIDEBAR_ACTIVE = "bg-white text-[#3B50DF] font-bold";
 const SIDEBAR_ICON = "text-2xl";
 const CARD = "bg-white rounded-xl shadow-md p-6 mb-6";

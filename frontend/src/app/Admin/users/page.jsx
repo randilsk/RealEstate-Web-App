@@ -1,6 +1,5 @@
 import React from 'react';
 import DBSideBar from '../../../components/Admin/DBSideBar';
-import DBmap from '../../../components/Admin/DBmap';
 import DBusers from '../../../components/Admin/DBusers';
 
 

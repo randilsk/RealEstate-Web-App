@@ -116,16 +116,7 @@ function Header_varient() {
               </div>
             </div>
             <div className="w-auto px-9 py-2.5 bg-[#d9d9d9] rounded-[50px] flex items-center gap-2.5">
-              <div className="text-black text-xl flex items-center">
-                More
-                <Image
-                  src="/icons/dropdown-icon.png"
-                  alt="Search Icon"
-                  width={15}
-                  height={15}
-                  className="w-4 h-4 ml-7"
-                />
-              </div>
+              
             </div>
           </div>
         </div>

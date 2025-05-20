@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect import
 import FileUploader from "../FileUploader";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
 import {
   Select,
   SelectContent,
@@ -16,10 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSelector } from "react-redux";
 
 function Listing() {
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   // Pre-fill address, city, district, lat, and lng from searchParams
   const address = searchParams.get("address") || "";
@@ -48,9 +49,21 @@ function Listing() {
     buildYear: "",
     description: "",
     phone: "",
-    email: "user@example.com", // dummy to be edited
-    user: "64f8c0e2b5d6c9a5e8f12345", // dummy to be edited
+    email: currentUser?.email || "",  // Initialize with user email if available
+     
+    username:currentUser?.username  
   });
+
+  // Update user data when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        email: currentUser.email || "",
+        user: currentUser._id || "",
+      }));
+    }
+  }, [currentUser]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -66,7 +79,14 @@ function Listing() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form data being sent:", formData); // Log form data for debugging
+    
+    // Verify user is logged in before submitting
+    if (!currentUser || !currentUser._id) {
+      alert("Please login before submitting a listing");
+      return;
+    }
+    
+    console.log("Form data being sent:", formData);
     try {
       const response = await axios.post(
         "http://localhost:3000/api/listing",
@@ -74,20 +94,21 @@ function Listing() {
       );
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
-      router.push("/sell/list_review"); // Navigate to list_review page
+      router.push("/sell/list_review");
     } catch (error) {
-      console.error("Error adding listing:", error.message); // Log the error message
+      console.error("Error adding listing:", error.message);
       if (error.response) {
-        console.error("Response data:", error.response.data); // Log response data
-        console.error("Response status:", error.response.status); // Log status code
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
       } else if (error.request) {
-        console.error("No response received:", error.request); // Log the request
+        console.error("No response received:", error.request);
       } else {
-        console.error("Error setting up request:", error.message); // Log setup errors
+        console.error("Error setting up request:", error.message);
       }
       alert("Failed to add listing. Please try again.");
     }
   };
+  
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex justify-center mt-6">
@@ -252,8 +273,8 @@ function Listing() {
                   </SelectTrigger>
                   <SelectContent className="bg-[#d9d9d9]">
                     <SelectGroup>
-                      <SelectItem value="sf">Available</SelectItem>
-                      <SelectItem value="mf">Not Available</SelectItem>
+                      <SelectItem value="Available">Available</SelectItem>
+                      <SelectItem value="Not Available">Not Available</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -307,12 +328,23 @@ function Listing() {
               className="px-2 w-96 outline-none bg-transparent border-2 border-gray-400 rounded-md  h-10 "
             />
           </div>
+          
+          {/* Display user email from Redux store - readonly */}
+          <div className="pb-8">
+            <p className="py-3 font-semibold">Email address (from your account)</p>
+            <input
+              type="email"
+              value={currentUser?.email || "Please log in"}
+              readOnly
+              className="px-2 w-96 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10 opacity-75"
+            />
+          </div>
 
           {/* Terms and Conditions */}
           <hr className="border-1 border-black py-3" />
           <div className="pb-7">
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox id="terms" required />
               <Label htmlFor="terms">Accept terms and conditions</Label>
             </div>
           </div>
@@ -321,9 +353,14 @@ function Listing() {
           <Button
             type="submit"
             className="bg-transparent border-black text-black hover:bg-main-blue hover:text-white w-52 font-bold border-2 hover:border-main-blue"
+            disabled={!currentUser}
           >
-            Post for Sell
+            Post for Sale
           </Button>
+          
+          {!currentUser && (
+            <p className="mt-2 text-red-500">You must be logged in to submit a listing</p>
+          )}
         </div>
       </div>
     </form>

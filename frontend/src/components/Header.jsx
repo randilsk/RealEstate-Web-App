@@ -3,7 +3,8 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
   <div 
@@ -41,9 +42,11 @@ function Header() {
       <NavItem>Help</NavItem>
       {currentUser ? (
         <Link href="/profile" className="flex items-center">
-          <img 
+          <Image 
             src={currentUser.avatar} 
-            alt="/profile" 
+            alt="Profile"
+            width={40}
+            height={40}
             className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
           />
         </Link>
@@ -93,9 +96,11 @@ function Header() {
           <NavItem>Help</NavItem>
           {currentUser ? (
             <Link href="/profile">
-              <img 
+              <Image 
                 src={currentUser.avatar} 
-                alt="/profile" 
+                alt="Profile"
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full object-cover"
               />
             </Link>

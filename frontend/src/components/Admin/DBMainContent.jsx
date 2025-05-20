@@ -1,12 +1,10 @@
 'use client'
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useState, useEffect } from "react"; //Hook Componets
 import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';      //call API
-
-import axios from 'axios';
-import { List } from "lucide-react";
 
 //modal component for the listings
 const ListingModal = ({ isOpen, onClose, listings }) => {
@@ -87,10 +85,12 @@ const UserModal = ({ isOpen, onClose, users }) => {
                                     <td className="border p-2">{user.username}</td>
                                     <td className="border p-2">{user.email}</td>
                                     <td className="border p-2">
-                                        <img 
+                                        <Image 
                                             src={user.avatar} 
                                             alt={user.username} 
-                                            className="w-10 h-10 rounded-full object-cover"
+                                            width={40}
+                                            height={40}
+                                            className="rounded-full object-cover"
                                         />
                                     </td>
                                     <td className="border p-2">
@@ -107,7 +107,7 @@ const UserModal = ({ isOpen, onClose, users }) => {
 };
 
 // Reusable Card Component
-const StatCard = ({ title, value, icon: Icon, href, onClick }) => {
+const StatCard = ({ title, value, icon: Icon, onClick }) => {
     return (
         <div 
             onClick={onClick}
@@ -146,7 +146,7 @@ function DBMainContent() {
     
     const fetchListings = async () => {
         try {
-            const response = await axios.get('/api/auth/getallListing');
+            const response = await axios.get('/api/listing/getallListing');
             setListings(response.data);
             setListCount(response.data.length);
         } catch (error) {

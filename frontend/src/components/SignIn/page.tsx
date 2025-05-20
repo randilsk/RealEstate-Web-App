@@ -4,8 +4,6 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThunkDispatch } from "@reduxjs/toolkit"; // For typing Redux dispatch
-import { AnyAction } from "redux";
 import {
   signInStart,
   signInSuccess,
@@ -15,7 +13,7 @@ import OAuth from "../../components/signInComponents/OAuth";
 //import Image from "next/image";
 
 // Properly import the image
-import signInImage from "../../../../frontend/public/images/sign_in-images/signIn_Image.png";
+//import signInImage from "../../../../frontend/public/images/sign_in-images/signIn_Image.png";
 
 // Define types for the form data and root state
 interface FormData {
@@ -31,14 +29,14 @@ interface RootState {
 }
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
 
   const { loading, error } = useSelector((state: RootState) => state.user);
-  const router = useRouter();
-  const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -46,12 +44,9 @@ export default function SignIn() {
       [e.target.id]: e.target.value,
     });
   };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const [formData, setFormData] = useState({ username: "", password: "" });
-
     try {
       dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
@@ -71,12 +66,14 @@ export default function SignIn() {
       dispatch(signInSuccess(data));
       // Redirect to the home page upon successful sign-in
       router.replace("/home");
-    } catch (err) {
+    } catch (error) {
+      console.error('Sign in error:', error);
       dispatch(
-        signInFailure(err instanceof Error ? err.message : "An error occurred")
+        signInFailure(error instanceof Error ? error.message : "An error occurred")
       );
     }
   };
+
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"

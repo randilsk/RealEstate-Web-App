@@ -38,20 +38,20 @@ function AddressBar() {
 
   return (
     <>
-      <div className="flex  flex-col items-center justify-center mt-5">
-        <div className=" w-4/6  bg-[#d9d9d9] rounded-[14px] ">
-          <div className="flex flex-col w-full h-full md:flex-row gap-0 items-center px-5 py-3">
-            {/* Address form  left column*/}
-            <div className=" items-center w-2/5 px-10 py-10">
-              <div className="text-main-blue text-[1.3rem] font-poppins">
+      <div className="flex flex-col items-center justify-center mt-5 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl bg-[#d9d9d9] rounded-[14px]">
+          <div className="flex flex-col w-full h-full md:flex-row gap-0 items-center px-3 sm:px-5 py-3">
+            {/* Address form left column */}
+            <div className="w-full md:w-2/5 px-4 sm:px-7 md:px-10 py-6 md:py-10">
+              <div className="text-main-blue text-lg sm:text-xl md:text-[1.3rem] font-poppins">
                 Sell Your Property Directly - No Agent Needed!
               </div>
-              <hr className="border-main-blue border-2 " />
+              <hr className="border-main-blue border-2 mt-2" />
               <div className="flex flex-col justify-between mt-4 gap-3 mb-5">
                 <div className="flex justify-between flex-1">
                   <input
                     type="text"
-                    className="bg-white h-10 w-full text-left px-4  outline-none rounded-[7px]"
+                    className="bg-white h-10 w-full text-left px-4 outline-none rounded-[7px] text-sm sm:text-base"
                     placeholder="Enter a street address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
@@ -61,7 +61,7 @@ function AddressBar() {
                 <div className="flex justify-between flex-1">
                   <input
                     type="text"
-                    className="bg-white w-full h-10 text-left px-4 outline-none rounded-[7px]"
+                    className="bg-white w-full h-10 text-left px-4 outline-none rounded-[7px] text-sm sm:text-base"
                     placeholder="City"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -69,12 +69,10 @@ function AddressBar() {
                 </div>
                 <div className="flex justify-between flex-1">
                   <Select onValueChange={(value) => setDistrict(value)}>
-                    {" "}
-                    {/* Update district state */}
-                    <SelectTrigger className="">
+                    <SelectTrigger className="w-full text-sm sm:text-base">
                       <SelectValue placeholder="District" />
                     </SelectTrigger>
-                    <SelectContent side="bottom" position="popper">
+                    <SelectContent side="bottom" position="popper" className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="ampara">Ampara</SelectItem>
                       <SelectItem value="anuradhapura">Anuradhapura</SelectItem>
                       <SelectItem value="badulla">Badulla</SelectItem>
@@ -107,35 +105,38 @@ function AddressBar() {
                 <div className="flex justify-between flex-1">
                   <input
                     type="text"
-                    className="bg-white w-full h-10 text-left px-4 outline-none rounded-[7px]"
+                    className="bg-white w-full h-10 text-left px-4 outline-none rounded-[7px] text-sm sm:text-base"
                     placeholder="Postal Code"
                   />
                 </div>
                 <div className="flex justify-between flex-1">
                   <Button
-                    className="bg-main-blue border-main-blue text-white hover:bg-white hover:text-main-blue font-bold border-2 flex-1"
+                    className="bg-main-blue border-main-blue text-white hover:bg-white hover:text-main-blue font-bold border-2 flex-1 text-sm sm:text-base py-2"
                     onClick={handleContinue}
                   >
                     Continue
                   </Button>
                 </div>
               </div>
-              <div>
+              <div className="text-sm sm:text-base text-gray-700">
                 Enter your property address to get started! Our smart listing
                 tool will help you add details along with map integration,
                 upload photos, and connect with potential buyers—all in just a
                 few easy steps.
               </div>
             </div>
-            {/* Image right column*/}
-            <div className="flex-1 w-full h-full relative flex items-center justify-center  py-10">
-              <Image
-                src="/images/sell-image/add-address.jpg"
-                alt="Placeholder image"
-                width={475} // Set the desired height
-                height={475} // Set the desired height
-                className="rounded-2xl object-cover m-0"
-              />
+            {/* Image right column */}
+            <div className="hidden md:flex w-full md:flex-1 relative items-center justify-center py-6 md:py-10">
+              <div className="relative w-full max-w-[600px] aspect-[4/3]">
+                <Image
+                  src="/images/sell-image/add-address.jpg"
+                  alt="Property address illustration"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 600px"
+                  className="rounded-2xl object-cover"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>

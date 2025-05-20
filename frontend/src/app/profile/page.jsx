@@ -13,13 +13,12 @@ import {
   deleteUserSuccess,
   deleteUserFailure
 } from "../../redux/Features/user/userSlice";
-import Image from "next/image";
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
+import Image from 'next/image';
 
 export default function Profile() {
   const fileRef = useRef(null);
-  const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
@@ -67,7 +66,6 @@ export default function Profile() {
         toast.error("File size exceeds 2MB limit");
         return;
       }
-      setFile(selectedFile);
       handleFileUpload(selectedFile);
     }
   };
@@ -222,11 +220,13 @@ export default function Profile() {
           />
 
           <div className="flex justify-center">
-            <img
+            <Image
               onClick={() => fileRef.current.click()}
               src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
               alt="profile"
               className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+              width={96}
+              height={96}
             />
           </div>
 

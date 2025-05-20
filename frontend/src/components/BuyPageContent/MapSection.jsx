@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
   Marker,
@@ -12,7 +12,6 @@ function MapSection() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [map, setMap] = useState(null);
   const [center, setCenter] = useState({ lat: 33.749, lng: -84.388 }); // Default to Atlanta
   const [selectedListing, setSelectedListing] = useState(null);
 
@@ -61,16 +60,6 @@ function MapSection() {
     height: "100%",
   };
 
-  // Callback when map is loaded
-  const onLoad = useCallback((map) => {
-    setMap(map);
-  }, []);
-
-  // Callback when map is unmounted
-  const onUnmount = useCallback(() => {
-    setMap(null);
-  }, []);
-
   // Handle marker click
   const handleMarkerClick = (listing) => {
     setSelectedListing(listing);
@@ -106,8 +95,6 @@ function MapSection() {
         mapContainerStyle={mapContainerStyle}
         center={center}
         zoom={10}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
         options={mapOptions}
       >
         {/* Render markers for each listing */}

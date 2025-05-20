@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from "react"; //Hook Componets
 import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes } from 'react-icons/fa';
-<<<<<<< HEAD
+
 import axios from 'axios';      //call API
-=======
+
 import axios from 'axios';
 import { List } from "lucide-react";
 
@@ -55,7 +55,7 @@ const ListingModal = ({ isOpen, onClose, listings }) => {
         </div>
     );
 };
->>>>>>> fb1960fbc78040f359bc2ae7a043ad3c280535bc
+
 
 
 // Modal Component to pop up Active User
@@ -250,14 +250,14 @@ function DBMainContent() {
                         percentChange="-2.1% from last month"
                         trend="down"
                     />
-<<<<<<< HEAD
+
                     <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
                     <Link href="Admin/ApproveAdds" className="w-full">
   <StatCard title="Pending Approvals" value="15" icon={FaCog} />
 </Link>
 
-=======
->>>>>>> fb1960fbc78040f359bc2ae7a043ad3c280535bc
+
+
                 </div>
 
                 {/* Recent Properties Table */}
@@ -310,12 +310,7 @@ function DBMainContent() {
     );
 }
 
-<<<<<<< HEAD
-export default DBMainContent;
-=======
+
 export default DBMainContent;
 
 
-
-                
->>>>>>> fb1960fbc78040f359bc2ae7a043ad3c280535bc

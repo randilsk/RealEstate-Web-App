@@ -10,9 +10,8 @@ import {
 
 const router = express.Router();
 
-
-router.get("/getallListing", getAllListings);
-
+// Get all listings
+router.get("/", getAllListings);
 
 router.get("/user/:email", getUserListings);
 

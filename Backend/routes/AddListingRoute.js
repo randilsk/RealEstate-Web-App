@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Get all listings
-router.get("/", getAllListings);
+router.get("/getallListing", getAllListings);
 
 // Get listings by user email
 router.get("/user/:email", getUserListings);

@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const NavItem = ({ label, bold, className = "" }) => (
   <div
-    className={`text-white text-lg font-poppins ${
+    className={`text-white text-base md:text-lg font-poppins ${
       bold ? "font-bold" : ""
     } ${className}`}
   >
@@ -25,15 +25,15 @@ const NavItem = ({ label, bold, className = "" }) => (
 );
 
 const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-10 px-4 bg-[#d9d9d9] rounded-[50px] font-poppins">
-    <span className="text-black text-lg font-normal">{label}</span>
+  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins">
+    <span className="text-black text-sm md:text-base font-normal">{label}</span>
     <div>
       <Image
         src="/icons/dropdown-icon.png"
         alt="Search Icon"
-        width={15}
-        height={15}
-        className="w-4 h-4 ml-7"
+        width={14}
+        height={14}
+        className="w-3.5 h-3.5 ml-2"
       />
     </div>
   </div>
@@ -41,11 +41,10 @@ const FilterButton = ({ label }) => (
 
 function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
-  
 
   const MobileNavContent = () => (
-    <div className="flex flex-col gap-6 py-6">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 py-4">
+      <div className="flex flex-col gap-3">
         <NavItem label="Buy" className="font-bold" />
         <Link href={"/sell"}>
           <NavItem label="Sell" />
@@ -60,8 +59,8 @@ function Header_varient_1() {
             <Image
               src={currentUser.avatar}
               alt="Profile"
-              width={32}
-              height={32}
+              width={28}
+              height={28}
               className="rounded-full"
             />
             <span className="text-white">Profile</span>
@@ -76,7 +75,7 @@ function Header_varient_1() {
   );
 
   const MobileFiltersContent = () => (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -143,7 +142,7 @@ function Header_varient_1() {
 
   return (
     <div className="w-full bg-main-blue">
-      <div className="max-w-[1920px] mx-auto px-4 md:px-8 py-4 md:py-6 flex flex-col gap-4 md:gap-6 font-poppins">
+      <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-3 md:py-4 flex flex-col gap-3 md:gap-4 font-poppins">
         {/* Top Nav */}
         <div className="flex justify-between items-center">
           {/* Mobile Menu */}
@@ -181,8 +180,8 @@ function Header_varient_1() {
                 <Image
                   src={currentUser.avatar}
                   alt="Profile"
-                  width={40}
-                  height={40}
+                  width={36}
+                  height={36}
                   className="rounded-full"
                 />
               </Link>
@@ -216,23 +215,23 @@ function Header_varient_1() {
         {/* Filters */}
         <div className="hidden md:flex gap-4 items-center">
           {/* Search bar */}
-          <div className="flex items-center flex-1 h-12 px-6 bg-white/90 rounded-[50px] relative">
+          <div className="flex items-center flex-1 h-10 px-5 bg-white/90 rounded-full relative">
             <span className="text-black text-base font-normal opacity-75">
               Enter an address, city, district, province
             </span>
-            <div className="absolute right-0 pr-5">
+            <div className="absolute right-0 pr-4">
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
-                width={24}
-                height={24}
-                className="w-6 h-6"
+                width={20}
+                height={20}
+                className="w-5 h-5"
               />
             </div>
           </div>
 
           {/* Filter Buttons */}
-          <div className="w-40">
+          <div className="w-36">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
                 <FilterButton label="For Sale" />
@@ -245,7 +244,7 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="w-40">
+          <div className="w-36">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
                 <FilterButton label="Price" />
@@ -260,7 +259,7 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="w-60">
+          <div className="w-52">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
                 <FilterButton label="Beds and Baths" />
@@ -295,7 +294,7 @@ function Header_varient_1() {
         {/* Mobile Search and Filter */}
         <div className="md:hidden flex gap-2 items-center">
           {/* Search bar */}
-          <div className="flex items-center flex-1 h-12 px-4 bg-white/90 rounded-[50px] relative">
+          <div className="flex items-center flex-1 h-9 px-4 bg-white/90 rounded-full relative">
             <span className="text-black text-sm font-normal opacity-75 truncate">
               Enter an address, city...
             </span>
@@ -303,9 +302,9 @@ function Header_varient_1() {
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
-                width={20}
-                height={20}
-                className="w-5 h-5"
+                width={18}
+                height={18}
+                className="w-4.5 h-4.5"
               />
             </div>
           </div>
@@ -313,8 +312,8 @@ function Header_varient_1() {
           {/* Filter Button */}
           <Sheet>
             <SheetTrigger className="flex-shrink-0">
-              <div className="flex items-center justify-center gap-1 h-12 px-4 bg-white/90 rounded-[50px]">
-                <SlidersHorizontal className="w-5 h-5 text-black" />
+              <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/90 rounded-full">
+                <SlidersHorizontal className="w-4.5 h-4.5 text-black" />
                 <span className="text-black text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>

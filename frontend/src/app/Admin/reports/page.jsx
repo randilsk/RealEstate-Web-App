@@ -1,6 +1,7 @@
 import React from 'react';
 import DBSideBar from '../../../components/Admin/DBSideBar';
-import DBusers from '../../../components/Admin/DBusers';
+
+import DBreports from '../../../components/Admin/DBreports';
 
 
 function Dashboard() {
@@ -9,7 +10,7 @@ function Dashboard() {
         <div className='flex'> 
             <DBSideBar/>
             <div className='flex-1'>
-            <DBusers/>
+            <DBreports/>
                 </div>
         </div>
         </>

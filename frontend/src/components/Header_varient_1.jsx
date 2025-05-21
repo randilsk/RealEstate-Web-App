@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -41,7 +41,7 @@ const FilterButton = ({ label }) => (
 
 function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  
 
   const MobileNavContent = () => (
     <div className="flex flex-col gap-6 py-6">
@@ -57,10 +57,12 @@ function Header_varient_1() {
         <NavItem label="Help" />
         {currentUser ? (
           <Link href="/profile" className="flex items-center gap-2">
-            <img
+            <Image
               src={currentUser.avatar}
-              alt="/profile"
-              className="w-8 h-8 rounded-full"
+              alt="Profile"
+              width={32}
+              height={32}
+              className="rounded-full"
             />
             <span className="text-white">Profile</span>
           </Link>
@@ -176,10 +178,12 @@ function Header_varient_1() {
             <NavItem label="Help" />
             {currentUser ? (
               <Link href="/profile">
-                <img
+                <Image
                   src={currentUser.avatar}
-                  alt="/profile"
-                  className="w-10 h-10 rounded-full"
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
                 />
               </Link>
             ) : (
@@ -193,10 +197,12 @@ function Header_varient_1() {
           <div className="md:hidden">
             {currentUser ? (
               <Link href="/profile">
-                <img
+                <Image
                   src={currentUser.avatar}
-                  alt="/profile"
-                  className="w-8 h-8 rounded-full"
+                  alt="Profile"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
                 />
               </Link>
             ) : (

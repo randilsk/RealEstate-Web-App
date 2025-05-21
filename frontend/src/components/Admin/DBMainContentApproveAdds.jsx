@@ -1,5 +1,5 @@
 import React from "react";
-import { FaBell, FaUserCircle, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaBell, FaUserCircle, FaCheck, FaTimes } from 'react-icons/fa'; //import react icons
 
 function DBMainContent() {
     return (

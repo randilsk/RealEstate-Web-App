@@ -538,10 +538,13 @@ const DBProperty = () => {
   const fetchProperties = async () => {
     try {
       const response = await axios.get('/api/listing/getallListing');
-      // Transform the data to match our table structure
+      // Transform the data to match our table structure with all property details
       const transformedProperties = response.data.map(listing => ({
         _id: listing._id,
-        title: listing.address || 'No Title',
+        title: listing.title || listing.address || 'No Title',
+        address: listing.address || '',
+        city: listing.city || '',
+        district: listing.district || '',
         location: `${listing.city || ''}, ${listing.district || ''}`,
         price: listing.price || 0,
         type: listing.homeType || 'Not Specified',
@@ -549,8 +552,19 @@ const DBProperty = () => {
         description: listing.description || 'No description available',
         images: listing.images || ['/images/placeholder-property.jpg'],
         bedrooms: listing.bedrooms || 0,
+        attachedBathrooms: listing.attachedBathrooms || 0,
+        detachedBathrooms: listing.detachedBathrooms || 0,
         bathrooms: (listing.attachedBathrooms || 0) + (listing.detachedBathrooms || 0),
+        houseArea: listing.houseArea || 0,
+        landArea: listing.landArea || 0,
         area: listing.houseArea || listing.landArea || 0,
+        floors: listing.floors || 0,
+        buildYear: listing.buildYear || '',
+        parking: listing.parking || 'Not Available',
+        phone: listing.phone || '',
+        email: listing.email || '',
+        lat: listing.lat || '',
+        lng: listing.lng || '',
         createdAt: listing.createdAt
       }));
       setProperties(transformedProperties);
@@ -599,8 +613,20 @@ const DBProperty = () => {
   const handleUpdateProperty = async (updatedProperty) => {
     try {
       await axios.put(`/api/listing/${updatedProperty._id}`, updatedProperty);
-      // Refresh the properties list after update
-      await fetchProperties();
+      // Update the properties state with the updated property
+      setProperties(prevProperties => 
+        prevProperties.map(property => 
+          property._id === updatedProperty._id 
+            ? {
+                ...property,
+                ...updatedProperty,
+                location: `${updatedProperty.city || ''}, ${updatedProperty.district || ''}`,
+                bathrooms: (updatedProperty.attachedBathrooms || 0) + (updatedProperty.detachedBathrooms || 0),
+                area: updatedProperty.houseArea || updatedProperty.landArea || 0
+              }
+            : property
+        )
+      );
     } catch (error) {
       console.error('Error updating property:', error);
       throw error;
@@ -688,18 +714,24 @@ const DBProperty = () => {
                           />
                           <div>
                             <h4 className="text-sm font-medium text-gray-900">{property.title}</h4>
-                            <p className="text-sm text-gray-500 truncate max-w-xs">{property.description.substring(0, 50)}...</p>
+                            <p className="text-sm text-gray-500 truncate max-w-xs">{property.description}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="border border-gray-300 p-2 text-sm text-gray-500">{property.location}</td>
+                      <td className="border border-gray-300 p-2 text-sm text-gray-500">
+                        {property.address && <p className="mb-1">{property.address}</p>}
+                        {property.location}
+                      </td>
                       <td className="border border-gray-300 p-2 text-sm text-gray-900">Rs. {property.price.toLocaleString()}</td>
                       <td className="border border-gray-300 p-2 text-sm text-gray-500">{property.type}</td>
                       <td className="border border-gray-300 p-2 text-sm text-gray-500">
                         <div className="space-y-1">
                           <p>Bedrooms: {property.bedrooms}</p>
-                          <p>Bathrooms: {property.bathrooms}</p>
+                          <p>Bathrooms: {property.bathrooms} ({property.attachedBathrooms} attached, {property.detachedBathrooms} detached)</p>
                           <p>Area: {property.area} sq ft</p>
+                          <p>Floors: {property.floors}</p>
+                          <p>Built: {property.buildYear}</p>
+                          <p>Parking: {property.parking}</p>
                         </div>
                       </td>
                       <td className="border border-gray-300 p-2">

@@ -1,216 +1,746 @@
 "use client";
 
-import { useState } from "react";
-import {
-  FaBell, FaUserCircle, FaSave, FaLock, FaCog, FaUsers, FaShieldAlt, FaDatabase, FaCogs
-} from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import { 
+  FaBell, 
+  FaUserCircle, 
+  FaCog, 
+  FaShieldAlt, 
+  FaPalette, 
+  FaDatabase, 
+  FaUserShield,
+  FaHome,
+  FaChartLine,
+  FaEnvelope,
+  FaChevronDown,
+  FaChevronUp
+} from 'react-icons/fa';
+import DBSideBar from "../../../components/Admin/DBSideBar.jsx";
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
-const SIDEBAR_BG = "bg-[#3B50DF]";
-const SIDEBAR_TEXT = "text-white";
-const SIDEBAR_ACTIVE = "bg-white text-[#3B50DF] font-bold";
-const SIDEBAR_ICON = "text-2xl";
-const CARD = "bg-white rounded-xl shadow-md p-6 mb-6";
-const SECTION_HEADER = "text-lg font-bold mb-4 text-[#3B50DF]";
-
-export default function DSettings() {
+export default function AdminSettings() {
   const [settings, setSettings] = useState({
-    siteName: "Urban Nest",
-    emailNotifications: true,
-    maintenanceMode: false,
-    maxListingsPerUser: 10,
-    currency: "LKR",
-    timezone: "Asia/Colombo",
-    enableUserRegistration: true,
-    enableComments: true,
-    enableRatings: true,
-    maxFileSize: 5,
-    allowedFileTypes: ["jpg", "png", "pdf"],
-    backupFrequency: "daily",
-    enableTwoFactor: false,
-    sessionTimeout: 30
+    profile: {
+      adminName: '',
+      email: '',
+      phone: '',
+      profilePicture: ''
+    },
+    system: {
+      siteName: '',
+      siteDescription: '',
+      maintenanceMode: false
+    },
+    listings: {
+      defaultStatus: 'Pending',
+      featuredLimit: 5,
+      autoApprove: false
+    },
+    security: {
+      twoFactorAuth: false,
+      sessionTimeout: 30,
+      passwordPolicy: 'Standard'
+    },
+    notifications: {
+      newListingAlerts: true,
+      userRegistration: true,
+      systemUpdates: false
+    },
+    appearance: {
+      primaryColor: '#4F46E5',
+      theme: 'Light',
+      logo: ''
+    },
+    data: {
+      backupFrequency: 'Weekly',
+      dataRetention: '90 days'
+    },
+    users: {
+      defaultRole: 'User',
+      userRegistration: true,
+      emailVerification: true
+    }
   });
-  const [activeSection, setActiveSection] = useState('general');
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const [expandedSections, setExpandedSections] = useState({
+    profile: true,
+    system: false,
+    listings: false,
+    security: false,
+    notifications: false,
+    appearance: false,
+    data: false,
+    users: false
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/settings');
+      setSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      toast.error('Failed to load settings');
+    }
+  };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
     setSettings(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      profile: {
+        ...prev.profile,
+        [name]: value
+      }
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Implement settings save functionality
-    console.log('Settings saved:', settings);
+  const handleSystemChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      system: {
+        ...prev.system,
+        [name]: type === 'checkbox' ? checked : value
+      }
+    }));
   };
 
-  const menuItems = [
-    { id: 'general', label: 'General', icon: FaCog },
-    { id: 'security', label: 'Security', icon: FaShieldAlt },
-    { id: 'notifications', label: 'Notifications', icon: FaBell },
-    { id: 'backup', label: 'Backup', icon: FaDatabase },
-    { id: 'advanced', label: 'Advanced', icon: FaCogs },
-  ];
+  const handleListingsChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      listings: {
+        ...prev.listings,
+        [name]: type === 'checkbox' ? checked : value
+      }
+    }));
+  };
 
-  const renderSettingsContent = () => {
-    switch (activeSection) {
-      case 'general':
-        return (
-          <div className={CARD}>
-            <div className={SECTION_HEADER}>General Settings</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-                <input type="text" name="siteName" value={settings.siteName} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-                <select name="currency" value={settings.currency} onChange={handleInputChange} className="w-full p-2 border rounded-md">
-                  <option value="LKR">LKR (Sri Lankan Rupee)</option>
-                  <option value="USD">USD (US Dollar)</option>
-                  <option value="EUR">EUR (Euro)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-                <select name="timezone" value={settings.timezone} onChange={handleInputChange} className="w-full p-2 border rounded-md">
-                  <option value="Asia/Colombo">Asia/Colombo</option>
-                  <option value="UTC">UTC</option>
-                  <option value="America/New_York">America/New_York</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Max Listings Per User</label>
-                <input type="number" name="maxListingsPerUser" value={settings.maxListingsPerUser} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
-              </div>
-            </div>
-          </div>
-        );
-      case 'security':
-        return (
-          <div className={CARD}>
-            <div className={SECTION_HEADER}>Security Settings</div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
-                <input type="checkbox" name="enableTwoFactor" checked={settings.enableTwoFactor} onChange={handleInputChange} className="w-5 h-5" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Session Timeout (minutes)</label>
-                <input type="number" name="sessionTimeout" value={settings.sessionTimeout} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
-              </div>
-            </div>
-          </div>
-        );
-      case 'notifications':
-        return (
-          <div className={CARD}>
-            <div className={SECTION_HEADER}>Notification Settings</div>
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-              <input type="checkbox" name="emailNotifications" checked={settings.emailNotifications} onChange={handleInputChange} className="w-5 h-5" />
-            </div>
-          </div>
-        );
-      case 'backup':
-        return (
-          <div className={CARD}>
-            <div className={SECTION_HEADER}>Backup</div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Backup Frequency</label>
-                <select name="backupFrequency" value={settings.backupFrequency} onChange={handleInputChange} className="w-full p-2 border rounded-md">
-                  <option value="hourly">Hourly</option>
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
-              </div>
-              <div className="flex gap-4">
-                <button className="bg-[#3B50DF] text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Create Backup</button>
-                <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">Restore</button>
-              </div>
-            </div>
-          </div>
-        );
-      case 'advanced':
-        return (
-          <div className={CARD}>
-            <div className={SECTION_HEADER}>Advanced Settings</div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Max File Size (MB)</label>
-                <input type="number" name="maxFileSize" value={settings.maxFileSize} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Allowed File Types</label>
-                <div className="flex flex-wrap gap-2">
-                  {settings.allowedFileTypes.map((type, idx) => (
-                    <span key={idx} className="bg-gray-100 px-3 py-1 rounded-full text-sm">{type}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      default:
-        return null;
+  const handleSecurityChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      security: {
+        ...prev.security,
+        [name]: type === 'checkbox' ? checked : value
+      }
+    }));
+  };
+
+  const handleNotificationChange = (e) => {
+    const { name, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [name]: checked
+      }
+    }));
+  };
+
+  const handleAppearanceChange = (e) => {
+    const { name, value } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      appearance: {
+        ...prev.appearance,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleDataChange = (e) => {
+    const { name, value } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleUserChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      users: {
+        ...prev.users,
+        [name]: type === 'checkbox' ? checked : value
+      }
+    }));
+  };
+
+  const saveProfileSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/profile', settings.profile);
+      toast.success('Profile settings saved successfully');
+    } catch (error) {
+      console.error('Error saving profile settings:', error);
+      toast.error('Failed to save profile settings');
     }
   };
+
+  const saveSystemSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/system', settings.system);
+      toast.success('System settings saved successfully');
+    } catch (error) {
+      console.error('Error saving system settings:', error);
+      toast.error('Failed to save system settings');
+    }
+  };
+
+  const saveListingsSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/listings', settings.listings);
+      toast.success('Listings settings saved successfully');
+    } catch (error) {
+      console.error('Error saving listings settings:', error);
+      toast.error('Failed to save listings settings');
+    }
+  };
+
+  const saveSecuritySettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/security', settings.security);
+      toast.success('Security settings saved successfully');
+    } catch (error) {
+      console.error('Error saving security settings:', error);
+      toast.error('Failed to save security settings');
+    }
+  };
+
+  const saveNotificationSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/notifications', settings.notifications);
+      toast.success('Notification settings saved successfully');
+    } catch (error) {
+      console.error('Error saving notification settings:', error);
+      toast.error('Failed to save notification settings');
+    }
+  };
+
+  const saveAppearanceSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/appearance', settings.appearance);
+      toast.success('Appearance settings saved successfully');
+    } catch (error) {
+      console.error('Error saving appearance settings:', error);
+      toast.error('Failed to save appearance settings');
+    }
+  };
+
+  const saveDataSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/data', settings.data);
+      toast.success('Data settings saved successfully');
+    } catch (error) {
+      console.error('Error saving data settings:', error);
+      toast.error('Failed to save data settings');
+    }
+  };
+
+  const saveUserSettings = async () => {
+    try {
+      await axios.put('http://localhost:5000/api/settings/users', settings.users);
+      toast.success('User settings saved successfully');
+    } catch (error) {
+      console.error('Error saving user settings:', error);
+      toast.error('Failed to save user settings');
+    }
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const SectionHeader = ({ icon: Icon, title, section }) => (
+    <button
+      onClick={() => toggleSection(section)}
+      className="w-full flex items-center justify-between p-4 bg-white rounded-t-lg border-b hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <Icon className="text-indigo-600 text-xl" />
+        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+      </div>
+      {expandedSections[section] ? (
+        <FaChevronUp className="text-gray-500" />
+      ) : (
+        <FaChevronDown className="text-gray-500" />
+      )}
+    </button>
+  );
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className={`w-64 ${SIDEBAR_BG} flex flex-col min-h-screen`}>
-        <div className="p-6 border-b border-[#3B50DF]">
-          <h2 className="text-2xl font-bold text-white tracking-wide">Urban Nest</h2>
-        </div>
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
-            {menuItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${activeSection === item.id ? SIDEBAR_ACTIVE : SIDEBAR_TEXT + ' hover:bg-[#4F5BD5] hover:text-white'}`}
-                >
-                  <item.icon className={SIDEBAR_ICON} />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+      <DBSideBar />
+      
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Topbar */}
-        <div className="bg-[#3B50DF] p-4 flex items-center justify-between">
+      <div className="flex-1 overflow-y-auto">
+        {/* Navbar */}
+        <div className="bg-indigo-600 w-full shadow-md p-4 flex justify-between items-center text-white">
           <input
             type="text"
             placeholder="Enter an address, city, district, province"
             className="p-2 border rounded-md w-1/3 text-black"
           />
-          <div className="flex gap-4 text-2xl text-white">
+          <div className="flex gap-4 text-xl">
             <FaBell className="cursor-pointer hover:text-indigo-200" />
             <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
           </div>
         </div>
-        {/* Settings Content */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8">
-          <h1 className="text-3xl font-bold text-center mb-8 text-[#3B50DF]">Settings</h1>
-          {renderSettingsContent()}
-          <div className="flex justify-end mt-8">
-            <button
-              type="submit"
-              className="flex items-center gap-2 bg-[#3B50DF] text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-semibold shadow"
-            >
-              <FaSave />
-              Save Changes
-            </button>
+
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">Admin Settings</h1>
+
+          <div className="space-y-6">
+            {/* Profile Settings */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaUserCircle} title="Profile Settings" section="profile" />
+              {expandedSections.profile && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Admin Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      name="adminName"
+                      value={settings.profile.adminName}
+                      onChange={handleProfileChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      name="email"
+                      value={settings.profile.email}
+                      onChange={handleProfileChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Profile Picture
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                        <FaUserCircle className="text-4xl text-gray-400" />
+                      </div>
+                      <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        Upload New Photo
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveProfileSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* System Settings */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaCog} title="System Settings" section="system" />
+              {expandedSections.system && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Site Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      name="siteName"
+                      value={settings.system.siteName}
+                      onChange={handleSystemChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Site Description
+                    </label>
+                    <textarea
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      rows="3"
+                      name="siteDescription"
+                      value={settings.system.siteDescription}
+                      onChange={handleSystemChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Maintenance Mode
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        name="maintenanceMode"
+                        checked={settings.system.maintenanceMode}
+                        onChange={handleSystemChange}
+                      />
+                      <span className="text-sm text-gray-600">Enable maintenance mode</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveSystemSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Listings Configuration */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaHome} title="Listings Configuration" section="listings" />
+              {expandedSections.listings && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Default Listing Status
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="defaultStatus" value={settings.listings.defaultStatus} onChange={handleListingsChange}>
+                      <option>Active</option>
+                      <option>Pending</option>
+                      <option>Draft</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Featured Listings Limit
+                    </label>
+                    <input
+                      type="number"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      name="featuredLimit"
+                      value={settings.listings.featuredLimit}
+                      onChange={handleListingsChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Auto-approve Listings
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        name="autoApprove"
+                        checked={settings.listings.autoApprove}
+                        onChange={handleListingsChange}
+                      />
+                      <span className="text-sm text-gray-600">Automatically approve new listings</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveListingsSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Security Settings */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaShieldAlt} title="Security Settings" section="security" />
+              {expandedSections.security && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Two-Factor Authentication
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        name="twoFactorAuth"
+                        checked={settings.security.twoFactorAuth}
+                        onChange={handleSecurityChange}
+                      />
+                      <span className="text-sm text-gray-600">Enable 2FA for admin accounts</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Session Timeout (minutes)
+                    </label>
+                    <input
+                      type="number"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      name="sessionTimeout"
+                      value={settings.security.sessionTimeout}
+                      onChange={handleSecurityChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Password Policy
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="passwordPolicy" value={settings.security.passwordPolicy} onChange={handleSecurityChange}>
+                      <option>Standard</option>
+                      <option>Enhanced</option>
+                      <option>Strict</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveSecuritySettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Notification Settings */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaEnvelope} title="Notification Settings" section="notifications" />
+              {expandedSections.notifications && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Notifications
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">New Listing Alerts</span>
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          name="newListingAlerts"
+                          checked={settings.notifications.newListingAlerts}
+                          onChange={handleNotificationChange}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">User Registration</span>
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          name="userRegistration"
+                          checked={settings.notifications.userRegistration}
+                          onChange={handleNotificationChange}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">System Updates</span>
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          name="systemUpdates"
+                          checked={settings.notifications.systemUpdates}
+                          onChange={handleNotificationChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveNotificationSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Appearance Settings */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaPalette} title="Appearance Settings" section="appearance" />
+              {expandedSections.appearance && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Primary Color
+                    </label>
+                    <input
+                      type="color"
+                      className="h-10 w-20 rounded cursor-pointer"
+                      name="primaryColor"
+                      value={settings.appearance.primaryColor}
+                      onChange={handleAppearanceChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Theme
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="theme" value={settings.appearance.theme} onChange={handleAppearanceChange}>
+                      <option>Light</option>
+                      <option>Dark</option>
+                      <option>System</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Logo
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <div className="w-32 h-12 bg-gray-200 rounded flex items-center justify-center">
+                        <span className="text-gray-500">Logo Preview</span>
+                      </div>
+                      <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        Upload New Logo
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveAppearanceSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Data Management */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaDatabase} title="Data Management" section="data" />
+              {expandedSections.data && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Backup Frequency
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="backupFrequency" value={settings.data.backupFrequency} onChange={handleDataChange}>
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Data Retention
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="dataRetention" value={settings.data.dataRetention} onChange={handleDataChange}>
+                      <option>30 days</option>
+                      <option>90 days</option>
+                      <option>1 year</option>
+                      <option>Indefinite</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-4">
+                    <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                      Create Backup Now
+                    </button>
+                    <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                      Restore from Backup
+                    </button>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveDataSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* User Management */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+              <SectionHeader icon={FaUserShield} title="User Management" section="users" />
+              {expandedSections.users && (
+                <div className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Default User Role
+                    </label>
+                    <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" name="defaultRole" value={settings.users.defaultRole} onChange={handleUserChange}>
+                      <option>User</option>
+                      <option>Agent</option>
+                      <option>Admin</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      User Registration
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        name="userRegistration"
+                        checked={settings.users.userRegistration}
+                        onChange={handleUserChange}
+                      />
+                      <span className="text-sm text-gray-600">Allow new user registrations</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Verification
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        name="emailVerification"
+                        checked={settings.users.emailVerification}
+                        onChange={handleUserChange}
+                      />
+                      <span className="text-sm text-gray-600">Require email verification</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <button
+                      onClick={saveUserSettings}
+                      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaCog className="text-sm" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
-}
+} 

@@ -1,14 +1,16 @@
 import React from "react";
-import Card from "./Card"; // Corrected import path
-
-
+import Card from "./Card";
 
 function CardSection() {
   return (
-    <div className="w-1/2 h-screen mt-5 px-5">
-      <h2 className="font-semibold py-2 text-3xl pl-5">Recent Properties</h2>
-      <div className=" flex">
-        <Card />
+    <div className="w-full h-full flex flex-col">
+      <div className="sticky top-0 bg-white z-10 px-4 py-3 border-b">
+        <h2 className="font-semibold text-2xl md:text-3xl">Recent Properties</h2>
+      </div>
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4">
+          <Card />
+        </div>
       </div>
     </div>
   );

@@ -72,25 +72,25 @@ function MapSection() {
 
   if (!isLoaded)
     return (
-      <div className="w-1/2 h-screen bg-gray-100 mt-10 flex items-center justify-center">
+      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
         Loading Google Maps...
       </div>
     );
   if (loading)
     return (
-      <div className="w-1/2 h-screen bg-gray-100 mt-10 flex items-center justify-center">
+      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
         Loading property listings...
       </div>
     );
   if (error)
     return (
-      <div className="w-1/2 h-screen bg-gray-100 mt-10 flex items-center justify-center text-red-500">
+      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-red-500">
         {error}
       </div>
     );
 
   return (
-    <aside className="w-1/2 h-screen bg-gray-100  overflow-hidden">
+    <div className="w-full h-full bg-gray-100">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
@@ -147,7 +147,7 @@ function MapSection() {
           </InfoWindow>
         )}
       </GoogleMap>
-    </aside>
+    </div>
   );
 }
 

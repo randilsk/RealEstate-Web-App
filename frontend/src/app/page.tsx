@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Bluebar from "../components/Bluebar.jsx";
 import Header from "../components/Header.jsx";
+import { Blend } from 'lucide-react';
 
 // Dynamically import heavy components
 const HeroSection = dynamic(() => import("../components/HomeContent/HeroSection.jsx"), {
@@ -34,6 +35,7 @@ export default function Home() {
         <HomeBuySellRent />
         <Bluebar />
         <AboutSectionHome />
+        <Bluebar />
       </div>
     </>
   );

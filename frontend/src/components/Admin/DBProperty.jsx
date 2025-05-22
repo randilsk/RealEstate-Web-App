@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaEdit, FaTrash, FaEye, FaCheck, FaTimes, FaBell, FaUserCircle, FaArrowLeft, FaBed, FaBath, FaRuler, FaCalendarAlt, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSave, FaCar } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaEye, FaCheck, FaTimes, FaBell, FaUserCircle, FaArrowLeft, FaBed, FaBath, FaRuler, FaCalendarAlt, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSave, FaCar, FaHome, FaClock, FaTag } from 'react-icons/fa';
 import axios from 'axios';
 
 // Property Details Modal Component
@@ -58,9 +58,9 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        {/* Modal Header */}
-        <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
+      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+        {/* Modal Header - Made sticky with higher z-index */}
+        <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center z-10 shadow-sm">
           <h2 className="text-2xl font-bold text-gray-800">
             {isEditing ? 'Edit Property' : 'Property Details'}
           </h2>
@@ -72,7 +72,7 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
           </button>
         </div>
 
-        {/* Modal Content */}
+        {/* Modal Content - Added padding-top to prevent content from going under header */}
         <div className="p-6">
           {/* Image Gallery - Read only */}
           <div className="relative mb-6">
@@ -659,6 +659,65 @@ const DBProperty = () => {
 
       {/* Main Content */}
       <div className="p-10">
+        {/* Page Title */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Property Statistics</h1>
+          <p className="text-gray-600 mt-1">Overview of all property listings</p>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {/* Total Listings Card */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-indigo-100 p-3 rounded-full mb-3">
+                <FaHome className="text-indigo-600 text-2xl" />
+              </div>
+              <p className="text-sm font-medium text-gray-600">Total Listings</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{properties.length}</p>
+            </div>
+          </div>
+
+          {/* Active Listings Card */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-green-100 p-3 rounded-full mb-3">
+                <FaCheck className="text-green-600 text-2xl" />
+              </div>
+              <p className="text-sm font-medium text-gray-600">Active Listings</p>
+              <p className="text-2xl font-bold text-green-600 mt-1">
+                {properties.filter(property => property.status === 'active').length}
+              </p>
+            </div>
+          </div>
+
+          {/* Pending Listings Card */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-yellow-100 p-3 rounded-full mb-3">
+                <FaClock className="text-yellow-600 text-2xl" />
+              </div>
+              <p className="text-sm font-medium text-gray-600">Pending Listings</p>
+              <p className="text-2xl font-bold text-yellow-600 mt-1">
+                {properties.filter(property => property.status === 'pending').length}
+              </p>
+            </div>
+          </div>
+
+          {/* Sold Listings Card */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-blue-100 p-3 rounded-full mb-3">
+                <FaTag className="text-blue-600 text-2xl" />
+              </div>
+              <p className="text-sm font-medium text-gray-600">Sold Listings</p>
+              <p className="text-2xl font-bold text-blue-600 mt-1">
+                {properties.filter(property => property.status === 'sold').length}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white mt-6 p-6 rounded-lg shadow">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-indigo-800">Property Management</h3>
@@ -706,15 +765,15 @@ const DBProperty = () => {
                   {filteredProperties.map((property, index) => (
                     <tr key={property._id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                       <td className="border border-gray-300 p-2">
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-start space-x-4">
                           <img 
                             src={property.images[0] || '/images/placeholder-property.jpg'} 
                             alt={property.title} 
-                            className="w-20 h-16 object-cover rounded-lg"
+                            className="w-20 h-16 object-cover rounded-lg flex-shrink-0"
                           />
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900">{property.title}</h4>
-                            <p className="text-sm text-gray-500 truncate max-w-xs">{property.description}</p>
+                          <div className="break-words">
+                            <h4 className="text-sm font-medium text-gray-900 break-words">{property.title}</h4>
+                            <p className="text-sm text-gray-500 break-words whitespace-normal">{property.description}</p>
                           </div>
                         </div>
                       </td>

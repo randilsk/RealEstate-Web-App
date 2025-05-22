@@ -9,7 +9,7 @@ function PropertiesPage() {
         <>
         <div className='flex'> 
             <DBSideBar/>
-            <div className='flex-1'>
+            <div className='flex-1 ml-64'>
                 <DBProperty/>
             </div>
         </div>

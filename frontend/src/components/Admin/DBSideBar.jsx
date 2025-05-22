@@ -4,9 +4,8 @@ import { FaTachometerAlt, FaBuilding, FaUsers, FaDollarSign, FaChartLine, FaCog,
 
 function DBSideBar() {
   return (
-    <div className="flex h-screen">
-     
-      <div className="w-64 h-full bg-[#3B50DF] text-white flex flex-col">
+    <div className="fixed h-screen">
+      <div className="w-64 h-full bg-[#3B50DF] text-white flex flex-col sticky top-0">
        
         <div className="py-6 border-b border-blue-400 border-opacity-40">
           <div className="flex items-center justify-center">

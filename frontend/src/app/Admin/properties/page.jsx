@@ -1,18 +1,20 @@
+"use client";
+
 import React from 'react';
 import DBSideBar from '../../../components/Admin/DBSideBar';
-import DBreports from '../../../components/Admin/DBreports';
+import DBProperty from '../../../components/Admin/DBProperty';
 
-function Dashboard() {
+function PropertiesPage() {
     return (
         <>
         <div className='flex'> 
             <DBSideBar/>
             <div className='flex-1 ml-64'>
-                <DBreports/>
+                <DBProperty/>
             </div>
         </div>
         </>
     );
 }
 
-export default Dashboard;
+export default PropertiesPage; 

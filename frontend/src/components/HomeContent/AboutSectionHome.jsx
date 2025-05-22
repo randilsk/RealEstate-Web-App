@@ -47,14 +47,14 @@ function AboutSectionHome() {
             piece of land should be <em>simple, enjoyable,</em> and even
             exciting. Our mission is to connect landowners and seekers through
             a powerful, interactive map-based platform designed exclusively
-            for Sri Lanka. Whether you're exploring the serene countryside or
+            for Sri Lanka. Whether you&apos;re exploring the serene countryside or
             prime city plots, we make the journey effortless. With
             cutting-edge tools and intelligent features, you can discover,
             list, and manage land properties with just a few clicks.
           </p>
           <br />
           <p>
-            Whether you're a buyer hunting for your ideal location or a seller
+            Whether you&apos;re a buyer hunting for your ideal location or a seller
             ready to showcase your property, <strong>Urban Nest</strong> is
             your trusted partner. Our platform delivers{" "}
             <em>

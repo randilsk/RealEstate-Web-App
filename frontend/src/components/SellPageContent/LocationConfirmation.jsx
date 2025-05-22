@@ -63,19 +63,22 @@ function LocationConfirmation() {
 
   return (
     <>
-      <div className="flex items-center justify-center h-[85vh] ">
-        <div className=" flex flex-col h-5/6 w-10/12 bg-[#d9d9d9] rounded-md">
-          <div className="px-7 pt-5 text-black text-3xl font-poppins">
-            Location Confirmation
+      <div className="flex items-center justify-center min-h-[85vh] px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col w-full max-w-7xl h-full bg-[#d9d9d9] rounded-md">
+          <div className="px-4 sm:px-7 pt-4 sm:pt-5">
+            <h1 className="text-2xl sm:text-3xl text-black font-poppins">
+              Location Confirmation
+            </h1>
+            <div className="mt-2 sm:mt-3 text-sm sm:text-[15px] text-black font-poppins">
+              {`Address: ${address}, City: ${city}, District: ${district}`}
+            </div>
+            <div className="mt-3 sm:mt-4">
+              <hr className="border-1 border-black" />
+            </div>
           </div>
-          <div className="px-7 py-2 text-black text-[15px] font-poppins">
-            {`Address: ${address}, City: ${city}, District: ${district}`}
-          </div>
-          <div className="px-7 ">
-            <hr className="border-1 border-black" />
-          </div>
-          <div className="flex flex-col h-5/6 mt-7 items-center">
-            <div className="w-11/12 h-5/6 bg-gray-500">
+
+          <div className="flex flex-col flex-1 mt-4 sm:mt-7 px-4 sm:px-7">
+            <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-500 rounded-md overflow-hidden">
               {coordinates ? (
                 <GoogleMap
                   mapContainerStyle={{ width: "100%", height: "100%" }}
@@ -85,17 +88,20 @@ function LocationConfirmation() {
                   <Marker position={coordinates} />
                 </GoogleMap>
               ) : (
-                <div>Loading map...</div>
+                <div className="flex items-center justify-center h-full text-gray-700">
+                  Loading map...
+                </div>
               )}
             </div>
-            <div className="flex gap-4 py-5">
+
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 sm:mt-8 mb-6 sm:mb-8 justify-center items-center">
               <Button
-                className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2"
+                className="w-full sm:w-52 bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white font-bold border-2 text-sm sm:text-base py-2"
                 onClick={handleProceedToListing}
               >
                 <Link href={"/sell/listing"}>Yes, Correct Location</Link>
               </Button>
-              <Button className="bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-52 font-bold border-2">
+              <Button className="w-full sm:w-52 bg-[#d9d9d9] border-main-blue text-main-blue hover:bg-main-blue hover:text-white font-bold border-2 text-sm sm:text-base py-2">
                 <Link
                   href={
                     coordinates
@@ -103,7 +109,7 @@ function LocationConfirmation() {
                           coordinates.lng
                         }&address=${encodeURIComponent(
                           address
-                        )} &city=${encodeURIComponent(
+                        )}&city=${encodeURIComponent(
                           city
                         )}&district=${encodeURIComponent(district)}`
                       : "#"

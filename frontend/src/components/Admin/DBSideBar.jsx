@@ -1,6 +1,10 @@
 import Link from "next/link";
 import React from "react";
+<<<<<<< HEAD
 import { FaTachometerAlt, FaBuilding, FaUsers, FaDollarSign, FaChartLine, FaCog, FaBell, FaUserCircle, FaSignOutAlt, FaExchangeAlt } from 'react-icons/fa';
+=======
+import { FaTachometerAlt, FaBuilding, FaUsers, FaChartLine, FaCog, FaUserCircle, FaSignOutAlt, FaExchangeAlt } from 'react-icons/fa';
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 
 function DBSideBar() {
   return (
@@ -42,8 +46,13 @@ function DBSideBar() {
               </Link>
             </li>
             <li>
+<<<<<<< HEAD
               <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/ApproveAdds">
                 <FaUsers /> Approvals
+=======
+              <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/users">
+                <FaUsers /> Users
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
               </Link>
             </li>
             <li>

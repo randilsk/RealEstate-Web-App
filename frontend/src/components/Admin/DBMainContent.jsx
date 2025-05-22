@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client';
 import Link from 'next/link';
 import React, { useState, useEffect } from "react";
@@ -6,6 +7,15 @@ import axios from 'axios'; //call api
 import { Component, List } from "lucide-react";
 import Navbar from './../Navbar/page';
 import dayjs from "dayjs"; // npm install dayjsnp
+=======
+'use client'
+import Link from 'next/link';
+import Image from 'next/image';
+import React, { useState, useEffect } from "react"; //Hook Componets
+import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes } from 'react-icons/fa';
+
+import axios from 'axios';      //call API
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 
 
 
@@ -57,7 +67,13 @@ const ListingModal = ({ isOpen, onClose, listings }) => {
     );
 };
 
+<<<<<<< HEAD
 // Modal Component for Users
+=======
+
+
+// Modal Component to pop up Active User
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 const UserModal = ({ isOpen, onClose, users }) => {
     if (!isOpen) return null;
 
@@ -86,10 +102,12 @@ const UserModal = ({ isOpen, onClose, users }) => {
                                     <td className="border p-2">{user.username}</td>
                                     <td className="border p-2">{user.email}</td>
                                     <td className="border p-2">
-                                        <img 
+                                        <Image 
                                             src={user.avatar} 
                                             alt={user.username} 
-                                            className="w-10 h-10 rounded-full object-cover"
+                                            width={40}
+                                            height={40}
+                                            className="rounded-full object-cover"
                                         />
                                     </td>
                                     <td className="border p-2">
@@ -105,6 +123,7 @@ const UserModal = ({ isOpen, onClose, users }) => {
     );
 };
 
+<<<<<<< HEAD
 const PendingApprovalModal = ({ isOpen, onClose, listings, onApprove }) => {
     if (!isOpen) return null;
 
@@ -156,6 +175,10 @@ const PendingApprovalModal = ({ isOpen, onClose, listings, onApprove }) => {
 
 // Reusable Stat Card Component
 const StatCard = ({ title, value, icon: Icon, href, onClick }) => {
+=======
+// Reusable Card Component
+const StatCard = ({ title, value, icon: Icon, onClick }) => {
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
     return (
         <div 
             onClick={onClick}
@@ -185,6 +208,7 @@ function DBMainContent() {
     
 
 
+    // fetch data from backend
     const fetchUsers = async () => {
         try {
             const response = await axios.get('/api/auth/users');
@@ -209,6 +233,7 @@ function DBMainContent() {
         }
     };
 
+<<<<<<< HEAD
     const fetchPendingListings = async () => {
         try {
             const response = await axios.get('/api/listing/pending-approvals');
@@ -229,6 +254,9 @@ function DBMainContent() {
     
 
     
+=======
+    //refrech the fetched data
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
     useEffect(() => {
         fetchUsers();
         const interval = setInterval(fetchUsers, 30000);
@@ -266,6 +294,7 @@ function DBMainContent() {
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
+<<<<<<< HEAD
             <div className="bg-[#3B50DF] flex justify-between items-center text-white">
                 <Navbar/>
             </div>
@@ -290,6 +319,41 @@ function DBMainContent() {
     ))}
 </div>
 
+=======
+            
+<div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+    <div className="w-1/3">
+        {/* Empty div for spacing */}
+    </div>
+    <div className="w-1/3 flex justify-center">
+        <input 
+            type="text" 
+            placeholder="Enter an address, city, district, province" 
+            className="p-2 border rounded-md w-full text-black" 
+        />
+    </div>
+    <div className="w-1/3 flex justify-end gap-4 text-xl">
+        <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+        <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
+    </div>
+</div>
+
+
+
+
+
+
+            {/* Dashboard */}
+            <div className="p-10">
+                {/* Cards Section */}
+                <div className="flex flex-wrap items-center justify-between mb-8">
+                    <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
+                    <div className="flex gap-2 mt-4 sm:mt-0">
+                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Today</button>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Monthly</button>
+                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Yearly</button>
+                    </div>
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -297,18 +361,33 @@ function DBMainContent() {
                         title="Total Listings" 
                         value={loading ? "Loading..." : listCount}  
                         icon={FaTachometerAlt} 
+<<<<<<< HEAD
                         onClick={() => setIsListingModalOpen(true)}
+=======
+                        onClick={handleListCardClick}
+                        iconColor="text-blue-600"
+                        percentChange="+12.5% from last month"
+                        trend="up"
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                     />
                     <StatCard 
                         title="Active Users" 
                         value={loading ? "Loading..." : userCount} 
                         icon={FaUsers} 
+<<<<<<< HEAD
                         onClick={() => setIsUserModalOpen(true)}
+=======
+                        onClick={handleUserCardClick}
+                        iconColor="text-indigo-600"
+                        percentChange="+8.3% from last month"
+                        trend="up"
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                     />
                     <StatCard 
                         title="Revenue" 
                         value="$12,000" 
                         icon={FaDollarSign} 
+<<<<<<< HEAD
                     />
                     <StatCard 
                         title="Pending Approvals"
@@ -319,6 +398,27 @@ function DBMainContent() {
                         setIsPendingModalOpen(true);
                                          }}
 />
+=======
+                        iconColor="text-green-600"
+                        percentChange="+5.2% from last month"
+                        trend="up"
+                    />
+                    <StatCard 
+                        title="Pending Approvals" 
+                        value="15" 
+                        icon={FaCog} 
+                        iconColor="text-amber-600"
+                        percentChange="-2.1% from last month"
+                        trend="down"
+                    />
+
+                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
+                    <Link href="Admin/ApproveAdds" className="w-full">
+  <StatCard title="Pending Approvals" value="15" icon={FaCog} />
+</Link>
+
+
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 
                 </div>
 
@@ -379,4 +479,11 @@ function DBMainContent() {
     );
 }
 
+<<<<<<< HEAD
 export default DBMainContent;
+=======
+
+export default DBMainContent;
+
+
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128

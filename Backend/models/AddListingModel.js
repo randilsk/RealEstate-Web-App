@@ -15,6 +15,8 @@ const ListingSchema = new mongoose.Schema({
     required: true,
   },
   city: String,
+  username: String,
+  email: String,
   district: String,
   lat: Number,
   lng: Number,

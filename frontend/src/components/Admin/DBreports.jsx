@@ -1,7 +1,10 @@
 "use client";
 
+<<<<<<< HEAD
 import axios from 'axios';
 import { useState, useEffect } from "react";
+=======
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
@@ -10,6 +13,7 @@ import {
 import { FaBell, FaUserCircle } from "react-icons/fa";
 
 export default function DBreports() {
+<<<<<<< HEAD
 
   const [chartData, setChartData] = useState([]);
   const [pieChartData, setPieChartData] = useState([]);
@@ -89,6 +93,15 @@ useEffect(() => {
 
 
 
+=======
+  // Mock data for charts
+  const lineChartData = [
+    { month: "Jan", listings: 100 },
+    { month: "Feb", listings: 250 },
+    { month: "Mar", listings: 300 },
+    { month: "Apr", listings: 400 }
+  ];
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 
   const barChartData = [
     { month: "Jan", revenue: 500000 },
@@ -97,6 +110,13 @@ useEffect(() => {
     { month: "Apr", revenue: 1200000 }
   ];
 
+<<<<<<< HEAD
+=======
+  const pieChartData = [
+    { name: "Rentals", value: 60 },
+    { name: "Sales", value: 40 }
+  ];
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 
   const COLORS = ["#3B82F6", "#F59E0B"];
 
@@ -142,8 +162,12 @@ useEffect(() => {
           <h2 className="text-sm font-semibold mb-2">Listings Growth</h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
+<<<<<<< HEAD
             <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
 
+=======
+              <LineChart data={lineChartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
@@ -191,7 +215,11 @@ useEffect(() => {
                   outerRadius={60}
                   fill="#8884d8"
                   dataKey="value"
+<<<<<<< HEAD
                   label={({name, percent}) => `${(percent * 100).toFixed(0)}%`}
+=======
+                  label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+>>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                 >
                   {pieChartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

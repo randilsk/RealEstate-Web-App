@@ -58,21 +58,12 @@ function DBtransaction() {
   return (
     <div className="flex-2 bg-gray-100 min-h-screen">
       {/* Navbar */}
-<<<<<<< HEAD
-      <div className="bg-[#3B50DF] flex justify-between items-center text-white">
+      <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
         <Navbar/>
-=======
-      <div className="bg-indigo-600 shadow-md p-4 flex justify-between items-center text-white">
-        <input
-          type="text"
-          placeholder="Enter an address, city, district, province"
-          className="p-2 border rounded-md w-1/3 text-black"
-        />
         <div className="flex gap-4 text-xl">
           <FaBell className="cursor-pointer hover:text-indigo-200" />
           <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
         </div>
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
       </div>
 
       {/* Dashboard */}

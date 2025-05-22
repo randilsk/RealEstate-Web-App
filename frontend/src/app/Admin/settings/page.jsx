@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import {
-<<<<<<< HEAD
   FaBell, FaUserCircle, FaSave, FaLock, FaCog, FaUsers, FaShieldAlt, FaDatabase, FaCogs
-=======
-  FaBell, FaUserCircle, FaSave, FaCog, FaShieldAlt, FaDatabase, FaCogs
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 } from "react-icons/fa";
 
 const SIDEBAR_BG = "bg-[#3B50DF]";

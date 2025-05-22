@@ -1,10 +1,7 @@
 "use client";
 
-<<<<<<< HEAD
 import axios from 'axios';
 import { useState, useEffect } from "react";
-=======
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
@@ -12,12 +9,17 @@ import {
 } from "recharts"; //graphs
 import { FaBell, FaUserCircle } from "react-icons/fa";
 
-export default function DBreports() {
-<<<<<<< HEAD
+const COLORS = ["#3B82F6", "#F59E0B"];
 
+export default function DBreports() {
   const [chartData, setChartData] = useState([]);
   const [pieChartData, setPieChartData] = useState([]);
-  
+  const [barChartData, setBarChartData] = useState([
+    { month: "Jan", revenue: 500000 },
+    { month: "Feb", revenue: 800000 },
+    { month: "Mar", revenue: 900000 },
+    { month: "Apr", revenue: 1200000 }
+  ]);
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -28,6 +30,15 @@ export default function DBreports() {
         // Group listings by month
         const grouped = groupByMonth(listings);
         setChartData(grouped);
+
+        // Calculate pie chart data
+        const rentCount = listings.filter(l => l.listingType?.toLowerCase() === "rent").length;
+        const saleCount = listings.filter(l => l.listingType?.toLowerCase() === "sale").length;
+
+        setPieChartData([
+          { name: "Rentals", value: rentCount },
+          { name: "Sales", value: saleCount }
+        ]);
       } catch (error) {
         console.error("Error fetching listings:", error);
       }
@@ -40,8 +51,8 @@ export default function DBreports() {
     const monthMap = {};
   
     listings.forEach(listing => {
-      const date = new Date(listing.createdAt); // Make sure createdAt exists
-      const month = date.toLocaleString('default', { month: 'short' }); // "Jan", "Feb", etc.
+      const date = new Date(listing.createdAt);
+      const month = date.toLocaleString('default', { month: 'short' });
   
       if (!monthMap[month]) {
         monthMap[month] = 0;
@@ -50,7 +61,6 @@ export default function DBreports() {
       monthMap[month]++;
     });
   
-    // Convert to array format for recharts
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return months.map(month => ({
       month,
@@ -59,66 +69,12 @@ export default function DBreports() {
   };
   
   // Mock data for charts
-<ResponsiveContainer width="100%" height={300}>
-  <LineChart data={chartData}>
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="month" />
-    <YAxis />
-    <Tooltip />
-    <Legend />
-    <Line type="monotone" dataKey="listings" stroke="#8884d8" activeDot={{ r: 8 }} />
-  </LineChart>
-</ResponsiveContainer>
-
-useEffect(() => {
-  const fetchListings = async () => {
-    try {
-      const response = await axios.get("/api/listing/getallListing");
-      const listings = response.data;
-
-      const rentCount = listings.filter(l => l.listingType?.toLowerCase() === "rent").length;
-      const saleCount = listings.filter(l => l.listingType?.toLowerCase() === "sale").length;
-
-      setPieChartData([
-        { name: "Rentals", value: rentCount },
-        { name: "Sales", value: saleCount }
-      ]);
-    } catch (error) {
-      console.error("Error fetching pie chart data:", error);
-    }
-  };
-
-  fetchListings();
-}, []);
-
-
-
-=======
-  // Mock data for charts
   const lineChartData = [
     { month: "Jan", listings: 100 },
     { month: "Feb", listings: 250 },
     { month: "Mar", listings: 300 },
     { month: "Apr", listings: 400 }
   ];
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
-
-  const barChartData = [
-    { month: "Jan", revenue: 500000 },
-    { month: "Feb", revenue: 800000 },
-    { month: "Mar", revenue: 900000 },
-    { month: "Apr", revenue: 1200000 }
-  ];
-
-<<<<<<< HEAD
-=======
-  const pieChartData = [
-    { name: "Rentals", value: 60 },
-    { name: "Sales", value: 40 }
-  ];
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
-
-  const COLORS = ["#3B82F6", "#F59E0B"];
 
   return (
     <div className="space-y-6 w-full">
@@ -162,12 +118,7 @@ useEffect(() => {
           <h2 className="text-sm font-semibold mb-2">Listings Growth</h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-<<<<<<< HEAD
-            <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-
-=======
-              <LineChart data={lineChartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
+              <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
@@ -215,11 +166,7 @@ useEffect(() => {
                   outerRadius={60}
                   fill="#8884d8"
                   dataKey="value"
-<<<<<<< HEAD
-                  label={({name, percent}) => `${(percent * 100).toFixed(0)}%`}
-=======
                   label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
->>>>>>> 009a9cb262ba69eba9b68f32ebc94587249f4128
                 >
                   {pieChartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -250,16 +197,9 @@ useEffect(() => {
             <tr className="border-t">
               <td className="p-2">John Doe</td>
               <td className="p-2">john@example.com</td>
-              <td className="p-2">2025-04-19</td>
+              <td className="p-2">2024-02-20</td>
               <td className="p-2">5</td>
-              <td className="p-2">Seller</td>
-            </tr>
-            <tr className="border-t">
-              <td className="p-2">Dinitha</td>
-              <td className="p-2">dinitha@mail.com</td>
-              <td className="p-2">2025-04-18</td>
-              <td className="p-2">3</td>
-              <td className="p-2">Buyer</td>
+              <td className="p-2">User</td>
             </tr>
           </tbody>
         </table>

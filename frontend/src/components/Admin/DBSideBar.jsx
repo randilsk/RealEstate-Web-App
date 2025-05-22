@@ -41,31 +41,16 @@ function DBSideBar() {
                 <FaBuilding /> Properties
               </Link>
             </li>
-<<<<<<< HEAD
-            <li >
-            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/ApproveAdds"}><FaUsers /> approvals</Link>
-                
-=======
             <li>
-              <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/users">
-                <FaUsers /> Users
+              <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/ApproveAdds">
+                <FaUsers /> Approvals
               </Link>
->>>>>>> fb1960fbc78040f359bc2ae7a043ad3c280535bc
             </li>
             <li>
               <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/transaction">
                 <FaExchangeAlt /> Transactions
               </Link>
             </li>
-<<<<<<< HEAD
-            <li >
-            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/reports"}><FaUsers /> Reports</Link>
-                
-            </li>
-            <li >
-            <Link className="flex items-center gap-3 cursor-pointer hover:bg-blue-700 p-2 rounded-md" href={"/Admin/settings"}><FaUsers /> Settings</Link>
-                
-=======
           </ul>
 
           <p className="text-xs uppercase text-blue-300 font-medium mt-6 mb-2 ml-2">Reports & Settings</p>
@@ -79,7 +64,6 @@ function DBSideBar() {
               <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/settings">
                 <FaCog /> Settings
               </Link>
->>>>>>> fb1960fbc78040f359bc2ae7a043ad3c280535bc
             </li>
           </ul>
         </div>

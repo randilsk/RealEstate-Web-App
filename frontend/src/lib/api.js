@@ -34,3 +34,19 @@ export const fetchSingleListing = async (id) => {
     throw error;
   }
 };
+
+//fetch approve adds
+export const fetchPendingListings = async () => {
+  const res = await fetch(`${API_BASE}/approval/pending-approvals`, {
+    credentials: "include",
+  });
+  return res.json();
+};
+
+export const approveListing = async (id) => {
+  const res = await fetch(`${API_BASE}/approval/approve/${id}`, {
+    method: "PUT",
+    credentials: "include",
+  });
+  return res.json();
+};

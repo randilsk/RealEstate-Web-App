@@ -1,5 +1,6 @@
 "use client";
 
+import axios from 'axios';
 import { useState, useEffect } from "react";
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie,
@@ -9,13 +10,85 @@ import {
 import { FaBell, FaUserCircle } from "react-icons/fa";
 
 export default function DBreports() {
+
+  const [chartData, setChartData] = useState([]);
+  const [pieChartData, setPieChartData] = useState([]);
+  
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await axios.get('/api/listing/getallListing');
+        const listings = response.data;
+
+        // Group listings by month
+        const grouped = groupByMonth(listings);
+        setChartData(grouped);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const groupByMonth = (listings) => {
+    const monthMap = {};
+  
+    listings.forEach(listing => {
+      const date = new Date(listing.createdAt); // Make sure createdAt exists
+      const month = date.toLocaleString('default', { month: 'short' }); // "Jan", "Feb", etc.
+  
+      if (!monthMap[month]) {
+        monthMap[month] = 0;
+      }
+  
+      monthMap[month]++;
+    });
+  
+    // Convert to array format for recharts
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months.map(month => ({
+      month,
+      listings: monthMap[month] || 0
+    }));
+  };
+  
   // Mock data for charts
-  const lineChartData = [
-    { month: "Jan", listings: 100 },
-    { month: "Feb", listings: 250 },
-    { month: "Mar", listings: 300 },
-    { month: "Apr", listings: 400 }
-  ];
+<ResponsiveContainer width="100%" height={300}>
+  <LineChart data={chartData}>
+    <CartesianGrid strokeDasharray="3 3" />
+    <XAxis dataKey="month" />
+    <YAxis />
+    <Tooltip />
+    <Legend />
+    <Line type="monotone" dataKey="listings" stroke="#8884d8" activeDot={{ r: 8 }} />
+  </LineChart>
+</ResponsiveContainer>
+
+useEffect(() => {
+  const fetchListings = async () => {
+    try {
+      const response = await axios.get("/api/listing/getallListing");
+      const listings = response.data;
+
+      const rentCount = listings.filter(l => l.listingType?.toLowerCase() === "rent").length;
+      const saleCount = listings.filter(l => l.listingType?.toLowerCase() === "sale").length;
+
+      setPieChartData([
+        { name: "Rentals", value: rentCount },
+        { name: "Sales", value: saleCount }
+      ]);
+    } catch (error) {
+      console.error("Error fetching pie chart data:", error);
+    }
+  };
+
+  fetchListings();
+}, []);
+
+
+
 
   const barChartData = [
     { month: "Jan", revenue: 500000 },
@@ -24,10 +97,6 @@ export default function DBreports() {
     { month: "Apr", revenue: 1200000 }
   ];
 
-  const pieChartData = [
-    { name: "Rentals", value: 60 },
-    { name: "Sales", value: 40 }
-  ];
 
   const COLORS = ["#3B82F6", "#F59E0B"];
 
@@ -73,7 +142,8 @@ export default function DBreports() {
           <h2 className="text-sm font-semibold mb-2">Listings Growth</h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={lineChartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+            <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />

@@ -32,17 +32,7 @@ export const addListing = async (req, res) => {
   }
 };
 
-export const getSingleListing = async (req, res) => {
-  try {
-    const listing = await Listing.findById(req.params.id); // Find listing by ID
-    if (!listing) {
-      return res.status(404).json({ message: "Listing not found" });
-    }
-    res.status(200).json(listing);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch listing", error });
-  }
-};
+
 
 export const updateListing = async (req, res) => {
   try {
@@ -71,3 +61,40 @@ export const deleteListing = async (req, res) => {
     res.status(500).json({ message: "Failed to delete listing", error });
   }
 };
+
+
+
+// GET pending approvals
+export const getPendingApprovals = async (req, res) => {
+  try {
+    const listings = await Listing.find(); // or { approved: { $ne: true } }
+    res.status(200).json(listings);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch pending approvals" });
+  }
+};
+
+export const approveListing = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      id,
+      { approved: true },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing approved", updatedListing });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to approve listing", error });
+  }
+};
+
+
+
+
+

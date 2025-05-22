@@ -6,6 +6,8 @@ import AuthRouter from "./routes/auth.route.js";
 import ListingRoute from "./routes/AddListingRoute.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import SettingsRoute from "./routes/AdminRouts.js"
+
 
 dotenv.config();
 
@@ -40,6 +42,7 @@ app.listen(3000, () => {
 app.use("/api/user", UserRoute);
 app.use("/api/auth", AuthRouter);
 app.use("/api/listing", ListingRoute);
+app.use('/api/settings', SettingsRoute);
 
 //global error handling middleware
 app.use((err, req, res, next) => {
@@ -51,6 +54,11 @@ app.use((err, req, res, next) => {
   if (err.stack) {
     console.error(err.stack);
   }
+
+  //approval
+  app.use("/api/approval", ApprovalRoute);
+
+  app.use("/api/settings", SettingsRoute);
 
   return res.status(statusCode).json({
     success: false,

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios"; // ✅ Added
 import {
   FaBell, FaUserCircle, FaSave, FaLock, FaCog, FaUsers, FaShieldAlt, FaDatabase, FaCogs
 } from "react-icons/fa";
@@ -11,10 +12,9 @@ const SIDEBAR_ACTIVE = "bg-white text-[#3B50DF] font-bold";
 const SIDEBAR_ICON = "text-2xl";
 const CARD = "bg-white rounded-xl shadow-md p-6 mb-6";
 const SECTION_HEADER = "text-lg font-bold mb-4 text-[#3B50DF]";
-
 export default function DSettings() {
   const [settings, setSettings] = useState({
-    siteName: "Urban Nest",
+    siteName: "",
     emailNotifications: true,
     maintenanceMode: false,
     maxListingsPerUser: 10,
@@ -31,6 +31,22 @@ export default function DSettings() {
   });
   const [activeSection, setActiveSection] = useState('general');
 
+  // ✅ FETCH settings on component mount
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/settings");
+        if (res.data?.data) {
+          setSettings(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load settings:", err);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setSettings(prev => ({
@@ -39,88 +55,147 @@ export default function DSettings() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement settings save functionality
-    console.log('Settings saved:', settings);
+    try {
+      const res = await axios.put("http://localhost:3000/api/settings", settings); // ✅ Use your backend URL
+      if (res.data.success) {
+        alert("Settings saved successfully!");
+        setSettings(res.data.data); // ✅ Update local state with saved version
+      }
+    } catch (err) {
+      console.error("Error saving settings:", err);
+      alert("Failed to save settings.");
+    }
   };
 
   const menuItems = [
-    { id: 'general', label: 'General', icon: FaCog },
-    { id: 'security', label: 'Security', icon: FaShieldAlt },
-    { id: 'notifications', label: 'Notifications', icon: FaBell },
-    { id: 'backup', label: 'Backup', icon: FaDatabase },
-    { id: 'advanced', label: 'Advanced', icon: FaCogs },
+    { id: "general", label: "General", icon: FaCog },
+    { id: "security", label: "Security", icon: FaShieldAlt },
+    { id: "notifications", label: "Notifications", icon: FaBell },
+    { id: "backup", label: "Backup", icon: FaDatabase },
+    { id: "advanced", label: "Advanced", icon: FaCogs },
   ];
 
   const renderSettingsContent = () => {
+    if (!settings) return null;
+
     switch (activeSection) {
-      case 'general':
+      case "general":
         return (
           <div className={CARD}>
             <div className={SECTION_HEADER}>General Settings</div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Site Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-                <input type="text" name="siteName" value={settings.siteName} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
+                <input
+                  type="text"
+                  name="siteName"
+                  value={settings.siteName}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
               </div>
+              {/* Currency */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-                <select name="currency" value={settings.currency} onChange={handleInputChange} className="w-full p-2 border rounded-md">
-                  <option value="LKR">LKR (Sri Lankan Rupee)</option>
-                  <option value="USD">USD (US Dollar)</option>
-                  <option value="EUR">EUR (Euro)</option>
+                <select
+                  name="currency"
+                  value={settings.currency}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="LKR">LKR</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
                 </select>
               </div>
+              {/* Timezone */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-                <select name="timezone" value={settings.timezone} onChange={handleInputChange} className="w-full p-2 border rounded-md">
+                <select
+                  name="timezone"
+                  value={settings.timezone}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                >
                   <option value="Asia/Colombo">Asia/Colombo</option>
                   <option value="UTC">UTC</option>
                   <option value="America/New_York">America/New_York</option>
                 </select>
               </div>
+              {/* Max Listings */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Max Listings Per User</label>
-                <input type="number" name="maxListingsPerUser" value={settings.maxListingsPerUser} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
+                <input
+                  type="number"
+                  name="maxListingsPerUser"
+                  value={settings.maxListingsPerUser}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
               </div>
             </div>
           </div>
         );
-      case 'security':
+      case "security":
         return (
           <div className={CARD}>
             <div className={SECTION_HEADER}>Security Settings</div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
-                <input type="checkbox" name="enableTwoFactor" checked={settings.enableTwoFactor} onChange={handleInputChange} className="w-5 h-5" />
+                <input
+                  type="checkbox"
+                  name="enableTwoFactor"
+                  checked={settings.enableTwoFactor}
+                  onChange={handleInputChange}
+                  className="w-5 h-5"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Session Timeout (minutes)</label>
-                <input type="number" name="sessionTimeout" value={settings.sessionTimeout} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
+                <input
+                  type="number"
+                  name="sessionTimeout"
+                  value={settings.sessionTimeout}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
               </div>
             </div>
           </div>
         );
-      case 'notifications':
+      case "notifications":
         return (
           <div className={CARD}>
             <div className={SECTION_HEADER}>Notification Settings</div>
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-              <input type="checkbox" name="emailNotifications" checked={settings.emailNotifications} onChange={handleInputChange} className="w-5 h-5" />
+              <input
+                type="checkbox"
+                name="emailNotifications"
+                checked={settings.emailNotifications}
+                onChange={handleInputChange}
+                className="w-5 h-5"
+              />
             </div>
           </div>
         );
-      case 'backup':
+      case "backup":
         return (
           <div className={CARD}>
             <div className={SECTION_HEADER}>Backup</div>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Backup Frequency</label>
-                <select name="backupFrequency" value={settings.backupFrequency} onChange={handleInputChange} className="w-full p-2 border rounded-md">
+                <select
+                  name="backupFrequency"
+                  value={settings.backupFrequency}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                >
                   <option value="hourly">Hourly</option>
                   <option value="daily">Daily</option>
                   <option value="weekly">Weekly</option>
@@ -128,20 +203,26 @@ export default function DSettings() {
                 </select>
               </div>
               <div className="flex gap-4">
-                <button className="bg-[#3B50DF] text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Create Backup</button>
-                <button className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">Restore</button>
+                <button type="button" className="bg-[#3B50DF] text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Create Backup</button>
+                <button type="button" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">Restore</button>
               </div>
             </div>
           </div>
         );
-      case 'advanced':
+      case "advanced":
         return (
           <div className={CARD}>
             <div className={SECTION_HEADER}>Advanced Settings</div>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Max File Size (MB)</label>
-                <input type="number" name="maxFileSize" value={settings.maxFileSize} onChange={handleInputChange} className="w-full p-2 border rounded-md" />
+                <input
+                  type="number"
+                  name="maxFileSize"
+                  value={settings.maxFileSize}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-md"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Allowed File Types</label>
@@ -159,6 +240,8 @@ export default function DSettings() {
     }
   };
 
+  if (loading) return <div className="p-10 text-center text-lg">Loading settings...</div>; // ✅ Loader
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -172,7 +255,7 @@ export default function DSettings() {
               <li key={item.id}>
                 <button
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${activeSection === item.id ? SIDEBAR_ACTIVE : SIDEBAR_TEXT + ' hover:bg-[#4F5BD5] hover:text-white'}`}
+                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${activeSection === item.id ? SIDEBAR_ACTIVE : SIDEBAR_TEXT + " hover:bg-[#4F5BD5] hover:text-white"}`}
                 >
                   <item.icon className={SIDEBAR_ICON} />
                   <span className="font-medium">{item.label}</span>
@@ -182,9 +265,9 @@ export default function DSettings() {
           </ul>
         </nav>
       </div>
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Topbar */}
         <div className="bg-[#3B50DF] p-4 flex items-center justify-between">
           <input
             type="text"
@@ -196,21 +279,22 @@ export default function DSettings() {
             <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
           </div>
         </div>
-        {/* Settings Content */}
+
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8">
           <h1 className="text-3xl font-bold text-center mb-8 text-[#3B50DF]">Settings</h1>
           {renderSettingsContent()}
           <div className="flex justify-end mt-8">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-[#3B50DF] text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-semibold shadow"
+              className="flex items-center gap-2 bg-[#3B50DF] text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-semibold shadow disabled:opacity-50"
+              disabled={saving}
             >
               <FaSave />
-              Save Changes
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-} 
+}

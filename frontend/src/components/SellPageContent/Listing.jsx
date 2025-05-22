@@ -50,8 +50,7 @@ function Listing() {
     description: "",
     phone: "",
     email: currentUser?.email || "",  // Initialize with user email if available
-     
-    username:currentUser?.username  
+    username: currentUser?.username  
   });
 
   // Update user data when currentUser changes
@@ -76,6 +75,14 @@ function Listing() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle images from FileUploader
+  const handleImagesChange = (files) => {
+    setFormData(prev => ({
+      ...prev,
+      images: files
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,12 +93,35 @@ function Listing() {
       return;
     }
     
-    console.log("Form data being sent:", formData);
     try {
+      // Create FormData object
+      const formDataToSend = new FormData();
+      
+      // Append all form fields
+      Object.keys(formData).forEach(key => {
+        if (key === 'images') {
+          // Append each image file
+          formData.images.forEach((file, index) => {
+            formDataToSend.append('images', file);
+          });
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      // Add user ID as a single value
+      formDataToSend.set('user', currentUser._id);
+      
       const response = await axios.post(
         "http://localhost:3000/api/listing",
-        formData
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
+      
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
       router.push("/sell/list_review");
@@ -152,7 +182,7 @@ function Listing() {
             </h2>
             <p className="pb-2">Drag and drop clear images of your property </p>
             <div className="py-3 border-2 border-gray-400 rounded-md h-56 flex justify-center items-center ">
-              <FileUploader />
+              <FileUploader onImagesChange={handleImagesChange} />
             </div>
           </div>
           <hr className="border-1 border-black pt-3" />

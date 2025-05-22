@@ -7,6 +7,7 @@ import {
   updateListing, // Import the new controller function
   deleteListing, // Import the new controller function
 } from "../controllers/AddListingController.js";
+import { uploadMultiple } from "../middleware/upload.midlware.js";
 
 const router = express.Router();
 
@@ -19,8 +20,8 @@ router.get("/user/:email", getUserListings);
 // Get a single listing by ID
 router.get("/:id", getSingleListing);
 
-// Add a new listing
-router.post("/", addListing);
+// Add a new listing with image upload
+router.post("/", uploadMultiple, addListing);
 
 // Update a listing by ID
 router.put("/:id", updateListing);

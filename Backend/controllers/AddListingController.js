@@ -24,11 +24,23 @@ export const getUserListings = async (req, res) => {
 
 export const addListing = async (req, res) => {
   try {
-    const newListing = new Listing(req.body); // Create a new listing from the request body
-    const savedListing = await newListing.save(); // Save it to the database
-    res.status(201).json(savedListing); // Respond with the saved listing
+    // Get image URLs from the uploaded files
+    const imageUrls = req.files ? req.files.map(file => file.path) : [];
+    
+    // Create new listing with image URLs
+    const newListing = new Listing({
+      ...req.body,
+      images: imageUrls
+    });
+    
+    const savedListing = await newListing.save();
+    res.status(201).json(savedListing);
   } catch (error) {
-    res.status(500).json({ message: "Failed to add listing", error });
+    console.error("Error in addListing:", error);
+    res.status(500).json({ 
+      message: "Failed to add listing", 
+      error: error.message 
+    });
   }
 };
 

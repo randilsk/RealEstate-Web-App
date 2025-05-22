@@ -55,9 +55,8 @@ export default function ProductCard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {listings.map((listing) => (
           <div
-className="w-[320px] bg-white border border-gray-200 rounded-xl shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-300"
-
-
+            key={listing._id}
+            className="w-[320px] bg-white border border-gray-200 rounded-xl shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-300"
           >
             <Link href={`/listing/${listing._id}`}>
               <div className="relative h-64 overflow-hidden">

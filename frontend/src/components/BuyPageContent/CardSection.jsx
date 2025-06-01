@@ -5,11 +5,13 @@ function CardSection() {
   return (
     <div className="w-full h-full flex flex-col">
       <div className="sticky top-0 bg-white z-10 px-4 py-3 border-b">
-        <h2 className="font-semibold text-2xl md:text-3xl">Recent Properties</h2>
+        <h2 className="font-semibold text-xl md:text-xl">Recent Properties</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
         <div className="p-4">
-          <Card />
+          <div className="flex flex-wrap justify-center gap-6">
+            <Card />
+          </div>
         </div>
       </div>
     </div>

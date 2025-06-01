@@ -52,6 +52,7 @@ function Listing() {
     email: currentUser?.email || "",  // Initialize with user email if available
     username: currentUser?.username  
   });
+  
 
   // Update user data when currentUser changes
   useEffect(() => {

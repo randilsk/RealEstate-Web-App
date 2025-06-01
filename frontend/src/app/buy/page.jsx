@@ -11,39 +11,56 @@ function page() {
     <div className="fixed inset-0 flex flex-col">
       {/* Fixed Navigation */}
       <div className="flex-none">
-       
         <Header_varient_1 />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex relative">
+      <div className="flex-1 flex relative overflow-hidden">
         {/* Map Section - Fixed */}
-        <div className="w-full md:w-1/2 h-full relative">
+        <div 
+          className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
+            isCardSectionOpen 
+              ? 'translate-x-[-100%] md:translate-x-0 md:w-1/2' 
+              : 'translate-x-0 md:w-1/2'
+          }`}
+        >
           <MapSection />
-          {/* Toggle Button - Only visible on mobile */}
-          <button
-            onClick={() => setIsCardSectionOpen(!isCardSectionOpen)}
-            className="md:hidden absolute top-14 right-2 z-50 bg-blue-600 text-white p-2 rounded-full shadow-lg"
-            aria-label={isCardSectionOpen ? "Close property list" : "Open property list"}
-          >
-            {isCardSectionOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
         </div>
         
         {/* Card Section - Scrollable */}
-        <div className={`absolute top-0 right-0 w-full md:w-1/2 h-full bg-white transform transition-transform duration-300 ease-in-out ${
-          isCardSectionOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
-        }`}>
+        <div 
+          className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
+            isCardSectionOpen 
+              ? 'translate-x-0 md:translate-x-[100%] md:w-1/2' 
+              : 'translate-x-[100%] md:translate-x-[100%] md:w-1/2'
+          }`}
+        >
           <CardSection />
         </div>
+
+        {/* Mobile Toggle Button */}
+        <button
+          onClick={() => setIsCardSectionOpen(!isCardSectionOpen)}
+          className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-main-blue text-white px-8 py-4 rounded-full shadow-lg z-50 hover:bg-[#4b5eef] transition-all duration-300 font-medium text-base flex items-center gap-2 backdrop-blur-sm bg-opacity-90 border border-white/20"
+        >
+          {isCardSectionOpen ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M9 12l2 2l4 -4" />
+              </svg>
+              Show Map
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M9 12l2 2l4 -4" />
+              </svg>
+              Show Listings
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

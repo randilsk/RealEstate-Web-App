@@ -1,0 +1,271 @@
+[33mcommit 6cfaded7a82099371cb80f8f55f8d0ff89b61363[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mdinitha-work[m[33m)[m
+Merge: c84b895 ee538be
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 22:15:54 2025 +0530
+
+    Resolved merge conflicts in reports and transaction pages
+
+[33mcommit c84b895b564c388995d020ff8527b1e59274caf7[m[33m ([m[1;31morigin/dinitha-work[m[33m)[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 22:13:46 2025 +0530
+
+    setting page
+
+[33mcommit ee538be49bb761a8d1b19b41e74c77c31a15fe58[m[33m ([m[1;31morigin/Main-New[m[33m)[m
+Merge: 513cf98 c1421ba
+Author: Nuwan Tharindu <nuwan.tharidu0806@gmail.com>
+Date:   Thu May 22 22:08:27 2025 +0530
+
+    Merge pull request #28 from randilsk/nuwan
+    
+    Nuwan
+
+[33mcommit c1421baaf04d527e40884daa471d1e482eb35a43[m
+Author: Tharindu0806 <nuwan.tharidu0806@gmail.com>
+Date:   Thu May 22 21:30:57 2025 +0530
+
+    comment
+
+[33mcommit 513cf98a2be20fe0d243ba7ce5b8b25b58117f1f[m
+Merge: 009a9cb cd33bb7
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Thu May 22 18:35:58 2025 +0530
+
+    Merge pull request #26 from randilsk/randilsk
+    
+    Randilsk
+
+[33mcommit cd33bb79cb3615c8f2e9baeec0617bae0c6e1af8[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Thu May 22 18:34:52 2025 +0530
+
+    buy page map section layout fixed
+
+[33mcommit 10c0ffcbd18b1976ebf5ffbd765d17de487676c8[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 18:27:13 2025 +0530
+
+    all merge conflicts corrected
+
+[33mcommit f110bc644b921a11a7fbf122f51f7c96acc99d49[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 18:16:53 2025 +0530
+
+    merge conflits corrected
+
+[33mcommit 4305df2213f650f81f520d76c0e4902ec31e3394[m
+Merge: 963539c 009a9cb
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 18:12:03 2025 +0530
+
+    after pull from main-new
+
+[33mcommit 963539c9af0f1473740f02397c2504638844bdbd[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Thu May 22 18:05:34 2025 +0530
+
+    before pull from main new
+
+[33mcommit 7a799e99c5e25debe5615052c4764f6f7c799cb9[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Thu May 22 01:40:05 2025 +0530
+
+    responsive buy page for mobile
+
+[33mcommit 0543ff3180da86a3b1bd10fc621d1f6b8fde9a3f[m
+Author: Tharindu0806 <nuwan.tharidu0806@gmail.com>
+Date:   Wed May 21 22:07:43 2025 +0530
+
+    comment
+
+[33mcommit d98e8b7b1a5ec47fadace16da74a5a66e553d21b[m
+Merge: 318e6be 009a9cb
+Author: Tharindu0806 <nuwan.tharidu0806@gmail.com>
+Date:   Wed May 21 20:34:32 2025 +0530
+
+    comment
+
+[33mcommit 43320d3f4f46a1039e08a1ab1e8ad45f285802d0[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Wed May 21 00:29:55 2025 +0530
+
+    speed up importing
+
+[33mcommit 009a9cb262ba69eba9b68f32ebc94587249f4128[m
+Merge: 6597045 be5def4
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Wed May 21 00:14:51 2025 +0530
+
+    Merge pull request #25 from randilsk/randilsk
+    
+    Randilsk
+
+[33mcommit be5def444d2318e25c59c2d1c5872f22422083ae[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Wed May 21 00:02:29 2025 +0530
+
+    responsive phase x
+
+[33mcommit a20042134d538d9e4d3810232183406d11947743[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Tue May 20 22:31:10 2025 +0530
+
+    build errors corrected
+
+[33mcommit a3eee801976cea78b617aa93785d8b605815d31d[m
+Merge: ef5ad7e 6597045
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Tue May 20 22:53:33 2025 +0530
+
+    Merge pull request #24 from randilsk/Main-New
+    
+    build errors2
+
+[33mcommit 6597045783e29b595a1b1cc8ff672a1bbb7da4b8[m
+Merge: 08e5681 ef5ad7e
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Tue May 20 22:52:43 2025 +0530
+
+    Merge pull request #23 from randilsk/randilsk
+    
+    some build errors corrected
+
+[33mcommit 08e56817b44c294b4d817f1cb0f154f0389174d3[m
+Author: Wimukthi P Wijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 20:33:22 2025 +0530
+
+    Delete node_modules directory
+    
+    deleted the node modules
+
+[33mcommit ef5ad7ee77e783e39c30c8574e2020a5cf0de99c[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Tue May 20 20:29:24 2025 +0530
+
+    new
+
+[33mcommit 9a54eb4d5e3ad69578282c77a7bfee54604a2c6d[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 20:18:02 2025 +0530
+
+    dynamic the card section
+
+[33mcommit 0f1b3cd0d53a4ef09c5f5e5359374fc63e88d366[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 19:35:22 2025 +0530
+
+    send the user name when add the listing
+
+[33mcommit 4917d0418b58e19b16943e25847545715c732f21[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 11:02:50 2025 +0530
+
+    check
+
+[33mcommit 4d7bed9d45558b0661c9c0dda477172796827919[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 10:47:00 2025 +0530
+
+    fff
+
+[33mcommit da41ce09153bded5a9df98a61e009ba253aa3554[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 10:46:14 2025 +0530
+
+    gutignore
+
+[33mcommit de19e1fb00c18a4b9873df001909a080f2344de6[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Tue May 20 10:40:34 2025 +0530
+
+    api changes
+
+[33mcommit fa2c7400c0e183205cd623ef3cbcaa993a3ec560[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Mon May 19 17:55:14 2025 +0530
+
+    fff
+
+[33mcommit be725725fb45f1dd59c3610b55394ad22e2ce3fb[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Sun May 18 11:55:43 2025 +0530
+
+    working on total listing frontne
+
+[33mcommit dd102f38ecd75d59136229578c18b6fc16d7b942[m
+Merge: c174c0c 6190b3e
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Mon May 19 17:43:39 2025 +0530
+
+    Merge pull request #18 from randilsk/randilsk
+    
+    evaluation day
+
+[33mcommit 6190b3e87dac12e8f183ca0b428b85b6ca54a9ca[m
+Author: randilsk <randilsulakkana@gmail.com>
+Date:   Mon May 19 17:42:38 2025 +0530
+
+    evaluation day
+
+[33mcommit 673dbb433015d29296d9b25a707ef694b56911fd[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Mon May 19 12:34:57 2025 +0530
+
+    case
+
+[33mcommit c174c0cfa63540e2023811969e6ff71dd9060982[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: fb1960f 2cfc8d4
+Author: Rathnayaka R.D.L. <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Mon May 19 12:09:21 2025 +0530
+
+    Merge pull request #17 from randilsk/dinitha-work
+    
+    Dinitha work
+
+[33mcommit 2cfc8d427c5d682575ec2a00e5b679a784aac30b[m
+Merge: 5e69832 fb1960f
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Mon May 19 12:06:30 2025 +0530
+
+    done some changes in buttons
+
+[33mcommit 5e698323cf9bbb69dbf8d4b1d3e63dac59f9a796[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Mon May 19 12:04:34 2025 +0530
+
+    done some changes
+
+[33mcommit fb1960fbc78040f359bc2ae7a043ad3c280535bc[m[33m ([m[1;32mmain[m[33m)[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Mon May 19 12:03:20 2025 +0530
+
+    done some css styling
+
+[33mcommit c1ca831d540062513806131842ca4a79973828b3[m
+Author: dinitha-lakshan <rathnayaka_rdl_e23@engug.ruh.ac.lk>
+Date:   Mon May 19 11:48:47 2025 +0530
+
+    Pending Approval Card
+
+[33mcommit 60348ab6d1d01bcc062927c0d68b1b3d4d82cc93[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Mon May 19 11:16:52 2025 +0530
+
+    did the get all listing part
+
+[33mcommit 9d84dd7bfa325bc0c670a3356b0e3bb12a902a79[m
+Author: WimukthiPWijerathne <wimukthiwijerathne@gmail.com>
+Date:   Mon May 19 00:26:49 2025 +0530
+
+    worked on get all listings
+
+[33mcommit ce9643ba82dcf223ead730d56cae17d8e6d9d179[m
+Merge: 8d208ec 191c35e
+Author: Sulakkana Randil <153174278+randilsk@users.noreply.github.com>
+Date:   Sun May 18 23:25:17 2025 +0530
+
+    Merge pull request #16 from randilsk/randilsk
+    
+    hr
+
+[33mcommit 191c35e640ab5a56ce087abc918770d5965d476

@@ -22,7 +22,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3001", // Replace with your frontend URL
+    origin: ["http://localhost:3000", "http://localhost:3001"], // Allow both frontend ports
     credentials: true, // Allow cookies to be sent with requests
   })
 );

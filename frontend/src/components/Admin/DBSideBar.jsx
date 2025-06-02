@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { FaTachometerAlt, FaBuilding, FaUsers, FaChartLine, FaCog, FaUserCircle, FaSignOutAlt, FaExchangeAlt } from 'react-icons/fa';
+import { FaTachometerAlt, FaBuilding, FaUsers, FaChartLine, FaCog, FaUserCircle, FaSignOutAlt, FaExchangeAlt, FaCheckCircle } from 'react-icons/fa';
 
 function DBSideBar() {
   return (
@@ -27,7 +27,7 @@ function DBSideBar() {
         </div>
 
         {/* Navigation Menu */}
-        <div className="flex-1 overflow-y-auto py-4 px-3">
+        <div className="flex-1 py-4 px-3">
           <p className="text-xs uppercase text-blue-300 font-medium mb-2 ml-2">Main Menu</p>
           <ul className="space-y-1">
             <li>
@@ -48,6 +48,11 @@ function DBSideBar() {
             <li>
               <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/transaction">
                 <FaExchangeAlt /> Transactions
+              </Link>
+            </li>
+            <li>
+              <Link className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded-md transition-colors" href="/Admin/ApproveAdds">
+                <FaCheckCircle /> Approvals
               </Link>
             </li>
           </ul>

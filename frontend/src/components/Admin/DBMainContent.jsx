@@ -252,10 +252,7 @@ function DBMainContent() {
                         trend="down"
                     />
 
-                    <StatCard title="Revenue" value="$12,000" icon={FaDollarSign} href="/revenue" />
-                    <Link href="Admin/ApproveAdds" className="w-full">
-  <StatCard title="Pending Approvals" value="15" icon={FaCog} />
-</Link>
+          
 
 
 

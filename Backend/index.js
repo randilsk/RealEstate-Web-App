@@ -30,7 +30,7 @@ app.use(
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Middleware to parse cookies
+// Middleware to parse cookiesS
 app.use(cookieParser());
 
 app.listen(3000, () => {

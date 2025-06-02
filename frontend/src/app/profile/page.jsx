@@ -13,7 +13,8 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
-import MoreOptions from '../../components/Profile/editProfile.jsx'; // Adjust path to your MoreOptions component
+import MoreOptions from '../../components/Profile/editProfile'; // Import MoreOptions component
+import EditProfile from '../../components/Profile/changeProfile'; // Import your existing EditProfile component
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -21,7 +22,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
   const [signOutError, setSignOutError] = useState("");
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile'
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -73,8 +74,21 @@ export default function Profile() {
     }));
   };
 
+  // Navigation handlers
   const handleMoreOptions = () => {
-    setShowMoreOptions(true);
+    setCurrentView('moreOptions');
+  };
+
+   const handleEditProfile = () => {
+    setCurrentView('editProfile');
+  };
+
+  const handleBackToProfile = () => {
+    setCurrentView('profile');
+  };
+
+  const handleBackToMoreOptions = () => {
+    setCurrentView('moreOptions');
   };
 
   const handleSignOut = async () => {
@@ -87,7 +101,7 @@ export default function Profile() {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Inc
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -115,96 +129,109 @@ export default function Profile() {
     }
   };
 
+  // Render based on current view
+  if (currentView === 'moreOptions') {
+    return (
+      <MoreOptions 
+        onBack={handleBackToProfile} 
+        onEditProfile={handleEditProfile}
+      />
+    );
+  }
+
+  if (currentView === 'editProfile') {
+    return (
+      <EditProfile 
+        onBack={handleBackToMoreOptions} 
+      />
+    );
+  }
+
+  // Default profile view
   return (
-    <>
-      {showMoreOptions ? (
-        <MoreOptions onBack={() => setShowMoreOptions(false)} />
-      ) : (
-        <div
-          className="w-full h-screen bg-cover bg-center flex items-center justify-center"
-          style={{
-            backgroundImage: `url(${signInImage.src})`,
-          }}
-        >
-          <Toaster position="top-center" />
-          <div
-            className="w-[425px] rounded-[48px] p-5 max-w-lg mx-auto shadow-lg border"
-            style={{ backgroundColor: "#d9d9d9", borderTopWidth: "4px" }}
-          >
-            <h1 className="text-3xl text-center font-semibold my-5">
-              Welcome to UrbanNest
-            </h1>
-            <h2 className="text-xl font-semibold my-4 text-center">Profile</h2>
+    <div
+      className="w-full h-screen bg-cover bg-center flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${signInImage.src})`,
+      }}
+    >
+      <Toaster position="top-center" />
+      <div
+        className="w-[425px] rounded-[48px] p-5 max-w-lg mx-auto shadow-lg border"
+        style={{ backgroundColor: "#d9d9d9", borderTopWidth: "4px" }}
+      >
+        <h1 className="text-3xl text-center font-semibold my-5">
+          Welcome to UrbanNest
+        </h1>
+        <h2 className="text-xl font-semibold my-4 text-center">Profile</h2>
 
-            <div className="flex flex-col gap-4">
-              <input
-                type="file"
-                ref={fileRef}
-                hidden
-                accept="image/*"
-                onChange={handleFileChange}
-              />
+        <div className="flex flex-col gap-4">
+          <input
+            type="file"
+            ref={fileRef}
+            hidden
+            accept="image/*"
+            onChange={handleFileChange}
+          />
 
-              <div className="flex justify-center">
-                <Image
-                  onClick={() => fileRef.current.click()}
-                  src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
-                  alt="profile"
-                  className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
-                  width={96}
-                  height={96}
-                />
-              </div>
-
-              {fileUploadError && (
-                <p className="text-red-700 text-center">{fileUploadError}</p>
-              )}
-              {filePerc > 0 && filePerc < 100 && (
-                <p className="text-slate-700 text-center">{`Uploading: ${filePerc}%`}</p>
-              )}
-
-              <input
-                type="text"
-                placeholder="Username"
-                id="username"
-                defaultValue={currentUser?.username}
-                className="border p-3 rounded-lg"
-                onChange={handleChange}
-                readOnly
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                id="email"
-                defaultValue={currentUser?.email}
-                className="border p-3 rounded-lg"
-                onChange={handleChange}
-                readOnly
-              />
-
-              <button
-                onClick={handleMoreOptions}
-                className="bg-blue-600 text-white rounded-lg p-3 uppercase hover:opacity-95"
-              >
-                More Options
-              </button>
-            </div>
-
-            <div className="flex justify-center mt-5">
-              <span
-                onClick={handleSignOut}
-                className="text-red-700 cursor-pointer"
-              >
-                Sign Out
-              </span>
-            </div>
-
-            {signOutError && (
-              <p className="text-red-700 text-center mt-2">{signOutError}</p>
-            )}
+          <div className="flex justify-center">
+            <Image
+              onClick={() => fileRef.current.click()}
+              src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
+              alt="profile"
+              className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+              width={96}
+              height={96}
+            />
           </div>
+
+          {fileUploadError && (
+            <p className="text-red-700 text-center">{fileUploadError}</p>
+          )}
+          {filePerc > 0 && filePerc < 100 && (
+            <p className="text-slate-700 text-center">{`Uploading: ${filePerc}%`}</p>
+          )}
+
+          <input
+            type="text"
+            placeholder="Username"
+            id="username"
+            defaultValue={currentUser?.username}
+            className="border p-3 rounded-lg"
+            onChange={handleChange}
+            readOnly
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            id="email"
+            defaultValue={currentUser?.email}
+            className="border p-3 rounded-lg"
+            onChange={handleChange}
+            readOnly
+          />
+
+          <button
+            onClick={handleMoreOptions}
+            className="bg-blue-600 text-white rounded-lg p-3 uppercase hover:opacity-95"
+          >
+            More Options
+          </button>
         </div>
-      )}
-    </>
+
+        <div className="flex justify-center mt-5">
+          <span
+            onClick={handleSignOut}
+            className="text-red-700 cursor-pointer"
+          >
+            Sign Out
+          </span>
+        </div>
+
+        {signOutError && (
+          <p className="text-red-700 text-center mt-2">{signOutError}</p>
+        )}
+      </div>
+    </div>
   );
 }

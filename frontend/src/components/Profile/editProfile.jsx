@@ -11,25 +11,30 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
+import EditProfil from '../Profile/changeProfile.jsx';
 
-export default function MoreOptions({ onBack }) {
+export default function MoreOptions({ onBack, onEditProfile }) {
   const [deleteError, setDeleteError] = useState("");
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleEditProfile = () => {
     // Navigate to edit profile page or open edit modal
-    router.push('/edit-profile');
-    // Or you could implement inline editing here
+    if (onEditProfile) {
+      onEditProfile();
+    }
   };
 
   const handleViewListings = () => {
     // Navigate to user's listings page
     router.push('/my-listings');
   };
+  const handleUpdateProfile = async () => {
+    setShowEditProfile(true);
+  }
 
   const handleUpgradePlan = () => {
     // Navigate to upgrade plan page
@@ -137,7 +142,7 @@ export default function MoreOptions({ onBack }) {
                 </svg>
               </div>
               <div>
-                <h3 className="font-medium text-gray-900">Edit Profile</h3>
+                <h3 className="font-medium text-gray-900" onClick={onEditProfile}>Edit Profile</h3>
                 <p className="text-sm text-gray-500">Update your personal information</p>
               </div>
             </div>

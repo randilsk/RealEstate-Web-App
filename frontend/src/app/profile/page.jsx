@@ -13,8 +13,9 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
-import MoreOptions from '../../components/Profile/editProfile'; // Import MoreOptions component
-import EditProfile from '../../components/Profile/changeProfile'; // Import your existing EditProfile component
+import MoreOptions from '../../components/Profile/editProfile';
+import EditProfile from '../../components/Profile/changeProfile';
+import UserListings from '../../components/Profile/UserListings';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -22,7 +23,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
   const [signOutError, setSignOutError] = useState("");
-  const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile'
+  const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile', 'userListings'
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -79,8 +80,12 @@ export default function Profile() {
     setCurrentView('moreOptions');
   };
 
-   const handleEditProfile = () => {
+  const handleEditProfile = () => {
     setCurrentView('editProfile');
+  };
+
+  const handleUserListings = () => {
+    setCurrentView('userListings');
   };
 
   const handleBackToProfile = () => {
@@ -135,6 +140,7 @@ export default function Profile() {
       <MoreOptions 
         onBack={handleBackToProfile} 
         onEditProfile={handleEditProfile}
+        onUserListings={handleUserListings}
       />
     );
   }
@@ -143,6 +149,14 @@ export default function Profile() {
     return (
       <EditProfile 
         onBack={handleBackToMoreOptions} 
+      />
+    );
+  }
+
+  if (currentView === 'userListings') {
+    return (
+      <UserListings 
+        onBack={handleBackToMoreOptions}
       />
     );
   }

@@ -13,7 +13,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
 import EditProfil from '../Profile/changeProfile.jsx';
 
-export default function MoreOptions({ onBack, onEditProfile }) {
+export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
   const [deleteError, setDeleteError] = useState("");
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -28,10 +28,6 @@ export default function MoreOptions({ onBack, onEditProfile }) {
     }
   };
 
-  const handleViewListings = () => {
-    // Navigate to user's listings page
-    router.push('/my-listings');
-  };
   const handleUpdateProfile = async () => {
     setShowEditProfile(true);
   }
@@ -153,7 +149,7 @@ export default function MoreOptions({ onBack, onEditProfile }) {
 
           {/* View Listings */}
           <div
-            onClick={handleViewListings}
+            onClick={onUserListings}
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border"
           >
             <div className="flex items-center space-x-4">

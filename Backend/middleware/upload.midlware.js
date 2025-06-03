@@ -4,4 +4,4 @@ import { upload } from '../config/cloudinary.js';
 export const uploadSingle = upload.single('image');
 
 // Export a multiple upload middleware if needed
-export const uploadMultiple = upload.array('images', 5); // allows up to 5 images 
+export const uploadMultiple = upload.array('images', 5); // allows up to 5 images\

@@ -28,4 +28,6 @@ router.put("/:id", updateListing);
 // Delete a listing by ID
 router.delete("/:id", deleteListing);
 
+router.put('/listing/:id', updateListing); // Ensure this line exists and is correct
+    // ...
 export default router;

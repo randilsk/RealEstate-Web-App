@@ -67,6 +67,25 @@ function Header_varient_1() {
     }
   };
 
+  const handleSearchIconClick = async () => {
+    if (searchLocation.trim()) {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            searchLocation
+          )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          const location = data.results[0];
+          handleLocationSelect(location);
+        }
+      } catch (error) {
+        console.error("Error searching location:", error);
+      }
+    }
+  };
+
   const handleLocationSelect = (location) => {
     setSearchLocation(location.formatted_address);
     setSearchResults([]);
@@ -263,7 +282,7 @@ function Header_varient_1() {
               placeholder="Enter an address, city, district, province"
               className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
             />
-            <div className="absolute right-0 pr-4">
+            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -359,7 +378,7 @@ function Header_varient_1() {
               placeholder="Enter an address, city..."
               className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
             />
-            <div className="absolute right-0 pr-4">
+            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"

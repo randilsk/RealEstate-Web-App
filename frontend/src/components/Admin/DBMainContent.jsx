@@ -132,6 +132,7 @@ function DBMainContent() {
     const [isListingModalOpen, setIsListingModalOpen] = useState(false);
     const [selectedListing, setSelectedListing] = useState(null);
     const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
+    const [pendingListings, setPendingListings] = useState(0);
 
     // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
@@ -157,6 +158,7 @@ function DBMainContent() {
             console.log('Listings fetched:', response.data); // Debug log
             setListings(response.data);
             setListCount(response.data.length);
+            setPendingListings(response.data.filter(listing => listing.status === 'pending').length);
         } catch (error) {
             console.error('Error fetching listings:', error);
         } finally {
@@ -278,8 +280,8 @@ function DBMainContent() {
                         trend="up"
                     />
                     <StatCard 
-                        title="Pending Approvals" 
-                        value="15" 
+                        title="Total Pending Listings" 
+                        value={pendingListings} 
                         icon={FaCog} 
                         iconColor="text-amber-600"
                         percentChange="-2.1% from last month"

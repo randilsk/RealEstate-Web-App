@@ -5,7 +5,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   ResponsiveContainer, Cell
 } from "recharts"; //graphs
-import { FaBell, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaCog, FaDollarSign } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 
@@ -17,6 +17,7 @@ export default function DBreports() {
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [transactions, setTransactions] = useState([]);
 
     const [lineChartDynamicData, setLineChartDynamicData] = useState([]);
     const [barChartDynamicData, setBarChartDynamicData] = useState([]);
@@ -99,12 +100,13 @@ export default function DBreports() {
     const fetchTransactions = async () => {
         try {
             const response = await axios.get('/api/transactions'); // Placeholder endpoint for transactions
-            const transactions = response.data;
-            const totalAmount = transactions.reduce((sum, transaction) => sum + (transaction.amount || 0), 0);
+            const transactionsData = response.data;
+            setTransactions(transactionsData);
+            const totalAmount = transactionsData.reduce((sum, transaction) => sum + (transaction.amount || 0), 0);
             setTotalTransactions(totalAmount);
 
             const monthlyRevenue = {};
-            transactions.forEach(transaction => {
+            transactionsData.forEach(transaction => {
                 const month = new Date(transaction.date).toLocaleString('en-us', { month: 'short' }); // Assuming 'date' field exists
                 monthlyRevenue[month] = (monthlyRevenue[month] || 0) + (transaction.amount || 0);
             });
@@ -120,6 +122,7 @@ export default function DBreports() {
             console.error('Error fetching transactions:', error);
             setTotalTransactions(0); 
             setBarChartDynamicData([]); // Set to empty on error
+            setTransactions([]); // Set to empty on error
         } finally {
             // setLoading(false);
         }
@@ -131,7 +134,7 @@ export default function DBreports() {
             await Promise.all([
                 fetchUsers(),
                 fetchListings(),
-                // fetchTransactions() // Commented out as per user request
+                fetchTransactions()
             ]);
             setLoading(false);
         };
@@ -278,21 +281,19 @@ export default function DBreports() {
             <th className="p-2 text-left">Date</th>
             <th className="p-2 text-left">Status</th>
           </tr></thead>
-          <tbody><tr>
-              <td className="p-2">TX01</td>
-              <td className="p-2">Rathnayaka</td>
-              <td className="p-2">10,000</td>
-              <td className="p-2">Plan 1</td>
-              <td className="p-2">2025-04-10</td>
-              <td className="p-2">Success</td>
-            </tr><tr>
-              <td className="p-2">TX02</td>
-              <td className="p-2">Dinitha</td>
-              <td className="p-2">20,000</td>
-              <td className="p-2">Plan 2</td>
-              <td className="p-2">2025-04-15</td>
-              <td className="p-2">Pending</td>
-            </tr></tbody>
+          <tbody>{transactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date (most recent first)
+                .slice(0, 5) // Display only the 5 most recent transactions
+                .map((transaction) => (
+                    <tr key={transaction._id || transaction.id} className="border-t">
+                        <td className="p-2">{transaction._id ? transaction._id.slice(-5) : 'N/A'}</td>
+                        <td className="p-2">{transaction.user || 'N/A'}</td>
+                        <td className="p-2">{transaction.amount ? transaction.amount.toLocaleString() : 'N/A'}</td>
+                        <td className="p-2">{transaction.plan || 'N/A'}</td>
+                        <td className="p-2">{transaction.date ? new Date(transaction.date).toLocaleDateString() : 'N/A'}</td>
+                        <td className="p-2">{transaction.status || 'N/A'}</td>
+                    </tr>
+                ))}</tbody>
         </table>
       </div>
     </div>

@@ -19,6 +19,7 @@ function MapSection() {
   const [zoom, setZoom] = useState(10);
   const [map, setMap] = useState(null);
   const [searchArea, setSearchArea] = useState(null);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   // Load Google Maps API
   const { isLoaded } = useJsApiLoader({
@@ -55,6 +56,7 @@ function MapSection() {
       const { lat, lng, address } = event.detail;
       setCenter({ lat, lng });
       setZoom(13); // Zoom in closer when a location is selected
+      setIsSearchActive(true);
 
       // Set search area circle
       setSearchArea({
@@ -88,6 +90,20 @@ function MapSection() {
       window.removeEventListener("locationSelected", handleLocationSelected);
     };
   }, [listings]);
+
+  // Handle zoom changes
+  const handleZoomChanged = () => {
+    if (map) {
+      const newZoom = map.getZoom();
+      setZoom(newZoom);
+      
+      // If zoomed out enough, show all listings
+      if (newZoom <= 11 && isSearchActive) {
+        setFilteredListings(listings);
+        setIsSearchActive(false);
+      }
+    }
+  };
 
   // Map options
   const mapOptions = {
@@ -152,6 +168,7 @@ function MapSection() {
         options={mapOptions}
         onLoad={onLoad}
         onUnmount={onUnmount}
+        onZoomChanged={handleZoomChanged}
       >
         {/* Search area highlight */}
         {searchArea && (

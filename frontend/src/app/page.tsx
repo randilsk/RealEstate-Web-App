@@ -24,6 +24,11 @@ const AboutSectionHome = dynamic(() => import("../components/HomeContent/AboutSe
   ssr: true
 });
 
+const HomeReviewSection = dynamic(() => import("../components/HomeContent/HomeReviewSection.jsx"), {
+  loading: () => <div>Loading...</div>,
+  ssr: true
+});
+
 export default function Home() {
   return (
     <>
@@ -36,6 +41,7 @@ export default function Home() {
         <Bluebar />
         <AboutSectionHome />
         <Bluebar />
+        <HomeReviewSection />
       </div>
     </>
   );

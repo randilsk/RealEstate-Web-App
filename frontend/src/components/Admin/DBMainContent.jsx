@@ -299,7 +299,7 @@ function DBMainContent() {
                         <thead>
                             <tr className="bg-gray-200">
                                 <th className="border p-2">ID</th>
-                                <th className="border p-2">Title</th>
+                                <th className="border p-2">User Name</th>
                                 <th className="border p-2">Location</th>
                                 <th className="border p-2">Price</th>
                                 <th className="border p-2">Status</th>
@@ -310,7 +310,7 @@ function DBMainContent() {
                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
                                 .slice(0, 5) // Display only the 5 most recent listings
                                 .map((listing) => (
-                                    <tr key={listing._id}><td className="border p-2">{listing._id.slice(-5)}</td><td className="border p-2">{listing.title || 'N/A'}</td><td className="border p-2">{listing.address || 'N/A'}</td><td className="border p-2">Rs. {listing.price ? listing.price.toLocaleString() : 'N/A'}</td><td className="border p-2">{listing.status || 'Pending'}</td></tr>
+                                    <tr key={listing._id}><td className="border p-2">{listing._id.slice(-5)}</td><td className="border p-2">{listing.username || 'N/A'}</td><td className="border p-2">{listing.address || 'N/A'}</td><td className="border p-2">Rs. {listing.price ? listing.price.toLocaleString() : 'N/A'}</td><td className="border p-2">{listing.status || 'Pending'}</td></tr>
                                 ))}
                         </tbody>
                     </table>

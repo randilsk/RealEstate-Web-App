@@ -11,6 +11,8 @@ function DBMainContentApproveAdds() {
     const [error, setError] = useState(null);
     const [selectedListing, setSelectedListing] = useState(null);
     const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredListings, setFilteredListings] = useState([]);
 
     // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
@@ -21,10 +23,12 @@ function DBMainContentApproveAdds() {
     const fetchListings = async () => {
         try {
             const response = await axios.get('http://localhost:3000/api/listing/getallListing');
-            setListings(response.data);
+            const pendingListings = response.data.filter(listing => listing.status === 'pending' || !listing.status); // Filter for pending listings
+            setListings(pendingListings);
+            setFilteredListings(pendingListings); // Initialize filtered listings
             // If we have listings, center the map on the first one
-            if (response.data.length > 0 && response.data[0].lat && response.data[0].lng) {
-                setCenter({ lat: response.data[0].lat, lng: response.data[0].lng });
+            if (pendingListings.length > 0 && pendingListings[0].lat && pendingListings[0].lng) {
+                setCenter({ lat: pendingListings[0].lat, lng: pendingListings[0].lng });
             }
             setLoading(false);
         } catch (error) {
@@ -68,11 +72,52 @@ function DBMainContentApproveAdds() {
         setSelectedListing(null);
     };
 
+    // Handle search input change
+    const handleSearchChange = (e) => {
+        const term = e.target.value;
+        setSearchTerm(term);
+        const filtered = listings.filter(listing => 
+            listing.address.toLowerCase().includes(term.toLowerCase()) ||
+            listing.city.toLowerCase().includes(term.toLowerCase()) ||
+            listing.district.toLowerCase().includes(term.toLowerCase()) ||
+            (listing.title && listing.title.toLowerCase().includes(term.toLowerCase()))
+        );
+        setFilteredListings(filtered);
+    };
+
+    // Handle Approve button click
+    const handleApprove = async (listingId) => {
+        try {
+            await axios.put(`http://localhost:3000/api/listing/${listingId}`, { status: 'approved' });
+            fetchListings(); // Refresh listings after approval
+        } catch (error) {
+            console.error('Error approving listing:', error);
+            alert('Failed to approve listing. Please try again.');
+        }
+    };
+
+    // Handle Reject button click
+    const handleReject = async (listingId) => {
+        try {
+            await axios.put(`http://localhost:3000/api/listing/${listingId}`, { status: 'rejected' });
+            fetchListings(); // Refresh listings after rejection
+        } catch (error) {
+            console.error('Error rejecting listing:', error);
+            alert('Failed to reject listing. Please try again.');
+        }
+    };
+
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
             <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-                <input type="text" placeholder="Enter an address, city, district, province" className="p-2 border rounded-md w-1/3 text-black" />
+                <input 
+                    type="text" 
+                    placeholder="Enter an address, city, district, province" 
+                    className="p-2 border rounded-md w-1/3 text-black" 
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
                 <div className="flex gap-4 text-xl">
                     <FaBell />
                     <FaUserCircle />
@@ -87,13 +132,13 @@ function DBMainContentApproveAdds() {
                     <div className="text-center py-10 text-gray-600">Loading listings...</div>
                 ) : error ? (
                     <div className="text-center py-4 text-red-500">{error}</div>
-                ) : listings.length === 0 ? (
-                    <div className="text-center py-10 text-gray-600">No listings available</div>
+                ) : filteredListings.length === 0 ? (
+                    <div className="text-center py-10 text-gray-600">No listings available matching your search.</div>
                 ) : (
                     <>
                         {/* Listing Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {listings.map((listing) => (
+                            {filteredListings.map((listing) => (
                                 <div key={listing._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
                                     <img 
                                         src={listing.images?.[0] || '/images/placeholder-property.jpg'} 
@@ -132,11 +177,17 @@ function DBMainContentApproveAdds() {
                                             </div>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 flex items-center justify-center">
+                                            <button 
+                                                onClick={() => handleApprove(listing._id)}
+                                                className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 flex items-center justify-center"
+                                            >
                                                 <FaCheck className="mr-2" />
                                                 Approve
                                             </button>
-                                            <button className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center">
+                                            <button 
+                                                onClick={() => handleReject(listing._id)}
+                                                className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center"
+                                            >
                                                 <FaTimes className="mr-2" />
                                                 Reject
                                             </button>
@@ -158,7 +209,7 @@ function DBMainContentApproveAdds() {
                                             zoom={10}
                                             options={mapOptions}
                                         >
-                                            {listings.map((listing) =>
+                                            {filteredListings.map((listing) =>
                                                 listing.lat && listing.lng ? (
                                                     <Marker
                                                         key={listing._id}

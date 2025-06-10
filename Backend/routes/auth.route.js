@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup, signin, google, signout, deleteUser } from '../controllers/auth.controlller.js';
+import { signup, signin, google, signout, deleteUser, verifyPassword } from '../controllers/auth.controlller.js';
 import { verifyToken } from '../middleware/auth.middleware.js';
 import { getUsers } from '../controllers/getusers.js';
 
@@ -10,8 +10,7 @@ router.post('/signin', signin);
 router.post('/google', google);
 router.get('/signout', signout);
 router.delete('/delete/:userId', verifyToken, deleteUser);
+router.post('/verify-password/:userId', verifyToken, verifyPassword);
 router.get('/users',getUsers);
-
-
 
 export default router;

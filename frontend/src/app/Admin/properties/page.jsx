@@ -1,22 +1,20 @@
+"use client";
+
 import React from 'react';
 import DBSideBar from '../../../components/Admin/DBSideBar';
-import DBMainContentApproveAdds from '../../../components/Admin/DBMainContentApproveAdds';
+import DBProperty from '../../../components/Admin/DBProperty';
 
-
-function Dashboard() {
+function PropertiesPage() {
     return (
         <>
         <div className='flex'> 
             <DBSideBar/>
             <div className='flex-1 ml-64'>
-            <DBMainContentApproveAdds/>
-                </div>
+                <DBProperty/>
+            </div>
         </div>
         </>
     );
-    
 }
 
-export default Dashboard;
-
-           
+export default PropertiesPage; 

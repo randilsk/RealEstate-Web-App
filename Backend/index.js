@@ -6,6 +6,7 @@ import AuthRouter from "./routes/auth.route.js";
 import ListingRoute from "./routes/AddListingRoute.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import reviewRouts from "./routes/reviewRoutes.js"
 
 dotenv.config();
 
@@ -30,16 +31,17 @@ app.use(
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Middleware to parse cookies
+// Middleware to parse cookiesS
 app.use(cookieParser());
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
-
+//commenting out for now
 app.use("/api/user", UserRoute);
 app.use("/api/auth", AuthRouter);
 app.use("/api/listing", ListingRoute);
+app.use("/api/reviews", reviewRouts);
 
 //global error handling middleware
 app.use((err, req, res, next) => {

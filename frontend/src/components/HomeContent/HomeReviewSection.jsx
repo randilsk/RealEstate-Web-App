@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FaStar } from 'react-icons/fa';
+import axios from 'axios';
 
 function HomeReviewSection() {
     const [reviews, setReviews] = useState([
@@ -17,12 +18,49 @@ function HomeReviewSection() {
         setNewReview({ ...newReview, [name]: value });
     };
 
-    const handleSubmitReview = (e) => {
+    const handleSubmitReview = async (e) => {
         e.preventDefault();
         if (newReview.name && newReview.rating > 0 && newReview.comment) {
-            setReviews([...reviews, { ...newReview, id: reviews.length + 1 }]);
-            setNewReview({ name: '', rating: 0, comment: '' });
-            setHover(0); // Reset hover state for stars
+            try {
+                console.log('Submitting review:', newReview);
+                const response = await axios.post('http://localhost:3000/api/reviews/add-reviews', {
+                    name: newReview.name,
+                    rating: Number(newReview.rating),
+                    comment: newReview.comment
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response:', response.data);
+                
+                // Add the new review to the reviews array with the response data
+                setReviews([...reviews, response.data]);
+                
+                // Reset form
+                setNewReview({ name: '', rating: 0, comment: '' });
+                setHover(0); // Reset hover state for stars
+                
+                alert("Review submitted successfully!");
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.error('Error response:', error.response.data);
+                    console.error('Error status:', error.response.status);
+                    alert(error.response.data.message || "Failed to submit review. Please try again.");
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('Error request:', error.request);
+                    alert("No response from server. Please check if the server is running.");
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error message:', error.message);
+                    alert("Failed to submit review. Please try again.");
+                }
+            }
         } else {
             alert("Please fill in all review fields and select a rating.");
         }

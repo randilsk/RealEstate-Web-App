@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaEdit, FaTrash, FaEye, FaCheck, FaTimes, FaBell, FaUserCircle, FaArrowLeft, FaBed, FaBath, FaRuler, FaCalendarAlt, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSave, FaCar, FaHome, FaClock, FaTag } from 'react-icons/fa';
 import axios from 'axios';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // Property Details Modal Component
 const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
@@ -497,10 +498,14 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
 
       {/* Confirmation Dialog */}
       {showConfirmDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">Confirm Changes</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to save these changes to the property?</p>
+        <Dialog>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Changes</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to save these changes to the property?
+              </DialogDescription>
+            </DialogHeader>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowConfirmDialog(false)}
@@ -515,8 +520,8 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
                 Yes, Save Changes
               </button>
             </div>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

@@ -41,7 +41,7 @@ export default function Home() {
         <Bluebar />
         <AboutSectionHome />
         <Bluebar />
-        <HomeReviewSection />
+
       </div>
     </>
   );

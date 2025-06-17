@@ -21,6 +21,8 @@ function Listing() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentUser = useSelector((state) => state.user.currentUser);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showLandFields, setShowLandFields] = useState(false);
 
   // Pre-fill address, city, district, lat, and lng from searchParams
   const address = searchParams.get("address") || "";
@@ -50,8 +52,11 @@ function Listing() {
     description: "",
     phone: "",
     email: currentUser?.email || "",  // Initialize with user email if available
-     
-    username:currentUser?.username  
+    username: currentUser?.username,
+    // New land-related fields
+    landType: "",
+    slope: "",
+    roadAccess: ""
   });
 
   // Update user data when currentUser changes
@@ -71,9 +76,20 @@ function Listing() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle select changes
+  // Handle select changes with transition
   const handleSelectChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "homeType") {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setShowLandFields(value === "Land");
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 300);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   // Handle form submission
@@ -86,11 +102,18 @@ function Listing() {
       return;
     }
     
-    console.log("Form data being sent:", formData);
+    // Add user ID to form data
+    const dataToSend = {
+      ...formData,
+      user: currentUser._id
+    };
+    
+    console.log("Current user:", currentUser);
+    console.log("Form data being sent:", JSON.stringify(dataToSend, null, 2));
     try {
       const response = await axios.post(
         "http://localhost:3000/api/listing",
-        formData
+        dataToSend
       );
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
@@ -100,6 +123,7 @@ function Listing() {
       if (error.response) {
         console.error("Response data:", error.response.data);
         console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
       } else if (error.request) {
         console.error("No response received:", error.request);
       } else {
@@ -193,112 +217,174 @@ function Listing() {
             </Select>
           </div>
 
-          {/* Bedrooms, Bathrooms, Floors */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pb-6 sm:pb-10">
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Bedrooms</p>
-              <input
-                type="number"
-                name="bedrooms"
-                value={formData.bedrooms}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
-              <input
-                type="number"
-                name="attachedBathrooms"
-                value={formData.attachedBathrooms}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
-              <input
-                type="number"
-                name="detachedBathrooms"
-                value={formData.detachedBathrooms}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Floors</p>
-              <Select
-                onValueChange={(value) => handleSelectChange("floors", value)}
-              >
-                <SelectTrigger className="w-full bg-transparent border-gray-400">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#d9d9d9]">
-                  <SelectGroup>
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          {/* Conditional rendering based on homeType */}
+          <div className="form-transition-container">
+            {showLandFields ? (
+              <div className={`form-section ${isTransitioning ? 'animate-fadeOut' : 'animate-fadeIn'}`}>
+                {/* Land-specific fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Land Type</p>
+                    <Select
+                      onValueChange={(value) => handleSelectChange("landType", value)}
+                    >
+                      <SelectTrigger className="w-full bg-transparent border-gray-400">
+                        <SelectValue placeholder="Select land type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#d9d9d9]">
+                        <SelectGroup>
+                          <SelectItem value="Residential">Residential</SelectItem>
+                          <SelectItem value="Commercial">Commercial</SelectItem>
+                          <SelectItem value="Agricultural">Agricultural</SelectItem>
+                          <SelectItem value="Industrial">Industrial</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Slope</p>
+                    <Select
+                      onValueChange={(value) => handleSelectChange("slope", value)}
+                    >
+                      <SelectTrigger className="w-full bg-transparent border-gray-400">
+                        <SelectValue placeholder="Select slope" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#d9d9d9]">
+                        <SelectGroup>
+                          <SelectItem value="Flat">Flat</SelectItem>
+                          <SelectItem value="Slight Slope">Slight Slope</SelectItem>
+                          <SelectItem value="Steep">Steep</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Road Access</p>
+                    <input
+                      type="text"
+                      name="roadAccess"
+                      value={formData.roadAccess}
+                      onChange={handleChange}
+                      placeholder="e.g., 20ft wide main road"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className={`form-section ${isTransitioning ? 'animate-fadeOut' : 'animate-fadeIn'}`}>
+                {/* Non-land property fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Bedrooms</p>
+                    <input
+                      type="number"
+                      name="bedrooms"
+                      value={formData.bedrooms}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
+                    <input
+                      type="number"
+                      name="attachedBathrooms"
+                      value={formData.attachedBathrooms}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
+                    <input
+                      type="number"
+                      name="detachedBathrooms"
+                      value={formData.detachedBathrooms}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Floors</p>
+                    <Select
+                      onValueChange={(value) => handleSelectChange("floors", value)}
+                    >
+                      <SelectTrigger className="w-full bg-transparent border-gray-400">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#d9d9d9]">
+                        <SelectGroup>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2</SelectItem>
+                          <SelectItem value="3">3</SelectItem>
+                          <SelectItem value="4">4</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-          {/* House Area, Land Area, Parking, Build Year */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pb-6 sm:pb-10">
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
-              <input
-                type="number"
-                name="houseArea"
-                value={formData.houseArea}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
-              <input
-                type="number"
-                name="landArea"
-                value={formData.landArea}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Parking Availability</p>
-              <Select
-                onValueChange={(value) => handleSelectChange("parking", value)}
-              >
-                <SelectTrigger className="w-full bg-transparent border-gray-400">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#d9d9d9]">
-                  <SelectGroup>
-                    <SelectItem value="Available">Available</SelectItem>
-                    <SelectItem value="Not Available">Not Available</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="pt-4">
-              <p className="py-2 text-sm sm:text-base">Build year</p>
-              <input
-                type="number"
-                name="buildYear"
-                value={formData.buildYear}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-              />
-            </div>
+                {/* House Area, Land Area, Parking, Build Year */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
+                    <input
+                      type="number"
+                      name="houseArea"
+                      value={formData.houseArea}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                  {formData.homeType !== "Apartment" && (
+                    <div className="pt-4">
+                      <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
+                      <input
+                        type="number"
+                        name="landArea"
+                        value={formData.landArea}
+                        onChange={handleChange}
+                        min="0"
+                        className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                      />
+                    </div>
+                  )}
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Parking Availability</p>
+                    <Select
+                      onValueChange={(value) => handleSelectChange("parking", value)}
+                    >
+                      <SelectTrigger className="w-full bg-transparent border-gray-400">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#d9d9d9]">
+                        <SelectGroup>
+                          <SelectItem value="Available">Available</SelectItem>
+                          <SelectItem value="Not Available">Not Available</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="pt-4">
+                    <p className="py-2 text-sm sm:text-base">Build year</p>
+                    <input
+                      type="number"
+                      name="buildYear"
+                      value={formData.buildYear}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Description */}

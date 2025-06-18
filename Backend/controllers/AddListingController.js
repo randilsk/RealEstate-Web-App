@@ -6,8 +6,8 @@ export const getAllListings = async (req, res) => {
     // Add query parameters for filtering
     const query = {};
 
-    // Only get approved listings
-    query.status = "approved";
+    // Remove the status filter to get all listings
+    // query.status = "approved";
 
     console.log("Fetching listings with query:", query);
 
@@ -64,25 +64,55 @@ export const getUserListings = async (req, res) => {
 
 export const addListing = async (req, res) => {
   try {
-    // Debug: log incoming data
-    console.log("Received listing data:", JSON.stringify(req.body));
+    console.log("Received listing data:", JSON.stringify(req.body, null, 2));
 
-    // Get image URLs from the uploaded files
-    const imageUrls = req.files ? req.files.map((file) => file.path) : [];
+    // Clean up the request body based on homeType
+    const listingData = { ...req.body };
 
-    // Create new listing with image URLs
-    const newListing = new Listing({
-      ...req.body,
-      images: imageUrls,
-    });
+    // Remove fields that shouldn't be present for certain homeTypes
+    if (listingData.homeType === "Land") {
+      delete listingData.bedrooms;
+      delete listingData.attachedBathrooms;
+      delete listingData.detachedBathrooms;
+      delete listingData.floors;
+      delete listingData.houseArea;
+      delete listingData.parking;
+      delete listingData.buildYear;
+    } else if (listingData.homeType === "Apartment") {
+      delete listingData.landArea;
+    }
+
+    console.log("Cleaned listing data:", JSON.stringify(listingData, null, 2));
+
+    const newListing = new Listing(listingData);
+    console.log("Created new listing instance:", newListing);
 
     const savedListing = await newListing.save();
+    console.log("Successfully saved listing:", savedListing);
+
     res.status(201).json(savedListing);
   } catch (error) {
     console.error("Error in addListing:", error);
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+
+    if (error.name === "ValidationError") {
+      // Handle validation errors
+      const validationErrors = Object.values(error.errors).map(
+        (err) => err.message
+      );
+      console.error("Validation errors:", validationErrors);
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: validationErrors,
+      });
+    }
     res.status(500).json({
       message: "Failed to add listing",
       error: error.message,
+      errorName: error.name,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 };
@@ -134,6 +164,33 @@ export const deleteListing = async (req, res) => {
     console.error("Error in deleteListing:", error);
     res.status(500).json({
       message: "Failed to delete listing",
+      error: error.message,
+    });
+  }
+};
+
+export const updateListingStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["pending", "approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json(updatedListing);
+  } catch (error) {
+    console.error("Error updating listing status:", error);
+    res.status(500).json({
+      message: "Failed to update listing status",
       error: error.message,
     });
   }

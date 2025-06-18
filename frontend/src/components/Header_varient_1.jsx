@@ -226,7 +226,10 @@ function Header_varient_1() {
           </div>
 
           {/* Logo */}
-          <div className="text-white text-xl md:text-2xl font-bold">Urban Nest</div>
+          <Link href={"/"} className="flex items-center gap-2">
+            <div className="text-white text-xl md:text-2xl font-bold">Urban Nest</div>
+          </Link>
+          
 
           {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">

@@ -85,7 +85,10 @@ function Header() {
 
         {/* Logo - Centered on all screens */}
         <div className="p-2.5 flex justify-center items-center">
-          <div className="text-white text-xl md:text-[26px] font-bold">UrbanNest</div>
+          <Link href={'/'}>
+           <div className="text-white text-xl md:text-[26px] font-bold cursor-pointer" >UrbanNest</div>
+          </Link>
+         
         </div>
 
         {/* Desktop Auth/Profile Section */}

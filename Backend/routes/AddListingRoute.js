@@ -6,6 +6,7 @@ import {
   getSingleListing,
   updateListing,
   deleteListing,
+  updateListingStatus,
 } from "../controllers/AddListingController.js";
 import { uploadMultiple } from "../middleware/upload.midlware.js";
 
@@ -61,32 +62,7 @@ router.post("/", uploadMultiple, addListing);
 router.put("/:id", validateHomeType, cleanRequestBody, updateListing);
 
 // Update listing status
-router.put("/:id/status", async (req, res) => {
-  try {
-    const { status } = req.body;
-    if (!["pending", "approved", "rejected"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status" });
-    }
-
-    const updatedListing = await Listing.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-
-    if (!updatedListing) {
-      return res.status(404).json({ message: "Listing not found" });
-    }
-
-    res.status(200).json(updatedListing);
-  } catch (error) {
-    console.error("Error updating listing status:", error);
-    res.status(500).json({
-      message: "Failed to update listing status",
-      error: error.message,
-    });
-  }
-});
+router.put("/:id/status", updateListingStatus);
 
 // Delete a listing by ID
 router.delete("/:id", deleteListing);

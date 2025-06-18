@@ -51,12 +51,12 @@ function Listing() {
     buildYear: "",
     description: "",
     phone: "",
-    email: currentUser?.email || "",  // Initialize with user email if available
+    email: currentUser?.email || "", // Initialize with user email if available
     username: currentUser?.username,
     // New land-related fields
     landType: "",
     slope: "",
-    roadAccess: ""
+    roadAccess: "",
   });
 
   // Update user data when currentUser changes
@@ -82,32 +82,32 @@ function Listing() {
       setIsTransitioning(true);
       setTimeout(() => {
         setShowLandFields(value === "Land");
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
         setTimeout(() => {
           setIsTransitioning(false);
         }, 50);
       }, 300);
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Verify user is logged in before submitting
     if (!currentUser || !currentUser._id) {
       alert("Please login before submitting a listing");
       return;
     }
-    
+
     // Add user ID to form data
     const dataToSend = {
       ...formData,
-      user: currentUser._id
+      user: currentUser._id,
     };
-    
+
     console.log("Current user:", currentUser);
     console.log("Form data being sent:", JSON.stringify(dataToSend, null, 2));
     try {
@@ -132,7 +132,7 @@ function Listing() {
       alert("Failed to add listing. Please try again.");
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit} className="min-h-screen">
       <div className="flex justify-center px-4 sm:px-6 lg:px-8 py-6">
@@ -140,29 +140,31 @@ function Listing() {
           <div className="text-black text-xl sm:text-2xl font-bold font-poppins pb-1">
             List Your Property for Sale by Owner
           </div>
-          
+
           {/* Address and Coordinates */}
           <div className="space-y-2 text-sm sm:text-base">
-            <div className="font-regular font-poppins">
+            <div className="font-regular font-poppins break-words">
               Address:{" "}
               {address && city && district
                 ? `${address}, ${city}, ${district}`
                 : "Address not provided."}
             </div>
             <div className="font-regular font-poppins">
-                {lat && lng ? (
-                    <>
-                      Latitude: {lat}
-                      <br />
-                      Longitude: {lng}
-                    </>
-               ) : (
-                    "Coordinates not provided."
-               )}
+              {lat && lng ? (
+                <>
+                  Latitude: {lat}
+                  <br />
+                  Longitude: {lng}
+                </>
+              ) : (
+                "Coordinates not provided."
+              )}
             </div>
           </div>
-          
-          <div className="pb-2 font-semibold text-sm sm:text-base">List your details below</div>
+
+          <div className="pb-2 font-semibold text-sm sm:text-base">
+            List your details below
+          </div>
           <hr className="border-1 border-black py-3" />
 
           {/* Price Section */}
@@ -186,9 +188,13 @@ function Listing() {
             <h2 className="text-black text-xl sm:text-2xl font-bold font-poppins pb-1">
               Photos
             </h2>
-            <p className="pb-2 text-sm sm:text-base">Drag and drop clear images of your property</p>
-            <div className="py-3 border-2 border-gray-400 rounded-md h-48 sm:h-56 flex justify-center items-center">
-              <FileUploader />
+            <p className="pb-2 text-sm sm:text-base">
+              Drag and drop clear images of your property
+            </p>
+            <div className="py-3 border-2 border-gray-400 rounded-md h-48 sm:h-56 relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <FileUploader />
+              </div>
             </div>
           </div>
           <hr className="border-1 border-black pt-3" />
@@ -217,178 +223,188 @@ function Listing() {
             </Select>
           </div>
 
-          {/* Conditional rendering based on homeType */}
-          <div className="form-transition-container">
-            {showLandFields ? (
-              <div className={`form-section ${isTransitioning ? 'animate-fadeOut' : 'animate-fadeIn'}`}>
-                {/* Land-specific fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Land Type</p>
-                    <Select
-                      onValueChange={(value) => handleSelectChange("landType", value)}
-                    >
-                      <SelectTrigger className="w-full bg-transparent border-gray-400">
-                        <SelectValue placeholder="Select land type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#d9d9d9]">
-                        <SelectGroup>
-                          <SelectItem value="Residential">Residential</SelectItem>
-                          <SelectItem value="Commercial">Commercial</SelectItem>
-                          <SelectItem value="Agricultural">Agricultural</SelectItem>
-                          <SelectItem value="Industrial">Industrial</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Slope</p>
-                    <Select
-                      onValueChange={(value) => handleSelectChange("slope", value)}
-                    >
-                      <SelectTrigger className="w-full bg-transparent border-gray-400">
-                        <SelectValue placeholder="Select slope" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#d9d9d9]">
-                        <SelectGroup>
-                          <SelectItem value="Flat">Flat</SelectItem>
-                          <SelectItem value="Slight Slope">Slight Slope</SelectItem>
-                          <SelectItem value="Steep">Steep</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Road Access</p>
-                    <input
-                      type="text"
-                      name="roadAccess"
-                      value={formData.roadAccess}
-                      onChange={handleChange}
-                      placeholder="e.g., 20ft wide main road"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                </div>
+          {/* Unified Property Fields Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {/* Bedrooms */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Bedrooms</p>
+                <input
+                  type="number"
+                  name="bedrooms"
+                  value={formData.bedrooms}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
               </div>
-            ) : (
-              <div className={`form-section ${isTransitioning ? 'animate-fadeOut' : 'animate-fadeIn'}`}>
-                {/* Non-land property fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Bedrooms</p>
-                    <input
-                      type="number"
-                      name="bedrooms"
-                      value={formData.bedrooms}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
-                    <input
-                      type="number"
-                      name="attachedBathrooms"
-                      value={formData.attachedBathrooms}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
-                    <input
-                      type="number"
-                      name="detachedBathrooms"
-                      value={formData.detachedBathrooms}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Floors</p>
-                    <Select
-                      onValueChange={(value) => handleSelectChange("floors", value)}
-                    >
-                      <SelectTrigger className="w-full bg-transparent border-gray-400">
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#d9d9d9]">
-                        <SelectGroup>
-                          <SelectItem value="1">1</SelectItem>
-                          <SelectItem value="2">2</SelectItem>
-                          <SelectItem value="3">3</SelectItem>
-                          <SelectItem value="4">4</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* House Area, Land Area, Parking, Build Year */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
-                    <input
-                      type="number"
-                      name="houseArea"
-                      value={formData.houseArea}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                  {formData.homeType !== "Apartment" && (
-                    <div className="pt-4">
-                      <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
-                      <input
-                        type="number"
-                        name="landArea"
-                        value={formData.landArea}
-                        onChange={handleChange}
-                        min="0"
-                        className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                      />
-                    </div>
-                  )}
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Parking Availability</p>
-                    <Select
-                      onValueChange={(value) => handleSelectChange("parking", value)}
-                    >
-                      <SelectTrigger className="w-full bg-transparent border-gray-400">
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#d9d9d9]">
-                        <SelectGroup>
-                          <SelectItem value="Available">Available</SelectItem>
-                          <SelectItem value="Not Available">Not Available</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="pt-4">
-                    <p className="py-2 text-sm sm:text-base">Build year</p>
-                    <input
-                      type="number"
-                      name="buildYear"
-                      value={formData.buildYear}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                    />
-                  </div>
-                </div>
+            )}
+            {/* Attached Bathrooms */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
+                <input
+                  type="number"
+                  name="attachedBathrooms"
+                  value={formData.attachedBathrooms}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
               </div>
+            )}
+            {/* Detached Bathrooms */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
+                <input
+                  type="number"
+                  name="detachedBathrooms"
+                  value={formData.detachedBathrooms}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
+              </div>
+            )}
+            {/* Floors */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Floors</p>
+                <Select
+                  onValueChange={(value) => handleSelectChange("floors", value)}
+                >
+                  <SelectTrigger className="w-full bg-transparent border-gray-400">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#d9d9d9]">
+                    <SelectGroup>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {/* House Area */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
+                <input
+                  type="number"
+                  name="houseArea"
+                  value={formData.houseArea}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
+              </div>
+            )}
+            {/* Land Area */}
+            {formData.homeType !== "Apartment" && formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
+                <input
+                  type="number"
+                  name="landArea"
+                  value={formData.landArea}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
+              </div>
+            )}
+            {/* Parking Availability */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Parking Availability</p>
+                <Select
+                  onValueChange={(value) => handleSelectChange("parking", value)}
+                >
+                  <SelectTrigger className="w-full bg-transparent border-gray-400">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#d9d9d9]">
+                    <SelectGroup>
+                      <SelectItem value="Available">Available</SelectItem>
+                      <SelectItem value="Not Available">Not Available</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {/* Build Year */}
+            {formData.homeType !== "Land" && (
+              <div className="pt-4">
+                <p className="py-2 text-sm sm:text-base">Build year</p>
+                <input
+                  type="number"
+                  name="buildYear"
+                  value={formData.buildYear}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                />
+              </div>
+            )}
+            {/* Land-specific fields */}
+            {formData.homeType === "Land" && (
+              <>
+                <div className="pt-4">
+                  <p className="py-2 text-sm sm:text-base">Land Type</p>
+                  <Select
+                    onValueChange={(value) => handleSelectChange("landType", value)}
+                  >
+                    <SelectTrigger className="w-full bg-transparent border-gray-400">
+                      <SelectValue placeholder="Select land type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#d9d9d9]">
+                      <SelectGroup>
+                        <SelectItem value="Residential">Residential</SelectItem>
+                        <SelectItem value="Commercial">Commercial</SelectItem>
+                        <SelectItem value="Agricultural">Agricultural</SelectItem>
+                        <SelectItem value="Industrial">Industrial</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="pt-4">
+                  <p className="py-2 text-sm sm:text-base">Slope</p>
+                  <Select
+                    onValueChange={(value) => handleSelectChange("slope", value)}
+                  >
+                    <SelectTrigger className="w-full bg-transparent border-gray-400">
+                      <SelectValue placeholder="Select slope" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#d9d9d9]">
+                      <SelectGroup>
+                        <SelectItem value="Flat">Flat</SelectItem>
+                        <SelectItem value="Slight Slope">Slight Slope</SelectItem>
+                        <SelectItem value="Steep">Steep</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="pt-4">
+                  <p className="py-2 text-sm sm:text-base">Road Access</p>
+                  <input
+                    type="text"
+                    name="roadAccess"
+                    value={formData.roadAccess}
+                    onChange={handleChange}
+                    placeholder="e.g., 20ft wide main road"
+                    className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                  />
+                </div>
+              </>
             )}
           </div>
 
           {/* Description */}
-          <div className="pb-6 sm:pb-10">
+          <div className="pb-6 sm:pb-10 mt-8">
             <p className="py-2 text-sm sm:text-base">Description</p>
             <textarea
               name="description"
@@ -401,16 +417,18 @@ function Listing() {
           <hr className="border-1 border-black py-3" />
 
           {/* Contact Information */}
-          <div className="pb-6 sm:pb-8">
+          <div className="pb-6 sm:pb-8 mt-8">
             <div className="pb-4 text-black text-xl sm:text-2xl font-bold font-poppins">
               Contact Information
             </div>
-            <p className="text-sm sm:text-base">
+            <p className="text-sm sm:text-base break-words">
               Potential buyers will contact you through the email address you
-              use to register on UrbanNest. You must also add your phone
-              number to the listing here.
+              use to register on UrbanNest. You must also add your phone number
+              to the listing here.
             </p>
-            <p className="py-3 font-semibold text-sm sm:text-base">Phone number</p>
+            <p className="py-3 font-semibold text-sm sm:text-base">
+              Phone number
+            </p>
             <input
               type="tel"
               name="phone"
@@ -423,7 +441,9 @@ function Listing() {
 
           {/* Email Address */}
           <div className="pb-6 sm:pb-8">
-            <p className="py-3 font-semibold text-sm sm:text-base">Email address (from your account)</p>
+            <p className="py-3 font-semibold text-sm sm:text-base">
+              Email address (from your account)
+            </p>
             <input
               type="email"
               value={currentUser?.email || "Please log in"}
@@ -437,7 +457,9 @@ function Listing() {
           <div className="pb-6 sm:pb-7">
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" required />
-              <Label htmlFor="terms" className="text-sm sm:text-base">Accept terms and conditions</Label>
+              <Label htmlFor="terms" className="text-sm sm:text-base">
+                Accept terms and conditions
+              </Label>
             </div>
           </div>
 
@@ -450,9 +472,11 @@ function Listing() {
             >
               Post for Sale
             </Button>
-            
+
             {!currentUser && (
-              <p className="text-sm text-red-500">You must be logged in to submit a listing</p>
+              <p className="text-sm text-red-500">
+                You must be logged in to submit a listing
+              </p>
             )}
           </div>
         </div>

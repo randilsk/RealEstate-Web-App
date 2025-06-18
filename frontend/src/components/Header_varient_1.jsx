@@ -282,6 +282,11 @@ function Header_varient_1() {
               type="text"
               value={searchLocation}
               onChange={handleLocationSearch}
+              onKeyDown={(e)=> {
+                if(e.key === "Enter"){
+                  handleSearchIconClick();
+                }
+              }}
               placeholder="Enter an address, city, district, province"
               className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
             />

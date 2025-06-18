@@ -11,74 +11,6 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
-<<<<<<< HEAD
-
-export default function MoreOptions({ onBack }) {
-  const [deleteError, setDeleteError] = useState("");
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  
-  const { currentUser } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const router = useRouter();
-
-  const handleEditProfile = () => {
-    // Navigate to edit profile page or open edit modal
-    router.push('/edit-profile');
-    // Or you could implement inline editing here
-  };
-
-  const handleViewListings = () => {
-    // Navigate to user's listings page
-    router.push('/my-listings');
-  };
-
-  const handleUpgradePlan = () => {
-    // Navigate to upgrade plan page
-    router.push('/upgrade-plan');
-  };
-
-  const handleDeleteAccount = async () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      try {
-        dispatch(deleteUserStart());
-
-        // Make the delete request to the backend
-        const response = await fetch(`/api/auth/delete/${currentUser._id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to delete account');
-        }
-
-        // If successful, update Redux state and redirect
-        dispatch(deleteUserSuccess());
-        setDeleteSuccess(true);
-        toast.success('Account deleted successfully');
-
-        // Clear local storage
-        localStorage.removeItem('persist:root');
-
-        // Redirect to home page after a short delay
-        setTimeout(() => {
-          router.push('/');
-        }, 1500);
-      } catch (error) {
-        dispatch(deleteUserFailure(error.message));
-        setDeleteError("Failed to delete account. Please try again.");
-        toast.error(error.message || "Failed to delete account");
-        console.error("Delete account failed", error);
-      }
-    }
-  };
-
-=======
 import EditProfil from '../Profile/changeProfile.jsx';
 import DeleteAccount from './DeleteAccount';
 
@@ -97,7 +29,6 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
     router.push('/upgrade-plan');
   };
 
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
   const handleBackToProfile = () => {
     if (onBack) {
       onBack();
@@ -106,13 +37,10 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
     }
   };
 
-<<<<<<< HEAD
-=======
   if (showDeleteAccount) {
     return <DeleteAccount onBack={() => setShowDeleteAccount(false)} />;
   }
 
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"
@@ -150,10 +78,6 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
           <p className="text-gray-600 text-sm">{currentUser?.email}</p>
         </div>
 
-<<<<<<< HEAD
-        {/* Options Menu */}
-=======
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
         <div className="space-y-4">
           {/* Edit Profile */}
           <div
@@ -178,11 +102,7 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
 
           {/* View Listings */}
           <div
-<<<<<<< HEAD
-            onClick={handleViewListings}
-=======
             onClick={onUserListings}
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border"
           >
             <div className="flex items-center space-x-4">
@@ -229,11 +149,7 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
 
           {/* Delete Account */}
           <div
-<<<<<<< HEAD
-            onClick={handleDeleteAccount}
-=======
             onClick={() => setShowDeleteAccount(true)}
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-red-200 hover:border-red-300"
           >
             <div className="flex items-center space-x-4">
@@ -253,22 +169,6 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
           </div>
         </div>
 
-<<<<<<< HEAD
-        {/* Error and Success Messages */}
-        {deleteError && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
-            <p className="text-red-700 text-center text-sm">{deleteError}</p>
-          </div>
-        )}
-        {deleteSuccess && (
-          <div className="mt-4 p-3 bg-green-100 border border-green-300 rounded-lg">
-            <p className="text-green-700 text-center text-sm">Account deleted successfully!</p>
-          </div>
-        )}
-
-        {/* Footer */}
-=======
->>>>>>> 62485a470b53221a5784934f79da22972af8174a
         <div className="mt-8 pt-4 border-t border-gray-300">
           <p className="text-center text-xs text-gray-500">
             UrbanNest - Your trusted property partner

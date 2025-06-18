@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react"; //Hook Componets
 import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes, FaMapMarkerAlt } from 'react-icons/fa';
 import axios from 'axios';      //call API
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from "@react-google-maps/api";
+import dayjs from 'dayjs';
 
 //modal component for the listings
 const ListingModal = ({ isOpen, onClose, listings }) => {
@@ -133,6 +134,7 @@ function DBMainContent() {
     const [selectedListing, setSelectedListing] = useState(null);
     const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
     const [pendingListings, setPendingListings] = useState(0);
+    const [filterType, setFilterType] = useState('Monthly');
 
     // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
@@ -214,6 +216,24 @@ function DBMainContent() {
         setSelectedListing(null);
     };
 
+    // Filtering logic
+    const filterByType = (arr, dateField = 'createdAt') => {
+        const now = dayjs();
+        return arr.filter(item => {
+            const date = dayjs(item[dateField]);
+            if (filterType === 'Today') {
+                return date.isSame(now, 'day');
+            } else if (filterType === 'Monthly') {
+                return date.isSame(now, 'month');
+            } else if (filterType === 'Yearly') {
+                return date.isSame(now, 'year');
+            }
+            return true;
+        });
+    };
+    const filteredListings = filterByType(listings);
+    const filteredUsers = filterByType(users);
+
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
@@ -246,16 +266,16 @@ function DBMainContent() {
                 <div className="flex flex-wrap items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
                     <div className="flex gap-2 mt-4 sm:mt-0">
-                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Today</button>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Monthly</button>
-                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Yearly</button>
+                        <button onClick={() => setFilterType('Today')} className={`px-4 py-2 ${filterType === 'Today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Today</button>
+                        <button onClick={() => setFilterType('Monthly')} className={`px-4 py-2 ${filterType === 'Monthly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Monthly</button>
+                        <button onClick={() => setFilterType('Yearly')} className={`px-4 py-2 ${filterType === 'Yearly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Yearly</button>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard 
                         title="Total Listings" 
-                        value={loading ? "Loading..." : listCount}  
+                        value={loading ? "Loading..." : filteredListings.length}  
                         icon={FaTachometerAlt} 
                         onClick={handleListCardClick}
                         iconColor="text-blue-600"
@@ -264,7 +284,7 @@ function DBMainContent() {
                     />
                     <StatCard 
                         title="Active Users" 
-                        value={loading ? "Loading..." : userCount} 
+                        value={loading ? "Loading..." : filteredUsers.length} 
                         icon={FaUsers} 
                         onClick={handleUserCardClick}
                         iconColor="text-indigo-600"
@@ -308,9 +328,9 @@ function DBMainContent() {
                             </tr>
                         </thead>
                         <tbody>
-                            {listings
-                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                .slice(0, 5) // Display only the 5 most recent listings
+                            {filteredListings
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                .slice(0, 5)
                                 .map((listing) => (
                                     <tr key={listing._id}><td className="border p-2">{listing._id.slice(-5)}</td><td className="border p-2">{listing.username || 'N/A'}</td><td className="border p-2">{listing.address || 'N/A'}</td><td className="border p-2">Rs. {listing.price ? listing.price.toLocaleString() : 'N/A'}</td><td className="border p-2">{listing.status || 'Pending'}</td></tr>
                                 ))}
@@ -319,7 +339,7 @@ function DBMainContent() {
                 </div>
 
                 {/* Dynamic Map Section */}
-                {isLoaded && listings.length > 0 && (
+                {isLoaded && filteredListings.length > 0 && (
                     <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden mt-6">
                         <div className="p-4">
                             <h4 className="text-xl font-semibold mb-4">Recent Property Locations</h4>
@@ -330,9 +350,9 @@ function DBMainContent() {
                                     zoom={10}
                                     options={mapOptions}
                                 >
-                                    {listings
-                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                        .slice(0, 5) // Display only the 5 most recent listings
+                                    {filteredListings
+                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                        .slice(0, 5)
                                         .map((listing) =>
                                             listing.lat && listing.lng ? (
                                                 <Marker
@@ -383,14 +403,14 @@ function DBMainContent() {
             <UserModal 
                 isOpen={isUserModalOpen} 
                 onClose={() => setIsUserModalOpen(false)} 
-                users={users}
+                users={filteredUsers}
             />
             
             {/* Listing Modal */}
             <ListingModal
                 isOpen={isListingModalOpen} 
                 onClose={() => setIsListingModalOpen(false)} 
-                listings={listings}
+                listings={filteredListings}
             />
         </div>
     );

@@ -33,8 +33,4 @@ export const fetchSingleListing = async (id) => {
     console.error("Error fetching single listing:", error);
     throw error;
   }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 6baa6801aef35400e345ee4052fddb4f43f9f702

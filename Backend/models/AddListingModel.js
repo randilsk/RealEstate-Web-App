@@ -33,6 +33,12 @@ const ListingSchema = new mongoose.Schema({
   buildYear: Number,
   description: String,
   phone: String,
+  status: { // <--- Add this field
+    type: String,
+    enum: ['pending', 'approved', 'rejected'], // Define allowed values
+    default: 'pending', // Set a default value if desired
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

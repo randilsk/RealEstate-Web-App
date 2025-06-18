@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -41,6 +41,65 @@ const FilterButton = ({ label }) => (
 
 function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const [searchLocation, setSearchLocation] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleLocationSearch = async (e) => {
+    const value = e.target.value;
+    setSearchLocation(value);
+    
+    if (value.length > 2) {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            value
+          )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await response.json();
+        if (data.results) {
+          setSearchResults(data.results);
+        }
+      } catch (error) {
+        console.error("Error fetching location suggestions:", error);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleSearchIconClick = async () => {
+    if (searchLocation.trim()) {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            searchLocation
+          )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          const location = data.results[0];
+          handleLocationSelect(location);
+        }
+      } catch (error) {
+        console.error("Error searching location:", error);
+      }
+    }
+  };
+
+  const handleLocationSelect = (location) => {
+    setSearchLocation(location.formatted_address);
+    setSearchResults([]);
+    // Dispatch action to update map location
+    window.dispatchEvent(
+      new CustomEvent("locationSelected", {
+        detail: {
+          lat: location.geometry.location.lat,
+          lng: location.geometry.location.lng,
+          address: location.formatted_address,
+        },
+      })
+    );
+  };
 
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
@@ -216,10 +275,14 @@ function Header_varient_1() {
         <div className="hidden md:flex gap-4 items-center">
           {/* Search bar */}
           <div className="flex items-center flex-1 h-10 px-5 bg-white/90 rounded-full relative">
-            <span className="text-black text-base font-normal opacity-75">
-              Enter an address, city, district, province
-            </span>
-            <div className="absolute right-0 pr-4">
+            <input
+              type="text"
+              value={searchLocation}
+              onChange={handleLocationSearch}
+              placeholder="Enter an address, city, district, province"
+              className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
+            />
+            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -228,6 +291,19 @@ function Header_varient_1() {
                 className="w-5 h-5"
               />
             </div>
+            {searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50">
+                {searchResults.map((result, index) => (
+                  <div
+                    key={index}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleLocationSelect(result)}
+                  >
+                    {result.formatted_address}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Filter Buttons */}
@@ -295,10 +371,14 @@ function Header_varient_1() {
         <div className="md:hidden flex gap-2 items-center">
           {/* Search bar */}
           <div className="flex items-center flex-1 h-9 px-4 bg-white/90 rounded-full relative">
-            <span className="text-black text-sm font-normal opacity-75 truncate">
-              Enter an address, city...
-            </span>
-            <div className="absolute right-0 pr-4">
+            <input
+              type="text"
+              value={searchLocation}
+              onChange={handleLocationSearch}
+              placeholder="Enter an address, city..."
+              className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
+            />
+            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -307,6 +387,19 @@ function Header_varient_1() {
                 className="w-4.5 h-4.5"
               />
             </div>
+            {searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50">
+                {searchResults.map((result, index) => (
+                  <div
+                    key={index}
+                    className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
+                    onClick={() => handleLocationSelect(result)}
+                  >
+                    {result.formatted_address}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Filter Button */}

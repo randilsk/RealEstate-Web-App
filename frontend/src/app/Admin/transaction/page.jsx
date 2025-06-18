@@ -8,7 +8,7 @@ function Dashboard() {
         <>
         <div className='flex'> 
             <DBSideBar/>
-            <div className='flex-1'>
+            <div className='flex-1 ml-64'>
             <DBtransaction/>
                 </div>
         </div>

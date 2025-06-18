@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBell, FaUserCircle, FaSearch, FaEdit, FaTrash, FaSave, FaTimes, FaUsers, FaUserCheck } from 'react-icons/fa';
 import axios from 'axios';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // StatCard Component (similar to dashboard)
 const StatCard = ({ title, value, icon: Icon, color = "text-blue-600" }) => {
@@ -138,26 +139,30 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
                 {/* Confirmation Dialog */}
                 {showConfirmDialog && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-[70] flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-                            <h3 className="text-xl font-bold mb-4">Confirm Changes</h3>
-                            <p className="text-gray-600 mb-6">Are you sure you want to save these changes?</p>
-                            <div className="flex justify-end gap-4">
-                                <button
-                                    onClick={() => setShowConfirmDialog(false)}
-                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-                                >
-                                    No, Cancel
-                                </button>
-                                <button
-                                    onClick={handleConfirmSave}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                                >
-                                    Yes, Save Changes
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                  <Dialog>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Confirm Changes</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to save these changes?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex justify-end gap-4">
+                        <button
+                          onClick={() => setShowConfirmDialog(false)}
+                          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                        >
+                          No, Cancel
+                        </button>
+                        <button
+                          onClick={handleConfirmSave}
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                        >
+                          Yes, Save Changes
+                        </button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 )}
             </div>
         </div>

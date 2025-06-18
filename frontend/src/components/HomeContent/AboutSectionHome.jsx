@@ -7,11 +7,13 @@ function AboutSectionHome() {
     { label: "Home", href: "/" },
     { label: "Help", href: "/help" },
     { label: "About Us", href: "/about" },
-    { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Cookies", href: "/cookies" },
     { label: "Mobile App", href: "/mobile-app" },
     { label: "Advertise", href: "/advertise" },
-    { label: "Contact Us", href: "/contact" },
+    { label: "Privacy Policy", href: "/policies/privacy_policy" },
+    { label: "Return Policy", href: "/policies/return_policy" },
+    { label: "Terms & Conditions", href: "/policies/terms&conditions" },
+    { label: "Contact Us", href: "/contact" }
   ];
 
   return (

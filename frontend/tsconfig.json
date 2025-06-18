@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/components/FileUploader.jsx"
-  ],
+, "src/components/SellPageContent/Listing.jsx"  ],
   "exclude": ["node_modules"]
 }

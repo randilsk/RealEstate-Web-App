@@ -13,7 +13,13 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
+<<<<<<< HEAD
 import MoreOptions from '../../components/Profile/editProfile.jsx'; // Adjust path to your MoreOptions component
+=======
+import MoreOptions from '../../components/Profile/editProfile';
+import EditProfile from '../../components/Profile/changeProfile';
+import UserListings from '../../components/Profile/UserListings';
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -21,7 +27,11 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
   const [signOutError, setSignOutError] = useState("");
+<<<<<<< HEAD
   const [showMoreOptions, setShowMoreOptions] = useState(false);
+=======
+  const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile', 'userListings'
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -73,8 +83,30 @@ export default function Profile() {
     }));
   };
 
+<<<<<<< HEAD
   const handleMoreOptions = () => {
     setShowMoreOptions(true);
+=======
+  // Navigation handlers
+  const handleMoreOptions = () => {
+    setCurrentView('moreOptions');
+  };
+
+  const handleEditProfile = () => {
+    setCurrentView('editProfile');
+  };
+
+  const handleUserListings = () => {
+    setCurrentView('userListings');
+  };
+
+  const handleBackToProfile = () => {
+    setCurrentView('profile');
+  };
+
+  const handleBackToMoreOptions = () => {
+    setCurrentView('moreOptions');
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
   };
 
   const handleSignOut = async () => {
@@ -87,7 +119,7 @@ export default function Profile() {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Inc
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -115,6 +147,34 @@ export default function Profile() {
     }
   };
 
+  // Render based on current view
+  if (currentView === 'moreOptions') {
+    return (
+      <MoreOptions 
+        onBack={handleBackToProfile} 
+        onEditProfile={handleEditProfile}
+        onUserListings={handleUserListings}
+      />
+    );
+  }
+
+  if (currentView === 'editProfile') {
+    return (
+      <EditProfile 
+        onBack={handleBackToMoreOptions} 
+      />
+    );
+  }
+
+  if (currentView === 'userListings') {
+    return (
+      <UserListings 
+        onBack={handleBackToMoreOptions}
+      />
+    );
+  }
+
+  // Default profile view
   return (
     <>
       {showMoreOptions ? (
@@ -136,6 +196,7 @@ export default function Profile() {
             </h1>
             <h2 className="text-xl font-semibold my-4 text-center">Profile</h2>
 
+<<<<<<< HEAD
             <div className="flex flex-col gap-4">
               <input
                 type="file"
@@ -144,6 +205,16 @@ export default function Profile() {
                 accept="image/*"
                 onChange={handleFileChange}
               />
+=======
+        <div className="flex flex-col gap-4">
+          <input
+            type="file"
+            ref={fileRef}
+            hidden
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
 
               <div className="flex justify-center">
                 <Image
@@ -203,8 +274,60 @@ export default function Profile() {
               <p className="text-red-700 text-center mt-2">{signOutError}</p>
             )}
           </div>
+<<<<<<< HEAD
         </div>
       )}
     </>
+=======
+
+          {fileUploadError && (
+            <p className="text-red-700 text-center">{fileUploadError}</p>
+          )}
+          {filePerc > 0 && filePerc < 100 && (
+            <p className="text-slate-700 text-center">{`Uploading: ${filePerc}%`}</p>
+          )}
+
+          <input
+            type="text"
+            placeholder="Username"
+            id="username"
+            defaultValue={currentUser?.username}
+            className="border p-3 rounded-lg"
+            onChange={handleChange}
+            readOnly
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            id="email"
+            defaultValue={currentUser?.email}
+            className="border p-3 rounded-lg"
+            onChange={handleChange}
+            readOnly
+          />
+
+          <button
+            onClick={handleMoreOptions}
+            className="bg-blue-600 text-white rounded-lg p-3 uppercase hover:opacity-95"
+          >
+            More Options
+          </button>
+        </div>
+
+        <div className="flex justify-center mt-5">
+          <span
+            onClick={handleSignOut}
+            className="text-red-700 cursor-pointer"
+          >
+            Sign Out
+          </span>
+        </div>
+
+        {signOutError && (
+          <p className="text-red-700 text-center mt-2">{signOutError}</p>
+        )}
+      </div>
+    </div>
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
   );
 }

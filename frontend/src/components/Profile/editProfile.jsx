@@ -11,6 +11,7 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';
+<<<<<<< HEAD
 
 export default function MoreOptions({ onBack }) {
   const [deleteError, setDeleteError] = useState("");
@@ -77,6 +78,26 @@ export default function MoreOptions({ onBack }) {
     }
   };
 
+=======
+import EditProfil from '../Profile/changeProfile.jsx';
+import DeleteAccount from './DeleteAccount';
+
+export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+  const router = useRouter();
+
+  const handleEditProfile = () => {
+    if (onEditProfile) {
+      onEditProfile();
+    }
+  };
+
+  const handleUpgradePlan = () => {
+    router.push('/upgrade-plan');
+  };
+
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
   const handleBackToProfile = () => {
     if (onBack) {
       onBack();
@@ -85,6 +106,13 @@ export default function MoreOptions({ onBack }) {
     }
   };
 
+<<<<<<< HEAD
+=======
+  if (showDeleteAccount) {
+    return <DeleteAccount onBack={() => setShowDeleteAccount(false)} />;
+  }
+
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center"
@@ -107,10 +135,9 @@ export default function MoreOptions({ onBack }) {
           <h1 className="text-2xl font-semibold text-center flex-1">
             More Options
           </h1>
-          <div className="w-8"></div> {/* Spacer for centering */}
+          <div className="w-8"></div>
         </div>
 
-        {/* User Info Section */}
         <div className="flex flex-col items-center mb-8">
           <Image
             src={currentUser?.avatar || "/default-avatar.png"}
@@ -123,7 +150,10 @@ export default function MoreOptions({ onBack }) {
           <p className="text-gray-600 text-sm">{currentUser?.email}</p>
         </div>
 
+<<<<<<< HEAD
         {/* Options Menu */}
+=======
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
         <div className="space-y-4">
           {/* Edit Profile */}
           <div
@@ -148,7 +178,11 @@ export default function MoreOptions({ onBack }) {
 
           {/* View Listings */}
           <div
+<<<<<<< HEAD
             onClick={handleViewListings}
+=======
+            onClick={onUserListings}
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border"
           >
             <div className="flex items-center space-x-4">
@@ -195,7 +229,11 @@ export default function MoreOptions({ onBack }) {
 
           {/* Delete Account */}
           <div
+<<<<<<< HEAD
             onClick={handleDeleteAccount}
+=======
+            onClick={() => setShowDeleteAccount(true)}
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-red-200 hover:border-red-300"
           >
             <div className="flex items-center space-x-4">
@@ -215,6 +253,7 @@ export default function MoreOptions({ onBack }) {
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Error and Success Messages */}
         {deleteError && (
           <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
@@ -228,6 +267,8 @@ export default function MoreOptions({ onBack }) {
         )}
 
         {/* Footer */}
+=======
+>>>>>>> 62485a470b53221a5784934f79da22972af8174a
         <div className="mt-8 pt-4 border-t border-gray-300">
           <p className="text-center text-xs text-gray-500">
             UrbanNest - Your trusted property partner

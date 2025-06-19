@@ -5,6 +5,8 @@ function page() {
   return (
     <div>
       <Header_varient_1 />
+      
+      
     </div>
   );
 }

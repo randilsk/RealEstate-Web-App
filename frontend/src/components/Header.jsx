@@ -30,12 +30,14 @@ function Header() {
   const navItems = (
     <>
       <NavItem>
-        <Link href={"/buy"}>Buy</Link>
-      </NavItem>
-      <NavItem>
-        <Link href={"/sell"}>Sell</Link>
-      </NavItem>
-      <NavItem>Rent</NavItem>
+            <Link href={"/buy"}>Buy</Link>
+          </NavItem>
+          <NavItem>
+           <Link href={"rent"}> Rent</Link>
+            </NavItem>
+          <NavItem>
+            <Link href={"/sell"}>List</Link>
+          </NavItem>
       <NavItem isBold={true}>
         <Link href={"/"}>Home</Link>
       </NavItem>

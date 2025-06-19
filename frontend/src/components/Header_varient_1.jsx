@@ -104,11 +104,15 @@ function Header_varient_1() {
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-col gap-3">
-        <NavItem label="Buy" className="font-bold" />
-        <Link href={"/sell"}>
-          <NavItem label="Sell" />
-        </Link>
-        <NavItem label="Rent" />
+      <NavItem>
+            <Link href={"/buy"}>Buy</Link>
+          </NavItem>
+          <NavItem>
+           <Link href={"/rent"}> Rent</Link>
+            </NavItem>
+          <NavItem>
+            <Link href={"/sell"}>List</Link>
+          </NavItem>
         <Link href={"/"}>
           <NavItem label="Home" />
         </Link>
@@ -218,11 +222,11 @@ function Header_varient_1() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex gap-8">
-            <NavItem label="Buy" className="font-bold" />
-            <Link href={"/sell"}>
-              <NavItem label="Sell" />
+           <Link href={"/buy"}> <NavItem label="Buy"/></Link>
+            <Link href={"/rent"}>
+              <NavItem label="Rent" />
             </Link>
-            <NavItem label="Rent" />
+           <Link href={"/sell"}> <NavItem label="Sell" /></Link>
           </div>
 
           {/* Logo */}

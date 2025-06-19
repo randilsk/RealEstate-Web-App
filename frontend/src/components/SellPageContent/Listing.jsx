@@ -64,7 +64,12 @@ function Listing() {
       }));
     }
   }, [currentUser]);
-
+   const handleImagesChange = (files) => {
+    setFormData(prev => ({
+      ...prev,
+      images: files
+    }));
+  };
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,9 +93,31 @@ function Listing() {
     
     console.log("Form data being sent:", formData);
     try {
-      const response = await axios.post(
+       const formDataToSend = new FormData();
+      
+      // Append all form fields
+      Object.keys(formData).forEach(key => {
+        if (key === 'images') {
+          // Append each image file
+          formData.images.forEach((file, index) => {
+            formDataToSend.append('images', file);
+          });
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      // Add user ID as a single value
+      formDataToSend.set('user', currentUser._id);
+       const response = await axios.post(
         "http://localhost:3000/api/listing",
-        formData
+        
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
@@ -164,7 +191,7 @@ function Listing() {
             </h2>
             <p className="pb-2 text-sm sm:text-base">Drag and drop clear images of your property</p>
             <div className="py-3 border-2 border-gray-400 rounded-md h-48 sm:h-56 flex justify-center items-center">
-              <FileUploader />
+              <FileUploader onImagesChange={handleImagesChange} />
             </div>
           </div>
           <hr className="border-1 border-black pt-3" />

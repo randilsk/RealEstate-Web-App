@@ -16,29 +16,71 @@ const ListingSchema = new mongoose.Schema({
   },
   city: String,
   username: String,
-  email: String,
   district: String,
   lat: Number,
   lng: Number,
   price: Number,
   images: [String],
-  homeType: String,
-  bedrooms: Number,
-  attachedBathrooms: Number,
-  detachedBathrooms: Number,
-  floors: Number,
-  houseArea: Number,
-  landArea: Number,
-  parking: String,
-  buildYear: Number,
+  homeType: {
+    type: String,
+    required: true,
+    enum: ['Single Family', 'Multi Family', 'Apartment', 'Land', 'Other']
+  },
+  bedrooms: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land' && this.homeType !== 'Apartment';
+    }
+  },
+  attachedBathrooms: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land' && this.homeType !== 'Apartment';
+    }
+  },
+  detachedBathrooms: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land' && this.homeType !== 'Apartment';
+    }
+  },
+  floors: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land' && this.homeType !== 'Apartment';
+    }
+  },
+  houseArea: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land';
+    }
+  },
+  landArea: {
+    type: Number,
+    required: function() {
+      return this.homeType === 'Land' || (this.homeType !== 'Apartment' && this.homeType !== 'Land');
+    }
+  },
+  parking: {
+    type: String,
+    required: function() {
+      return this.homeType !== 'Land';
+    }
+  },
+  buildYear: {
+    type: Number,
+    required: function() {
+      return this.homeType !== 'Land';
+    }
+  },
   description: String,
   phone: String,
-  status: { // <--- Add this field
+  status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'], // Define allowed values
-    default: 'pending', // Set a default value if desired
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
   },
-
   createdAt: {
     type: Date,
     default: Date.now,

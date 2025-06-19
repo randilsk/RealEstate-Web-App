@@ -7,6 +7,8 @@ import ListingRoute from "./routes/AddListingRoute.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import reviewRouts from "./routes/reviewRoutes.js"
+
+import rentRoutes from "./routes/Rentroutes.js"
 import AdminRoute from "./routes/admin.route.js";
 
 dotenv.config();
@@ -44,6 +46,9 @@ app.use("/api/auth", AuthRouter);
 app.use("/api/listing", ListingRoute);
 app.use("/api/reviews", reviewRouts);
 app.use("/api/admin", AdminRoute);
+app.use("/api/Rentroutes",rentRoutes);
+
+
 
 //global error handling middleware
 app.use((err, req, res, next) => {

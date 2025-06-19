@@ -38,7 +38,7 @@ function FileUploader({ onImagesChange }) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
       {/* Hidden File Input */}
       <input
         type="file"
@@ -50,17 +50,19 @@ function FileUploader({ onImagesChange }) {
       />
 
       {/* Custom Label/Button */}
-      <label
-        htmlFor="file-upload"
-        className="bg-gray-400 text-black px-6 py-3 rounded-lg cursor-pointer hover:bg-main-blue hover:text-white mb-4"
-      >
-        Upload Photos
-      </label>
+      <div className="flex-1 flex items-center justify-center">
+        <label
+          htmlFor="file-upload"
+          className="bg-gray-400 text-black px-6 py-3 rounded-lg cursor-pointer hover:bg-main-blue hover:text-white flex items-center justify-center"
+        >
+          Upload Photos
+        </label>
+      </div>
 
       {/* Image Previews */}
-      <div className="w-full h-full grid grid-cols-3 gap-2 p-2 overflow-y-auto">
+      <div className="w-full grid grid-cols-3 gap-2 p-2 overflow-y-auto">
         {previewUrls.map((url, index) => (
-          <div key={index} className="relative aspect-square">
+          <div key={index} className="relative aspect-square w-full">
             <Image
               src={url}
               alt={`Preview ${index + 1}`}

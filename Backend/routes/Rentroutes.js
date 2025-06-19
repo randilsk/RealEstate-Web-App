@@ -14,7 +14,7 @@ import { uploadMultiple } from "../middleware/upload.midlware.js";
 const router = express.Router();
 
 // Get all listings
-router.get("/getalRentlListing", getAllRentListings);
+router.get("/getAllRentListing", getAllRentListings);
 
 // Get listings by user email
 router.get("/user/:email", getUserRentListings);

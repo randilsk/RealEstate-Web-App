@@ -69,7 +69,12 @@ function Listing() {
       }));
     }
   }, [currentUser]);
-
+  const handleImagesChange = (files) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: files,
+    }));
+  };
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,18 +107,33 @@ function Listing() {
       return;
     }
 
-    // Add user ID to form data
-    const dataToSend = {
-      ...formData,
-      user: currentUser._id,
-    };
-
-    console.log("Current user:", currentUser);
-    console.log("Form data being sent:", JSON.stringify(dataToSend, null, 2));
+    console.log("Form data being sent:", formData);
     try {
+      const formDataToSend = new FormData();
+
+      // Append all form fields
+      Object.keys(formData).forEach((key) => {
+        if (key === "images") {
+          // Append each image file
+          formData.images.forEach((file, index) => {
+            formDataToSend.append("images", file);
+          });
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      // Add user ID as a single value
+      formDataToSend.set("user", currentUser._id);
       const response = await axios.post(
         "http://localhost:3000/api/listing",
-        dataToSend
+
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       console.log("Listing added successfully:", response.data);
       alert("Listing added successfully!");
@@ -191,10 +211,8 @@ function Listing() {
             <p className="pb-2 text-sm sm:text-base">
               Drag and drop clear images of your property
             </p>
-            <div className="py-3 border-2 border-gray-400 rounded-md h-48 sm:h-56 relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <FileUploader />
-              </div>
+            <div className="py-3 border-2 border-gray-400 rounded-md h-48 sm:h-56 flex justify-center items-center">
+              <FileUploader onImagesChange={handleImagesChange} />
             </div>
           </div>
           <hr className="border-1 border-black pt-3" />
@@ -303,25 +321,30 @@ function Listing() {
               </div>
             )}
             {/* Land Area */}
-            {formData.homeType !== "Apartment" && formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
-                <input
-                  type="number"
-                  name="landArea"
-                  value={formData.landArea}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                />
-              </div>
-            )}
+            {formData.homeType !== "Apartment" &&
+              formData.homeType !== "Land" && (
+                <div className="pt-4">
+                  <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
+                  <input
+                    type="number"
+                    name="landArea"
+                    value={formData.landArea}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+                  />
+                </div>
+              )}
             {/* Parking Availability */}
             {formData.homeType !== "Land" && (
               <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Parking Availability</p>
+                <p className="py-2 text-sm sm:text-base">
+                  Parking Availability
+                </p>
                 <Select
-                  onValueChange={(value) => handleSelectChange("parking", value)}
+                  onValueChange={(value) =>
+                    handleSelectChange("parking", value)
+                  }
                 >
                   <SelectTrigger className="w-full bg-transparent border-gray-400">
                     <SelectValue placeholder="" />
@@ -329,7 +352,9 @@ function Listing() {
                   <SelectContent className="bg-[#d9d9d9]">
                     <SelectGroup>
                       <SelectItem value="Available">Available</SelectItem>
-                      <SelectItem value="Not Available">Not Available</SelectItem>
+                      <SelectItem value="Not Available">
+                        Not Available
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -355,7 +380,9 @@ function Listing() {
                 <div className="pt-4">
                   <p className="py-2 text-sm sm:text-base">Land Type</p>
                   <Select
-                    onValueChange={(value) => handleSelectChange("landType", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("landType", value)
+                    }
                   >
                     <SelectTrigger className="w-full bg-transparent border-gray-400">
                       <SelectValue placeholder="Select land type" />
@@ -364,7 +391,9 @@ function Listing() {
                       <SelectGroup>
                         <SelectItem value="Residential">Residential</SelectItem>
                         <SelectItem value="Commercial">Commercial</SelectItem>
-                        <SelectItem value="Agricultural">Agricultural</SelectItem>
+                        <SelectItem value="Agricultural">
+                          Agricultural
+                        </SelectItem>
                         <SelectItem value="Industrial">Industrial</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectGroup>
@@ -374,7 +403,9 @@ function Listing() {
                 <div className="pt-4">
                   <p className="py-2 text-sm sm:text-base">Slope</p>
                   <Select
-                    onValueChange={(value) => handleSelectChange("slope", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("slope", value)
+                    }
                   >
                     <SelectTrigger className="w-full bg-transparent border-gray-400">
                       <SelectValue placeholder="Select slope" />
@@ -382,7 +413,9 @@ function Listing() {
                     <SelectContent className="bg-[#d9d9d9]">
                       <SelectGroup>
                         <SelectItem value="Flat">Flat</SelectItem>
-                        <SelectItem value="Slight Slope">Slight Slope</SelectItem>
+                        <SelectItem value="Slight Slope">
+                          Slight Slope
+                        </SelectItem>
                         <SelectItem value="Steep">Steep</SelectItem>
                       </SelectGroup>
                     </SelectContent>

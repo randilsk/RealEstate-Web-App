@@ -54,54 +54,54 @@ export const verifyAdminToken = async (req, res, next) => {
 };
 
 // Verify admin permissions
-export const verifyAdminPermission = (requiredPermissions) => {
-  return (req, res, next) => {
-    try {
-      const admin = req.admin;
+// export const verifyAdminPermission = (requiredPermissions) => {
+//   return (req, res, next) => {
+//     try {
+//       const admin = req.admin;
       
-      if (!admin) {
-        return next(errorHandler(401, 'Admin authentication required'));
-      }
+//       if (!admin) {
+//         return next(errorHandler(401, 'Admin authentication required'));
+//       }
       
-      // Super admin has all permissions
-      if (admin.role === 'super-admin') {
-        return next();
-      }
+//       // Super admin has all permissions
+//       if (admin.role === 'super-admin') {
+//         return next();
+//       }
       
-      // Check if admin has required permissions
-      const hasPermission = requiredPermissions.some(permission => 
-        admin.permissions.includes(permission)
-      );
+//       // Check if admin has required permissions
+//       const hasPermission = requiredPermissions.some(permission =>
+//         admin.permissions.includes(permission)
+//       );
       
-      if (!hasPermission) {
-        return next(errorHandler(403, 'Insufficient admin permissions'));
-      }
+//       if (!hasPermission) {
+//         return next(errorHandler(403, 'Insufficient admin permissions'));
+//       }
       
-      next();
-    } catch (error) {
-      next(error);
-    }
-  };
-};
+//       next();
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+// };
 
 // Verify super admin only
-export const verifySuperAdmin = (req, res, next) => {
-  try {
-    const admin = req.admin;
+// export const verifySuperAdmin = (req, res, next) => {
+//   try {
+//     const admin = req.admin;
     
-    if (!admin) {
-      return next(errorHandler(401, 'Admin authentication required'));
-    }
+//     if (!admin) {
+//       return next(errorHandler(401, 'Admin authentication required'));
+//     }
     
-    if (admin.role !== 'super-admin') {
-      return next(errorHandler(403, 'Super admin access required'));
-    }
+//     if (admin.role !== 'super-admin') {
+//       return next(errorHandler(403, 'Super admin access required'));
+//     }
     
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 // Check if email is from urbannest.com domain
 export const validateUrbanNestDomain = (req, res, next) => {

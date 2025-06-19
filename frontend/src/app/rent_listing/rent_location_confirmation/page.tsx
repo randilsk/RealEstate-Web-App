@@ -6,7 +6,7 @@ import RentLocationConfirmation from "@/components/RentPageListingComponents/Ren
 function page() {
   return (
     <>
-      <div className="bg-[url('/images/sell-image/sell-hero-section.png')] bg-cover bg-center min-h-screen">
+      <div className="bg-[url('/images/rent-listing-image/rent-bg-2.jpg')] bg-cover bg-center min-h-screen">
         <Bluebar />
         <Header />
         <Suspense fallback={<div>Loading...</div>}>

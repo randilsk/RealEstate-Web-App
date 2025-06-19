@@ -6,7 +6,7 @@ import RentLocationChange from "@/components/RentPageListingComponents/RentLocat
 
 const Page: React.FC = () => {
   return (
-    <div className="bg-[url('/images/sell-image/sell-hero-section.png')] bg-cover bg-center min-h-screen">
+    <div className="bg-[url('/images/rent-listing-image/rent-bg-2.jpg')] bg-cover bg-center min-h-screen">
       <Bluebar />
       <Header />
       <RentLocationChange />

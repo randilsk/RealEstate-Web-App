@@ -31,7 +31,7 @@ export default function AdminSignIn() {
     e.preventDefault();
     try {
       dispatch(adminsignInStart());
-      const res = await fetch("/admin/signin", {
+      const res = await fetch("/api/admin/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,11 +41,11 @@ export default function AdminSignIn() {
       const data = await res.json();
 
       if (!res.ok) {
-        dispatch(adminsignInFailure(data.message || "Failed to sign in"));
+        dispatch(adminsignInFailure(data.message || "Only @urbannest.com email addresses are allowed for admin access"));
         return;
       }
 
-      dispatch(adminsignInSuccess(data));
+      dispatch(adminsignInSuccess(data.admin));
       router.replace("/admin/dashboard");
     } catch (err) {
       dispatch(
@@ -94,6 +94,10 @@ export default function AdminSignIn() {
           </button>
         </form>
         {error && <p className="text-red-500 mt-5 text-center">{error}</p>}
+        <p className="text-center mt-4">
+          Don&apos;t have an account?{' '}
+          <Link href="/Admin/Sign-up" className="text-blue-600 hover:underline font-semibold">Create an account</Link>
+        </p>
       </div>
     </div>
   );

@@ -4,18 +4,17 @@ import {
   adminSignIn,
   adminSignOut,
   getAdminProfile,
-  updateAdminProfile,
-  getAllUsers,
-  getUserById,
-  deleteUser,
-  getAllAdmins,
-  updateAdminStatus,
-  getDashboardStats
-} from '../controllers/adminProfileController.js';
+  // updateAdminProfile,
+  // getAllUsers,
+  // getUserById,
+  // deleteUser,
+  // getAllAdmins,
+  // updateAdminStatus,
+  // getDashboardStats
+} from '../controllers/admin.controller.js';
 import {
   verifyAdminToken,
-  verifyAdminPermission,
-  verifySuperAdmin,
+
   validateUrbanNestDomain
 } from '../middleware/admin.middleware.js';
 
@@ -28,45 +27,45 @@ router.post('/signout', adminSignOut);
 
 // Protected admin routes
 router.get('/profile', verifyAdminToken, getAdminProfile);
-router.put('/profile', verifyAdminToken, updateAdminProfile);
+// router.put('/profile', verifyAdminToken, updateAdminProfile);
 
-// Dashboard
-router.get('/dashboard/stats', 
-  verifyAdminToken, 
-  verifyAdminPermission(['view_analytics']), 
-  getDashboardStats
-);
+// // Dashboard
+// router.get('/dashboard/stats', 
+//   verifyAdminToken, 
+//   verifyAdminPermission(['view_analytics']), 
+//   getDashboardStats
+// );
 
-// User management routes
-router.get('/users', 
-  verifyAdminToken, 
-  verifyAdminPermission(['manage_users']), 
-  getAllUsers
-);
+// // User management routes
+// router.get('/users', 
+//   verifyAdminToken, 
+//   verifyAdminPermission(['manage_users']), 
+//   getAllUsers
+// );
 
-router.get('/users/:userId', 
-  verifyAdminToken, 
-  verifyAdminPermission(['manage_users']), 
-  getUserById
-);
+// router.get('/users/:userId', 
+//   verifyAdminToken, 
+//   verifyAdminPermission(['manage_users']), 
+//   getUserById
+// );
 
-router.delete('/users/:userId', 
-  verifyAdminToken, 
-  verifyAdminPermission(['manage_users']), 
-  deleteUser
-);
+// router.delete('/users/:userId', 
+//   verifyAdminToken, 
+//   verifyAdminPermission(['manage_users']), 
+//   deleteUser
+// );
 
-// Super admin only routes
-router.get('/admins', 
-  verifyAdminToken, 
-  verifySuperAdmin, 
-  getAllAdmins
-);
+// // Super admin only routes
+// router.get('/admins', 
+//   verifyAdminToken, 
+//   verifySuperAdmin, 
+//   getAllAdmins
+// );
 
-router.put('/admins/:adminId/status', 
-  verifyAdminToken, 
-  verifySuperAdmin, 
-  updateAdminStatus
-);
+// router.put('/admins/:adminId/status', 
+//   verifyAdminToken, 
+//   verifySuperAdmin, 
+//   updateAdminStatus
+// );
 
 export default router;

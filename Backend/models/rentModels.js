@@ -16,7 +16,6 @@ const RentListingSchema = new mongoose.Schema({
   },
   city: String,
   username: String,
-  email: String,
   district: String,
   lat: Number,
   lng: Number,
@@ -46,6 +45,6 @@ const RentListingSchema = new mongoose.Schema({
   },
 });
 
-const RentListing = mongoose.model("Listing", RentListingSchema);
+const RentListing = mongoose.model("RentListing", RentListingSchema);
 
-export default Listing;
+export default RentListing;

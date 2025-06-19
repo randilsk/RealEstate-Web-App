@@ -8,6 +8,7 @@ import {
   Circle,
 } from "@react-google-maps/api";
 import { fetchAllListings } from "@/lib/api";
+import { useSearchParams } from "next/navigation";
 
 // Define the libraries we need
 const libraries = ['maps'];
@@ -40,6 +41,7 @@ function MapSection() {
   const [map, setMap] = useState(null);
   const [searchArea, setSearchArea] = useState(null);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const searchParams = useSearchParams();
 
   // Load Google Maps API with proper configuration
   const { isLoaded, loadError } = useJsApiLoader({
@@ -74,7 +76,7 @@ function MapSection() {
     }
   }, [isLoaded]);
 
-  // Handle location selection from header
+  // Handle location selection from header or query params
   useEffect(() => {
     const handleLocationSelected = (event) => {
       const { lat, lng, address } = event.detail;
@@ -91,29 +93,43 @@ function MapSection() {
       // Filter listings based on distance from selected location
       const filtered = listings.filter((listing) => {
         if (!listing.lat || !listing.lng) return false;
-        
         // Calculate distance between points using Haversine formula
         const R = 6371; // Earth's radius in km
         const dLat = (listing.lat - lat) * Math.PI / 180;
         const dLng = (listing.lng - lng) * Math.PI / 180;
-        const a = 
+        const a =
           Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) * 
+          Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
           Math.sin(dLng/2) * Math.sin(dLng/2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         const distance = R * c;
-
         return distance <= 5; // Show listings within 5km radius
       });
-
       setFilteredListings(filtered);
     };
 
     window.addEventListener("locationSelected", handleLocationSelected);
+
+    // --- NEW: Handle query params for initial load ---
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    const address = searchParams.get("address");
+    if (lat && lng && address && listings.length > 0) {
+      // Simulate the event handler directly
+      handleLocationSelected({
+        detail: {
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+          address,
+        },
+      });
+    }
+    // --- END NEW ---
+
     return () => {
       window.removeEventListener("locationSelected", handleLocationSelected);
     };
-  }, [listings]);
+  }, [listings, searchParams]);
 
   // Handle zoom changes
   const handleZoomChanged = () => {

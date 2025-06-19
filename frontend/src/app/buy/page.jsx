@@ -1,11 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header_varient_1 from "../../components/Header_varient_1.jsx";
 import MapSection from "../../components/BuyPageContent/MapSection.jsx";
 import CardSection from "../../components/BuyPageContent/CardSection.jsx";
+import { useSearchParams } from "next/navigation";
 
 function page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    const address = searchParams.get("address");
+    if (lat && lng && address) {
+      window.dispatchEvent(
+        new CustomEvent("locationSelected", {
+          detail: {
+            lat: parseFloat(lat),
+            lng: parseFloat(lng),
+            address,
+          },
+        })
+      );
+    }
+  }, [searchParams]);
 
   return (
     <div className="fixed inset-0 flex flex-col">

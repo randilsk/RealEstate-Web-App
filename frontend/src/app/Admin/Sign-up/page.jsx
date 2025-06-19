@@ -62,7 +62,7 @@ export default function AdminSignUp() {
       }
       
       // Success - redirect to sign in
-      router.replace("/Admin/Sign-in");
+      router.replace("/Admin/");
     } catch (err) {
       console.error("Signup error:", err);  // Added logging
       setError(err instanceof Error ? err.message : "An error occurred");

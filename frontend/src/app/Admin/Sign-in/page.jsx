@@ -46,7 +46,7 @@ export default function AdminSignIn() {
       }
 
       dispatch(adminsignInSuccess(data.admin));
-      router.replace("/admin/dashboard");
+      router.replace("/admin/");
     } catch (err) {
       dispatch(
         adminsignInFailure(err instanceof Error ? err.message : "An error occurred")
@@ -93,7 +93,7 @@ export default function AdminSignIn() {
             {loading ? "Loading..." : "Sign In"}
           </button>
         </form>
-        {error && <p className="text-red-500 mt-5 text-center">{error}</p>}
+      
         <p className="text-center mt-4">
           Don&apos;t have an account?{' '}
           <Link href="/Admin/Sign-up" className="text-blue-600 hover:underline font-semibold">Create an account</Link>

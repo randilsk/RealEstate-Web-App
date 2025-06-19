@@ -4,10 +4,13 @@ import userReducer from '../Features/user/userSlice';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { createWrapper } from 'next-redux-wrapper';
+import  adminReducer from '../Features/user/adminSlice';
+
 
 // Combine reducers
 const rootReducer = combineReducers({
   user: userReducer,
+  admin : adminReducer,
 });
 
 // Persist configuration

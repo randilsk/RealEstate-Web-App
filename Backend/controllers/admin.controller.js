@@ -15,7 +15,7 @@ const generateAdminToken = (adminId) => {
 // Admin Sign Up
 export const adminSignUp = async (req, res, next) => {
   try {
-    const { username, email, password, role = 'admin', permissions = [] } = req.body;
+    const { username, email, password, companyId, role = 'admin', permissions = [] } = req.body;
     
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ 
@@ -31,8 +31,9 @@ export const adminSignUp = async (req, res, next) => {
       username,
       email,
       password,
-      role,
-      permissions
+      companyId,  
+      
+     
     });
     
     await newAdmin.save();
@@ -43,7 +44,7 @@ export const adminSignUp = async (req, res, next) => {
     // Set cookie
     res.cookie('admin_token', token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
@@ -57,7 +58,6 @@ export const adminSignUp = async (req, res, next) => {
     next(error);
   }
 };
-
 // Admin Sign In
 export const adminSignIn = async (req, res, next) => {
   try {

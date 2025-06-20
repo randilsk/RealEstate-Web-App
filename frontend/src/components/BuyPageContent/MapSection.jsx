@@ -6,6 +6,7 @@ import {
   InfoWindow,
   useJsApiLoader,
   Circle,
+  Polygon
 } from "@react-google-maps/api";
 import { useSearchParams } from "next/navigation";
 
@@ -35,6 +36,10 @@ function MapSection({ listings, searchArea, onZoomChange }) {
   const [zoom, setZoom] = useState(7); // Suitable zoom for Sri Lanka
   const [map, setMap] = useState(null);
   const searchParams = useSearchParams();
+  const [districtCircle, setDistrictCircle] = useState(null);
+  const [districtPolygons, setDistrictPolygons] = useState([]);
+
+
 
   // Load Google Maps API with proper configuration
   const { isLoaded, loadError } = useJsApiLoader({
@@ -55,31 +60,56 @@ function MapSection({ listings, searchArea, onZoomChange }) {
     const handleLocationSelected = (event) => {
       const { lat, lng, address } = event.detail;
       setCenter({ lat, lng });
-      setZoom(13); // Zoom in closer when a location is selected
+      setZoom(13);
     };
 
-    window.addEventListener("locationSelected", handleLocationSelected);
+    const handleDistrictSelected = async (event) => {
+      const districtName = event.detail.districtName;
 
-    // --- NEW: Handle query params for initial load ---
-    const lat = searchParams.get("lat");
-    const lng = searchParams.get("lng");
-    const address = searchParams.get("address");
-    if (lat && lng && address && listings.length > 0) {
-      // Simulate the event handler directly
-      handleLocationSelected({
-        detail: {
-          lat: parseFloat(lat),
-          lng: parseFloat(lng),
-          address,
-        },
-      });
-    }
-    // --- END NEW ---
+      try {
+        const res = await fetch("/data/sl-district.json");
+        const geojson = await res.json();
 
+        const matchedFeatures = geojson.features.filter(
+          (feature) =>
+            feature.properties.name.toLowerCase() === districtName.toLowerCase()
+        );
+
+        if (matchedFeatures.length > 0) {
+          setDistrictPolygons(matchedFeatures);
+
+          // Try to use the first coordinate for center
+          const coords = matchedFeatures[0].geometry.coordinates[0][0];
+          const centerLat = coords[1];
+          const centerLng = coords[0];
+          setCenter({ lat: centerLat, lng: centerLng });
+          setZoom(10);
+        } else {
+          console.warn("District not found in GeoJSON:", districtName);
+        }
+      } catch (error) {
+        console.error("Failed to load district boundaries:", error);
+      }
+    };
+
+    // Example event listeners (uncomment and adjust as needed)
+    window.addEventListener('locationSelected', handleLocationSelected);
+    window.addEventListener('districtSelected', handleDistrictSelected);
+
+    // Cleanup (uncomment if using event listeners)
     return () => {
-      window.removeEventListener("locationSelected", handleLocationSelected);
+      window.removeEventListener('locationSelected', handleLocationSelected);
+      window.removeEventListener('districtSelected', handleDistrictSelected);
     };
-  }, [listings, searchParams]);
+  }, []);
+
+  const drawDistrictCircle = (location) => {
+    setDistrictCircle({
+      center: { lat: location.lat, lng: location.lng },
+      radius: 15000, // You can adjust this value per district
+    });
+  };
+  
 
   // Handle zoom changes
   const handleZoomChanged = () => {
@@ -157,6 +187,31 @@ function MapSection({ listings, searchArea, onZoomChange }) {
               }}
             />
           )}
+
+{districtPolygons.map((feature, index) => {
+  const coordinates = feature.geometry.coordinates;
+
+  const paths = coordinates.map((ring) =>
+    ring.map(([lng, lat]) => ({ lat, lng }))
+  );
+
+  return (
+    <Polygon
+      key={index}
+      paths={paths}
+      options={{
+        strokeColor: "#1E3A8A",
+        strokeOpacity: 0.9,
+        strokeWeight: 2,
+        fillColor: "#60A5FA",
+        fillOpacity: 0.1,
+        zIndex: 2,
+      }}
+    />
+  );
+})}
+
+
 
           {/* Render markers for each filtered listing */}
           {listings.map((listing) =>

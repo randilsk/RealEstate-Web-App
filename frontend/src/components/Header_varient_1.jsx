@@ -140,17 +140,35 @@ function Header_varient_1() {
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
-            <FilterButton label="For Sale" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white w-full">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <DropdownMenu>
+  <DropdownMenuTrigger className="flex items-center justify-between w-full">
+    <FilterButton label="District" />
+  </DropdownMenuTrigger>
+
+  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+    {[
+      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+    ].map((district) => (
+      <DropdownMenuItem
+        key={district}
+        onClick={() =>
+          window.dispatchEvent(
+            new CustomEvent("districtSelected", {
+              detail: { districtName: district },
+            })
+          )
+        }
+      >
+        {district}
+      </DropdownMenuItem>
+    ))}
+  </DropdownMenuContent>
+</DropdownMenu>
+
       </div>
 
       <div className="w-full">
@@ -320,17 +338,35 @@ function Header_varient_1() {
 
           {/* Filter Buttons */}
           <div className="w-36">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                <FilterButton label="For Sale" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white w-auto">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+           <DropdownMenu>
+  <DropdownMenuTrigger className="flex items-center justify-between w-full">
+    <FilterButton label="District" />
+  </DropdownMenuTrigger>
+
+  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
+    {[
+      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+    ].map((district) => (
+      <DropdownMenuItem
+        key={district}
+        onClick={() =>
+          window.dispatchEvent(
+            new CustomEvent("districtSelected", {
+              detail: { districtName: district },
+            })
+          )
+        }
+      >
+        {district}
+      </DropdownMenuItem>
+    ))}
+  </DropdownMenuContent>
+</DropdownMenu>
+
           </div>
           <div className="w-36">
             <DropdownMenu>

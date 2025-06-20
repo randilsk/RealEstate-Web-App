@@ -685,7 +685,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK53", 
-        "name": "Trikuṇāmalaya"
+        "name": "Trincomalee"
       }, 
       "id": 1
     }, 
@@ -1297,7 +1297,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK45", 
-        "name": "Mulativ"
+        "name": "Mullaitivu"
       }, 
       "id": 2
     }, 
@@ -1939,7 +1939,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK41", 
-        "name": "Yāpanaya"
+        "name": "Jaffna"
       }, 
       "id": 3
     }, 
@@ -2353,7 +2353,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK42", 
-        "name": "Kilinŏchchi"
+        "name": "Kilinochchi"
       }, 
       "id": 4
     }, 
@@ -2799,7 +2799,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK43", 
-        "name": "Mannārama"
+        "name": "Mannar"
       }, 
       "id": 5
     }, 
@@ -3539,7 +3539,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK62", 
-        "name": "Puttalama"
+        "name": "Puttalam"
       }, 
       "id": 6
     }, 
@@ -4159,7 +4159,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK11", 
-        "name": "Kŏḷamba"
+        "name": "Colombo"
       }, 
       "id": 8
     }, 
@@ -4479,7 +4479,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK13", 
-        "name": "Kaḷutara"
+        "name": "Kalutara"
       }, 
       "id": 9
     }, 
@@ -4955,7 +4955,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK31", 
-        "name": "Gālla"
+        "name": "Galle"
       }, 
       "id": 10
     }, 
@@ -5383,13 +5383,13 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK32", 
-        "name": "Mātara"
+        "name": "Matara"
       }, 
       "id": 11
     }, 
     {
       "geometry": {
-        "type": "Polygon", 
+        "type": "Matara", 
         "coordinates": [
           [
             [
@@ -5907,7 +5907,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK33", 
-        "name": "Hambantŏṭa"
+        "name": "Hambantota"
       }, 
       "id": 12
     }, 
@@ -6599,7 +6599,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK52", 
-        "name": "Ampāra"
+        "name": "Ampara"
       }, 
       "id": 13
     }, 
@@ -7429,7 +7429,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK51", 
-        "name": "Maḍakalapuva"
+        "name": "Batticaloa"
       }, 
       "id": 14
     }, 
@@ -8657,7 +8657,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK82", 
-        "name": "Mŏṇarāgala"
+        "name": "Monaragala"
       }, 
       "id": 16
     }, 
@@ -9029,7 +9029,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK92", 
-        "name": "Kægalla"
+        "name": "Kegalle"
       }, 
       "id": 17
     }, 
@@ -10097,7 +10097,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK22", 
-        "name": "Mātale"
+        "name": "Matale"
       }, 
       "id": 19
     }, 
@@ -10525,7 +10525,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK72", 
-        "name": "Pŏḷŏnnaruva"
+        "name": "Polonnaruwa"
       }, 
       "id": 20
     }, 
@@ -11149,7 +11149,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK61", 
-        "name": "Kuruṇægala"
+        "name": "Kurunegala"
       }, 
       "id": 21
     }, 
@@ -11745,7 +11745,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK71", 
-        "name": "Anurādhapura"
+        "name": "Anuradhapura"
       }, 
       "id": 22
     }, 
@@ -12125,7 +12125,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK23", 
-        "name": "Nuvara Ĕliya"
+        "name": "Nuwara Eliya"
       }, 
       "id": 23
     }, 
@@ -12473,7 +12473,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK44", 
-        "name": "Vavuniyāva"
+        "name": "Vavuniya"
       }, 
       "id": 24
     }, 
@@ -12865,7 +12865,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "LK21", 
-        "name": "Mahanuvara"
+        "name": "Kandy"
       }, 
       "id": 25
     }

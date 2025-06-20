@@ -44,7 +44,7 @@ export const adminSignUp = async (req, res, next) => {
     // Set cookie
     res.cookie('admin_token', token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 3600000,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });

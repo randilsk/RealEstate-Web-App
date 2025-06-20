@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-function ListReview() {
+function RentListingReview() {
   const router = useRouter();
 
   return (
@@ -91,6 +91,8 @@ function ListReview() {
                 className="w-full sm:w-auto px-8 py-3 bg-main-blue text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-sm"
               >
                 Go to Dashboard
+               
+                
               </button>
               <a
                 href="#"
@@ -108,4 +110,4 @@ function ListReview() {
   );
 }
 
-export default ListReview;
+export default RentListingReview;

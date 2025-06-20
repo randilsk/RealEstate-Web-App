@@ -7,7 +7,6 @@ import {
   useJsApiLoader,
   Circle,
 } from "@react-google-maps/api";
-import { fetchAllListings } from "@/lib/api";
 import { useSearchParams } from "next/navigation";
 
 // Define the libraries we need
@@ -30,17 +29,11 @@ const mapOptions = {
   fullscreenControl: true,
 };
 
-function MapSection() {
-  const [listings, setListings] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [center, setCenter] = useState({ lat: 33.749, lng: -84.388 }); // Default to Atlanta
+function MapSection({ listings, searchArea, onZoomChange }) {
+  const [center, setCenter] = useState({ lat: 7.8731, lng: 80.7718 });
   const [selectedListing, setSelectedListing] = useState(null);
-  const [zoom, setZoom] = useState(10);
+  const [zoom, setZoom] = useState(7); // Suitable zoom for Sri Lanka
   const [map, setMap] = useState(null);
-  const [searchArea, setSearchArea] = useState(null);
-  const [isSearchActive, setIsSearchActive] = useState(false);
   const searchParams = useSearchParams();
 
   // Load Google Maps API with proper configuration
@@ -50,31 +43,12 @@ function MapSection() {
     libraries: libraries,
   });
 
-  // Fetch listings from the API
-  useEffect(() => {
-    const getListings = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchAllListings();
-        setListings(data);
-        setFilteredListings(data);
-
-        // If we have listings, center the map on the first one
-        if (data.length > 0 && data[0].lat && data[0].lng) {
-          setCenter({ lat: data[0].lat, lng: data[0].lng });
-        }
-      } catch (err) {
-        console.error("Error fetching listings:", err);
-        setError("Failed to load property listings");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isLoaded) {
-      getListings();
-    }
-  }, [isLoaded]);
+  // Center map on first listing if available
+  // useEffect(() => {
+  //   if (listings && listings.length > 0 && listings[0].lat && listings[0].lng) {
+  //     setCenter({ lat: listings[0].lat, lng: listings[0].lng });
+  //   }
+  // }, [listings]);
 
   // Handle location selection from header or query params
   useEffect(() => {
@@ -82,30 +56,6 @@ function MapSection() {
       const { lat, lng, address } = event.detail;
       setCenter({ lat, lng });
       setZoom(13); // Zoom in closer when a location is selected
-      setIsSearchActive(true);
-
-      // Set search area circle
-      setSearchArea({
-        center: { lat, lng },
-        radius: 5000, // 5km radius
-      });
-
-      // Filter listings based on distance from selected location
-      const filtered = listings.filter((listing) => {
-        if (!listing.lat || !listing.lng) return false;
-        // Calculate distance between points using Haversine formula
-        const R = 6371; // Earth's radius in km
-        const dLat = (listing.lat - lat) * Math.PI / 180;
-        const dLng = (listing.lng - lng) * Math.PI / 180;
-        const a =
-          Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
-          Math.sin(dLng/2) * Math.sin(dLng/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const distance = R * c;
-        return distance <= 5; // Show listings within 5km radius
-      });
-      setFilteredListings(filtered);
     };
 
     window.addEventListener("locationSelected", handleLocationSelected);
@@ -136,12 +86,10 @@ function MapSection() {
     if (map) {
       const newZoom = map.getZoom();
       setZoom(newZoom);
-      
-      // If zoomed out enough, show all listings
-      if (newZoom <= 11 && isSearchActive) {
-        setFilteredListings(listings);
-        setIsSearchActive(false);
+      if (typeof onZoomChange === 'function') {
+        onZoomChange(newZoom);
       }
+      // Do NOT reset isSearchActive or remove the circle when zoomed out
     }
   };
 
@@ -179,22 +127,6 @@ function MapSection() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-        Loading property listings...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-red-500">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-full bg-gray-100">
       {isLoaded && (
@@ -227,7 +159,7 @@ function MapSection() {
           )}
 
           {/* Render markers for each filtered listing */}
-          {filteredListings.map((listing) =>
+          {listings.map((listing) =>
             listing.lat && listing.lng ? (
               <Marker
                 key={listing._id}

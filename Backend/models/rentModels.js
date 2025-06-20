@@ -48,4 +48,4 @@ const RentListingSchema = new mongoose.Schema({
 
 const RentListing = mongoose.model("Listing", RentListingSchema);
 
-export default Listing;
+export default RentListing;

@@ -6,6 +6,20 @@ import DBSideBar from '../../components/Admin/DBSideBar';
 import DBMainContent from '../../components/Admin/DBMainContent';
 import Link from 'next/link';
 import signInImage from '../../../public/images/sign_in-images/signIn_Image.png';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
+import Image from 'next/image';
+
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+
+import slide_image_2 from '../../../public/images/home/home1.jpg';
+import slide_image_3 from '../../../public/images/home/home2.jpg';
+import slide_image_4 from '../../../public/images/home/home3.jpg';
+import slide_image_5 from '../../../public/images/home/home4.jpg';
+
 
 function Dashboard() {
     const { currentUser } = useSelector((state) => state.admin);
@@ -52,12 +66,51 @@ function Dashboard() {
                     transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
                     className="w-full md:w-1/2 flex items-center justify-center py-10 h-full"
                 >
-                    <img
-                        src={signInImage.src}
-                        alt="UrbanNest Admin Sign In"
-                        className="w-full h-[300px] md:h-[80vh] object-cover rounded-3xl shadow-xl"
-                        draggable="false"
-                    />
+                   <Swiper
+          effect={'coverflow'}
+          grabCursor={true}
+          centeredSlides={true}
+          loop={true}
+          slidesPerView={'auto'}
+          coverflowEffect={{
+            rotate: 0,
+            stretch: 0,
+            depth: 100,
+            modifier: 2.5,
+          }}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: false,
+            
+          }}
+          speed={500}
+          pagination={{ el: '.swiper-pagination', clickable: true }}
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            clickable: true,
+          }}
+          modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+          className='swiper_container h-full'
+        >
+          <SwiperSlide className="h-full flex items-center justify-center">
+            <Image src={signInImage} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+          </SwiperSlide>
+          <SwiperSlide className="h-full flex items-center justify-center">
+            <Image src={slide_image_2} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+          </SwiperSlide>
+          <SwiperSlide className="h-full flex items-center justify-center">
+            <Image src={slide_image_3} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+          </SwiperSlide>
+          <SwiperSlide className="h-full flex items-center justify-center">
+            <Image src={slide_image_4} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+          </SwiperSlide>
+          <SwiperSlide className="h-full flex items-center justify-center">
+            <Image src={slide_image_5} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+          </SwiperSlide>
+          
+        </Swiper>
                 </motion.div>
             </div>
         );

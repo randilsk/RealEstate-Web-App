@@ -25,25 +25,22 @@ export const getUserRentListings = async (req, res) => {
 export const addRentListing = async (req, res) => {
   try {
     // Get image URLs from the uploaded files
-    const imageUrls = req.files ? req.files.map(file => file.path) : [];
-    
+    const imageUrls = req.files ? req.files.map((file) => file.path) : [];
+
     // Create new listing with image URLs
-wimukthi-new
-    const newListing = new RentListingListing({
 
     const newRentListing = new RentListing({
-Main-New
       ...req.body,
-      images: imageUrls
+      images: imageUrls,
     });
-    
+
     const savedRentListing = await newRentListing.save();
     res.status(201).json(savedRentListing);
   } catch (error) {
     console.error("Error in addListing:", error);
-    res.status(500).json({ 
-      message: "Failed to add listing", 
-      error: error.message 
+    res.status(500).json({
+      message: "Failed to add listing",
+      error: error.message,
     });
   }
 };
@@ -78,7 +75,9 @@ export const updateRentListing = async (req, res) => {
 
 export const deleteRentListing = async (req, res) => {
   try {
-    const deletedRentListing = await RentListing.findByIdAndDelete(req.params.id); // Find and delete listing by ID
+    const deletedRentListing = await RentListing.findByIdAndDelete(
+      req.params.id
+    ); // Find and delete listing by ID
     if (!deletedRentListing) {
       return res.status(404).json({ message: "Listing not found" });
     }

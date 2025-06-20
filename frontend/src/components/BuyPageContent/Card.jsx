@@ -81,6 +81,11 @@ export default function ProductCard() {
                         alt={`${listing.district} property ${index + 1}`}
                         fill
                         className="object-cover"
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${image}`);
+                          e.target.src = "/images/home-image/home-page-image2.png";
+                        }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </SwiperSlide>
                   ))}
@@ -129,12 +134,32 @@ export default function ProductCard() {
 
             {/* Features Summary */}
             <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-              <span className="font-semibold">{listing.bedrooms} beds</span> | <span className="font-semibold">{listing.attachedBathrooms + (listing.detachedBathrooms || 0)} bath</span> | <span className="font-semibold">{listing.houseArea} sqft</span> - {listing.homeType ? (listing.homeType === 'Single Family' || listing.homeType === 'Multi Family' ? 'Property' : listing.homeType) + ' for sale' : 'for sale'}
+              {listing.homeType === 'Land' ? (
+                <span className="font-semibold">{listing.landArea} sqft</span>
+              ) : listing.homeType === 'Apartment' ? (
+                <>
+                  <span className="font-semibold">{listing.bedrooms || 0} beds</span> | 
+                  <span className="font-semibold">{listing.attachedBathrooms + (listing.detachedBathrooms || 0)} bath</span> | 
+                  <span className="font-semibold">{listing.houseArea || 0} sqft</span>
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold">{listing.bedrooms || 0} beds</span> | 
+                  <span className="font-semibold">{listing.attachedBathrooms + (listing.detachedBathrooms || 0)} bath</span> | 
+                  <span className="font-semibold">{listing.houseArea || 0} sqft</span>
+                </>
+              )}
+              {' - '}
+              {listing.homeType ? (
+                listing.homeType === 'Single Family' || listing.homeType === 'Multi Family' 
+                  ? 'Property for sale' 
+                  : `${listing.homeType} for sale`
+              ) : 'for sale'}
             </div>
 
             {/* Address */}
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              {listing.address}
+              {listing.address || 'Address not provided'}
             </div>
           </div>
         </div>

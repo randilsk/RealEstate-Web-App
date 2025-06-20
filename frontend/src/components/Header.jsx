@@ -78,9 +78,12 @@ function Header() {
             <Link href={"/buy"}>Buy</Link>
           </NavItem>
           <NavItem>
-            <Link href={"/sell"}>Sell</Link>
+           <Link href={"rent"}> Rent</Link>
+            </NavItem>
+          <NavItem>
+            <Link href={"/sell"}>List</Link>
           </NavItem>
-          <NavItem>Rent</NavItem>
+        
         </div>
 
         {/* Logo - Centered on all screens */}

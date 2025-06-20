@@ -4,7 +4,7 @@ import RentListing from "../models/rentModels.js ";
 export const getAllRentListings = async (req, res) => {
   try {
     const rentlistings = await RentListing.find();
-    res.status(200).json(listings);
+    res.status(200).json(rentlistings);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch listings", details: error });
   }
@@ -14,7 +14,7 @@ export const getAllRentListings = async (req, res) => {
 export const getUserRentListings = async (req, res) => {
   try {
     const rentlistings = await RentListing.find({ email: req.params.email });
-    res.status(200).json(listings);
+    res.status(200).json(rentlistings);
   } catch (error) {
     res
       .status(500)
@@ -28,7 +28,11 @@ export const addRentListing = async (req, res) => {
     const imageUrls = req.files ? req.files.map(file => file.path) : [];
     
     // Create new listing with image URLs
+wimukthi-new
     const newListing = new RentListingListing({
+
+    const newRentListing = new RentListing({
+Main-New
       ...req.body,
       images: imageUrls
     });
@@ -47,10 +51,10 @@ export const addRentListing = async (req, res) => {
 export const getSingleRentListing = async (req, res) => {
   try {
     const rentlisting = await RentListing.findById(req.params.id); // Find listing by ID
-    if (!listing) {
+    if (!rentlisting) {
       return res.status(404).json({ message: "Listing not found" });
     }
-    res.status(200).json(listing);
+    res.status(200).json(rentlisting);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch listing", error });
   }

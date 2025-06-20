@@ -17,12 +17,11 @@ import {
 } from "@/components/ui/select";
 import { useSelector } from "react-redux";
 
-function Listing() {
+function RentListing() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentUser = useSelector((state) => state.user.currentUser);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showLandFields, setShowLandFields] = useState(false);
 
   // Pre-fill address, city, district, lat, and lng from searchParams
   const address = searchParams.get("address") || "";
@@ -53,10 +52,6 @@ function Listing() {
     phone: "",
     email: currentUser?.email || "", // Initialize with user email if available
     username: currentUser?.username,
-    // New land-related fields
-    landType: "",
-    slope: "",
-    roadAccess: "",
   });
 
   // Update user data when currentUser changes
@@ -81,20 +76,9 @@ function Listing() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle select changes with transition
+  // Handle select changes
   const handleSelectChange = (name, value) => {
-    if (name === "homeType") {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setShowLandFields(value === "Land");
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 50);
-      }, 300);
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle form submission
@@ -126,7 +110,7 @@ function Listing() {
       // Add user ID as a single value
       formDataToSend.set("user", currentUser._id);
       const response = await axios.post(
-        "http://localhost:3000/api/listing",
+        "http://localhost:3000/api/Rentroutes",
 
         formDataToSend,
         {
@@ -158,7 +142,7 @@ function Listing() {
       <div className="flex justify-center px-4 sm:px-6 lg:px-8 py-6">
         <div className="w-full max-w-7xl bg-[#d9d9d9] rounded-md py-4 sm:py-6 px-4 sm:px-10">
           <div className="text-black text-xl sm:text-2xl font-bold font-poppins pb-1">
-            List Your Property for Sale by Owner
+            List Your Property for Rent by Owner
           </div>
 
           {/* Address and Coordinates */}
@@ -234,7 +218,6 @@ function Listing() {
                   <SelectItem value="Single Family">Single Family</SelectItem>
                   <SelectItem value="Multi Family">Multi Family</SelectItem>
                   <SelectItem value="Apartment">Apartment</SelectItem>
-                  <SelectItem value="Land">Land</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -244,196 +227,115 @@ function Listing() {
           {/* Unified Property Fields Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {/* Bedrooms */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Bedrooms</p>
-                <input
-                  type="number"
-                  name="bedrooms"
-                  value={formData.bedrooms}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                />
-              </div>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Bedrooms</p>
+              <input
+                type="number"
+                name="bedrooms"
+                value={formData.bedrooms}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+              />
+            </div>
             {/* Attached Bathrooms */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
-                <input
-                  type="number"
-                  name="attachedBathrooms"
-                  value={formData.attachedBathrooms}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                />
-              </div>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Attached Bathrooms</p>
+              <input
+                type="number"
+                name="attachedBathrooms"
+                value={formData.attachedBathrooms}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+              />
+            </div>
             {/* Detached Bathrooms */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
-                <input
-                  type="number"
-                  name="detachedBathrooms"
-                  value={formData.detachedBathrooms}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                />
-              </div>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Detached Bathrooms</p>
+              <input
+                type="number"
+                name="detachedBathrooms"
+                value={formData.detachedBathrooms}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+              />
+            </div>
             {/* Floors */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Floors</p>
-                <Select
-                  onValueChange={(value) => handleSelectChange("floors", value)}
-                >
-                  <SelectTrigger className="w-full bg-transparent border-gray-400">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#d9d9d9]">
-                    <SelectGroup>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Floors</p>
+              <Select
+                onValueChange={(value) => handleSelectChange("floors", value)}
+              >
+                <SelectTrigger className="w-full bg-transparent border-gray-400">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#d9d9d9]">
+                  <SelectGroup>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
             {/* House Area */}
-            {formData.homeType !== "Land" && (
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
+              <input
+                type="number"
+                name="houseArea"
+                value={formData.houseArea}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+              />
+            </div>
+            {/* Land Area (for non-apartment) */}
+            {formData.homeType !== "Apartment" && (
               <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">House Area (sq ft)</p>
+                <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
                 <input
                   type="number"
-                  name="houseArea"
-                  value={formData.houseArea}
+                  name="landArea"
+                  value={formData.landArea}
                   onChange={handleChange}
                   min="0"
                   className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
                 />
               </div>
             )}
-            {/* Land Area */}
-            {formData.homeType !== "Apartment" &&
-              formData.homeType !== "Land" && (
-                <div className="pt-4">
-                  <p className="py-2 text-sm sm:text-base">Land Area (sq ft)</p>
-                  <input
-                    type="number"
-                    name="landArea"
-                    value={formData.landArea}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                  />
-                </div>
-              )}
             {/* Parking Availability */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">
-                  Parking Availability
-                </p>
-                <Select
-                  onValueChange={(value) =>
-                    handleSelectChange("parking", value)
-                  }
-                >
-                  <SelectTrigger className="w-full bg-transparent border-gray-400">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#d9d9d9]">
-                    <SelectGroup>
-                      <SelectItem value="Available">Available</SelectItem>
-                      <SelectItem value="Not Available">
-                        Not Available
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Parking Availability</p>
+              <Select
+                onValueChange={(value) => handleSelectChange("parking", value)}
+              >
+                <SelectTrigger className="w-full bg-transparent border-gray-400">
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#d9d9d9]">
+                  <SelectGroup>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Not Available">Not Available</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
             {/* Build Year */}
-            {formData.homeType !== "Land" && (
-              <div className="pt-4">
-                <p className="py-2 text-sm sm:text-base">Build year</p>
-                <input
-                  type="number"
-                  name="buildYear"
-                  value={formData.buildYear}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                />
-              </div>
-            )}
-            {/* Land-specific fields */}
-            {formData.homeType === "Land" && (
-              <>
-                <div className="pt-4">
-                  <p className="py-2 text-sm sm:text-base">Land Type</p>
-                  <Select
-                    onValueChange={(value) =>
-                      handleSelectChange("landType", value)
-                    }
-                  >
-                    <SelectTrigger className="w-full bg-transparent border-gray-400">
-                      <SelectValue placeholder="Select land type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#d9d9d9]">
-                      <SelectGroup>
-                        <SelectItem value="Residential">Residential</SelectItem>
-                        <SelectItem value="Commercial">Commercial</SelectItem>
-                        <SelectItem value="Agricultural">
-                          Agricultural
-                        </SelectItem>
-                        <SelectItem value="Industrial">Industrial</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="pt-4">
-                  <p className="py-2 text-sm sm:text-base">Slope</p>
-                  <Select
-                    onValueChange={(value) =>
-                      handleSelectChange("slope", value)
-                    }
-                  >
-                    <SelectTrigger className="w-full bg-transparent border-gray-400">
-                      <SelectValue placeholder="Select slope" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#d9d9d9]">
-                      <SelectGroup>
-                        <SelectItem value="Flat">Flat</SelectItem>
-                        <SelectItem value="Slight Slope">
-                          Slight Slope
-                        </SelectItem>
-                        <SelectItem value="Steep">Steep</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="pt-4">
-                  <p className="py-2 text-sm sm:text-base">Road Access</p>
-                  <input
-                    type="text"
-                    name="roadAccess"
-                    value={formData.roadAccess}
-                    onChange={handleChange}
-                    placeholder="e.g., 20ft wide main road"
-                    className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
-                  />
-                </div>
-              </>
-            )}
+            <div className="pt-4">
+              <p className="py-2 text-sm sm:text-base">Build year</p>
+              <input
+                type="number"
+                name="buildYear"
+                value={formData.buildYear}
+                onChange={handleChange}
+                min="0"
+                className="w-full px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"
+              />
+            </div>
           </div>
 
           {/* Description */}
@@ -518,4 +420,4 @@ function Listing() {
   );
 }
 
-export default Listing;
+export default RentListing;

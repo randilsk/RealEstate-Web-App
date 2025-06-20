@@ -46,7 +46,7 @@ export default function AdminSignIn() {
       }
 
       dispatch(adminsignInSuccess(data.admin));
-      router.replace("/admin/");
+      router.replace("/Admin/");
     } catch (err) {
       dispatch(
         adminsignInFailure(err instanceof Error ? err.message : "An error occurred")

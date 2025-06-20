@@ -40,7 +40,7 @@ function SellPageHeroSection() {
         </div>
         <div className="flex justify-center items-center mt-6 sm:mt-8 md:mt-10 ">
           <Button
-            className="bg-transparent border-white text-white px-10 hover:bg-main-bg hover:text-black w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
+            className="bg-transparent border-white text-white px-10 py-3 rounded-lg shadow-md hover:bg-main-bg hover:text-black hover:shadow-lg transition-all duration-200 w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
             onClick={handlePostAdClickSell}
           >
             List for Sale
@@ -48,7 +48,7 @@ function SellPageHeroSection() {
         </div>
         <div className="flex justify-center items-center  sm:mt-4 md:mt-4 ">
           <Button
-            className="bg-transparent border-white text-white px-10 hover:bg-main-bg hover:text-black w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
+            className="bg-transparent border-white text-white px-10 py-3 rounded-lg shadow-md hover:bg-main-bg hover:text-black hover:shadow-lg transition-all duration-200 w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
             onClick={handlePostAdClickRent}
           >
             List for Rent

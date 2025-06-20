@@ -28,13 +28,13 @@ export const addRentListing = async (req, res) => {
     const imageUrls = req.files ? req.files.map(file => file.path) : [];
     
     // Create new listing with image URLs
-    const newListing = new Listing({
+    const newListing = new RentListingListing({
       ...req.body,
       images: imageUrls
     });
     
-    const savedListing = await newListing.save();
-    res.status(201).json(savedListing);
+    const savedRentListing = await newRentListing.save();
+    res.status(201).json(savedRentListing);
   } catch (error) {
     console.error("Error in addListing:", error);
     res.status(500).json({ 

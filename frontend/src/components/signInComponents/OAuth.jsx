@@ -43,7 +43,7 @@ export default function OAuth() {
         return;
       }
 
-      const res = await fetch("/api/auth/google", {
+      const res = await fetch("http://localhost:3000/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

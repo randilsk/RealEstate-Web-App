@@ -48,4 +48,6 @@ const RentListingSchema = new mongoose.Schema({
 
 const RentListing = mongoose.model("RentListing", RentListingSchema);
 
+
 export default RentListing;
+

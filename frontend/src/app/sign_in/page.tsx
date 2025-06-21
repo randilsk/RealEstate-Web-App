@@ -20,10 +20,10 @@ import 'swiper/css/navigation';
 import Image from 'next/image';
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
 import signInImage from '../../../public/images/sign_in-images/signIn_Image.png';
-import slide_image_2 from '../../../public/images/home/home1.jpg';
-import slide_image_3 from '../../../public/images/home/home2.jpg';
-import slide_image_4 from '../../../public/images/home/home3.jpg';
-import slide_image_5 from '../../../public/images/home/home4.jpg';
+import slide_image_2 from '../../../public/images/sign_in-images/sign2.jpg';
+import slide_image_3 from '../../../public/images/sign_in-images/sign3.jpg';
+import slide_image_4 from '../../../public/images/sign_in-images/sign4.jpg';
+import slide_image_5 from '../../../public/images/sign_in-images/sign5.jpg';
 import slide_image_6 from '../../../public/images/sign_in-images/sign1.png';
 import { motion } from 'framer-motion';
 
@@ -90,12 +90,12 @@ export default function SignIn() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 px-4">
       {/* Left: Welcome Text & Sign In Form */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-center py-10">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-center py-1 p-5">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="text-6xl sm:text-7xl md:text-8xl font-extrabold text-indigo-700 mb-8 drop-shadow-lg"
+          className="text-6xl sm:text-3xl md:text-8xl font-extrabold text-indigo-700 mb-8 drop-shadow-lg"
         >
           Welcome to UrbanNest
         </motion.h1>
@@ -185,22 +185,22 @@ export default function SignIn() {
           className='swiper_container h-full'
         >
            <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={slide_image_6} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={slide_image_6} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={signInImage} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={signInImage} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={slide_image_2} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={slide_image_2} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={slide_image_3} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={slide_image_3} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={slide_image_4} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={slide_image_4} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image src={slide_image_5} alt='slide_image' width={1200} height={800} className="object-cover w-[1200px] h-[800px] rounded-3xl shadow-lg border border-gray-200" />
+            <Image src={slide_image_5} alt='slide_image' width={1200} height={800} className="object-cover w-[1000px] h-[700px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
         </Swiper>
       </div>

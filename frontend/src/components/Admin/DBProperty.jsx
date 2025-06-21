@@ -542,7 +542,7 @@ const DBProperty = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await axios.get('/api/listing/getallListing');
+      const response = await axios.get('http://localhost:3000/api/listing/getallListing');
       // Transform the data to match our table structure with all property details
       const transformedProperties = response.data.map(listing => ({
         _id: listing._id,

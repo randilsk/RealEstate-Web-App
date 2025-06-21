@@ -31,7 +31,7 @@ export default function AdminSignIn() {
     e.preventDefault();
     try {
       dispatch(adminsignInStart());
-      const res = await fetch("/api/admin/signin", {
+      const res = await fetch("http://localhost:3000/api/admin/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

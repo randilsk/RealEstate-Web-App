@@ -1,0 +1,138 @@
+[33m600a876[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mwimukthi-new[m[33m)[m HEAD@{0}: reset: moving to HEAD~2
+[33m0fc3d48[m HEAD@{1}: reset: moving to HEAD~1
+[33m3317552[m HEAD@{2}: reset: moving to HEAD~1
+[33m53d6492[m HEAD@{3}: checkout: moving from Main-New to wimukthi-new
+[33m52723b4[m[33m ([m[1;31morigin/Main-New[m[33m, [m[1;32mMain-New[m[33m)[m HEAD@{4}: commit (merge): Merge branch 'Main-New' of https://github.com/randilsk/RealEstate-Web-App into Main-New
+[33m3a70b3c[m HEAD@{5}: commit: fff
+[33m0cc9182[m HEAD@{6}: pull origin Main-New: Fast-forward
+[33mbc664a6[m HEAD@{7}: checkout: moving from wimukthi-new to Main-New
+[33m53d6492[m HEAD@{8}: commit: admin sign in and normal sign in sign up ui changes
+[33m3317552[m HEAD@{9}: commit: admin side frontend.
+[33m0fc3d48[m HEAD@{10}: commit: rent listing
+[33mdfab514[m HEAD@{11}: checkout: moving from Main-New to wimukthi-new
+[33mbc664a6[m HEAD@{12}: checkout: moving from wimukthi-new to Main-New
+[33mdfab514[m HEAD@{13}: commit: sign in is working properly
+[33m600a876[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mwimukthi-new[m[33m)[m HEAD@{14}: commit: addmin sign in is working now
+[33m0efc9d1[m HEAD@{15}: commit: adimin backend and photo uploading is working now
+[33m6cabe97[m HEAD@{16}: commit: created the backend for the admin signin
+[33mbc664a6[m HEAD@{17}: pull origin Main-New: Fast-forward
+[33m62485a4[m HEAD@{18}: checkout: moving from Main-New to wimukthi-new
+[33mbc664a6[m HEAD@{19}: commit: rent listing backend
+[33mebe7028[m HEAD@{20}: commit: updated one
+[33mff67db5[m HEAD@{21}: commit: final
+[33m6472d50[m HEAD@{22}: commit (merge): Merge branch 'Main-New' of https://github.com/randilsk/RealEstate-Web-App into Main-New
+[33mbaba65b[m HEAD@{23}: commit (merge): Merge branch 'wimukthi-new' of https://github.com/randilsk/RealEstate-Web-App into Main-New
+[33m187cade[m HEAD@{24}: checkout: moving from wimukthi-new to Main-New
+[33m62485a4[m HEAD@{25}: checkout: moving from Main-New to wimukthi-new
+[33m187cade[m HEAD@{26}: merge wimukthi-new: updating HEAD
+[33m187cade[m HEAD@{27}: merge wimukthi-new: updating HEAD
+[33m187cade[m HEAD@{28}: checkout: moving from wimukthi-new to Main-New
+[33m62485a4[m HEAD@{29}: commit: after merge to the main
+[33m203beb8[m HEAD@{30}: commit (merge): Merge branch 'Main-New' of https://github.com/randilsk/RealEstate-Web-App into wimukthi-new
+[33ma9e8a09[m HEAD@{31}: commit: working on de;ete the page
+[33m444f522[m HEAD@{32}: commit: updated the profile page
+[33m5190553[m HEAD@{33}: commit: edit profile is working now
+[33m7115728[m HEAD@{34}: commit: done some changes in the profile page
+[33m597baaa[m HEAD@{35}: checkout: moving from Main-New to wimukthi-new
+[33m187cade[m HEAD@{36}: commit: done some changes in the profile page
+[33mad9d59d[m HEAD@{37}: commit: remove files that didnt use
+[33m513cf98[m HEAD@{38}: checkout: moving from wimukthi-new to Main-New
+[33m597baaa[m HEAD@{39}: commit: didnt use this
+[33m191366b[m HEAD@{40}: commit: small change
+[33m2bc5ca7[m HEAD@{41}: commit: final
+[33me17c8a1[m HEAD@{42}: commit (merge): after merge with the main
+[33m2956c52[m HEAD@{43}: commit: photo uploading is working now
+[33md2b1a9c[m HEAD@{44}: commit: working on cloudinary
+[33m9a54eb4[m[33m ([m[1;31morigin/wimukthi-2[m[33m, [m[1;32mwimukthi-2[m[33m)[m HEAD@{45}: checkout: moving from wimukthi-2 to wimukthi-new
+[33m9a54eb4[m[33m ([m[1;31morigin/wimukthi-2[m[33m, [m[1;32mwimukthi-2[m[33m)[m HEAD@{46}: checkout: moving from wimukthi-2 to wimukthi-2
+[33m9a54eb4[m[33m ([m[1;31morigin/wimukthi-2[m[33m, [m[1;32mwimukthi-2[m[33m)[m HEAD@{47}: checkout: moving from main to wimukthi-2
+[33m67f5c41[m[33m ([m[1;32mmain[m[33m)[m HEAD@{48}: checkout: moving from wimukthi-2 to main
+[33m9a54eb4[m[33m ([m[1;31morigin/wimukthi-2[m[33m, [m[1;32mwimukthi-2[m[33m)[m HEAD@{49}: commit: dynamic the card section
+[33m0f1b3cd[m HEAD@{50}: checkout: moving from main to wimukthi-2
+[33m67f5c41[m[33m ([m[1;32mmain[m[33m)[m HEAD@{51}: commit (merge): Merge branch 'main' of https://github.com/randilsk/RealEstate-Web-App
+[33mce226a2[m HEAD@{52}: commit: add node modules to the git ignore
+[33mab38cf1[m HEAD@{53}: checkout: moving from wimukthi-2 to main
+[33m0f1b3cd[m HEAD@{54}: commit: send the user name when add the listing
+[33m4917d04[m HEAD@{55}: checkout: moving from main to wimukthi-2
+[33mab38cf1[m HEAD@{56}: commit (merge): final changes after evaluation
+[33m5aa68b4[m HEAD@{57}: commit: final
+[33m08e7b9c[m HEAD@{58}: checkout: moving from wimukthi-2 to main
+[33m4917d04[m HEAD@{59}: commit: check
+[33m4d7bed9[m HEAD@{60}: checkout: moving from restore-branch to wimukthi-2
+[33mdd75056[m[33m ([m[1;32mrestore-branch[m[33m)[m HEAD@{61}: commit: fff
+[33mde19e1f[m HEAD@{62}: checkout: moving from de19e1fb00c18a4b9873df001909a080f2344de6 to restore-branch
+[33mde19e1f[m HEAD@{63}: checkout: moving from wimukthi-2 to de19e1fb00c18a4b9873df001909a080f2344de6
+[33m4d7bed9[m HEAD@{64}: commit: fff
+[33mda41ce0[m HEAD@{65}: commit: gutignore
+[33mde19e1f[m HEAD@{66}: commit: api changes
+[33mfa2c740[m[33m ([m[1;32mwimukthi[m[33m)[m HEAD@{67}: checkout: moving from main to wimukthi-2
+[33m08e7b9c[m HEAD@{68}: rebase (finish): returning to refs/heads/main
+[33m08e7b9c[m HEAD@{69}: rebase (pick): ev day2
+[33m9c81a0e[m HEAD@{70}: rebase (pick): ev day
+[33mdd102f3[m HEAD@{71}: rebase (start): checkout origin
+[33mfa2c740[m[33m ([m[1;32mwimukthi[m[33m)[m HEAD@{72}: checkout: moving from wimukthi-2 to wimukthi-2
+[33mfa2c740[m[33m ([m[1;32mwimukthi[m[33m)[m HEAD@{73}: checkout: moving from wimukthi to wimukthi-2
+[33mfa2c740[m[33m ([m[1;32mwimukthi[m[33m)[m HEAD@{74}: rebase (finish): returning to refs/heads/wimukthi
+[33mfa2c740[m[33m ([m[1;32mwimukthi[m[33m)[m HEAD@{75}: rebase (pick): fff
+[33mbe72572[m HEAD@{76}: rebase (continue): working on total listing frontne
+[33mdd102f3[m HEAD@{77}: rebase (start): checkout origin/main
+[33m9a89f42[m[33m ([m[1;31morigin/wimukthi[m[33m)[m HEAD@{78}: checkout: moving from wimukthi to wimukthi
+[33m9a89f42[m[33m ([m[1;31morigin/wimukthi[m[33m)[m HEAD@{79}: checkout: moving from main to wimukthi
+[33mc8b63de[m HEAD@{80}: checkout: moving from wimukthi to main
+[33m9a89f42[m[33m ([m[1;31morigin/wimukthi[m[33m)[m HEAD@{81}: commit: fff
+[33m8ee108c[m HEAD@{82}: commit (merge): ff
+[33m3842564[m HEAD@{83}: checkout: moving from main to wimukthi
+[33mc8b63de[m HEAD@{84}: commit: ev day2
+[33mde754d9[m HEAD@{85}: commit: ev day
+[33mfb1960f[m HEAD@{86}: commit: done some css styling
+[33m60348ab[m HEAD@{87}: commit: did the get all listing part
+[33m9d84dd7[m HEAD@{88}: commit: worked on get all listings
+[33mce9643b[m HEAD@{89}: checkout: moving from wimukthi to main
+[33m3842564[m HEAD@{90}: checkout: moving from main to wimukthi
+[33mce9643b[m HEAD@{91}: checkout: moving from wimukthi to main
+[33m3842564[m HEAD@{92}: commit (merge): done
+[33md0c97f8[m HEAD@{93}: checkout: moving from main to wimukthi
+[33mce9643b[m HEAD@{94}: checkout: moving from wimukthi to main
+[33md0c97f8[m HEAD@{95}: checkout: moving from main to wimukthi
+[33mce9643b[m HEAD@{96}: pull origin main: Fast-forward
+[33m8d208ec[m HEAD@{97}: checkout: moving from wimukthi to main
+[33md0c97f8[m HEAD@{98}: checkout: moving from main to wimukthi
+[33m8d208ec[m HEAD@{99}: pull origin main: Fast-forward
+[33m0c6edc1[m HEAD@{100}: checkout: moving from wimukthi to main
+[33md0c97f8[m HEAD@{101}: commit (merge): Merge branch 'main' of https://github.com/randilsk/RealEstate-Web-App into wimukthi
+[33m4287c03[m HEAD@{102}: commit: working on total listing frontne
+[33m5dda58a[m HEAD@{103}: commit: get all users
+[33m0c6edc1[m HEAD@{104}: pull origin main: Fast-forward
+[33m33fb642[m HEAD@{105}: checkout: moving from main to wimukthi
+[33m0c6edc1[m HEAD@{106}: pull origin main: Fast-forward
+[33m6ba9032[m HEAD@{107}: checkout: moving from main to main
+[33m6ba9032[m HEAD@{108}: checkout: moving from wimukthi to main
+[33m33fb642[m HEAD@{109}: checkout: moving from main to wimukthi
+[33m6ba9032[m HEAD@{110}: checkout: moving from main to main
+[33m6ba9032[m HEAD@{111}: checkout: moving from main to main
+[33m6ba9032[m HEAD@{112}: checkout: moving from wimukthi to main
+[33m33fb642[m HEAD@{113}: commit (merge): Merge branch 'main' into wimukthi
+[33md2fe61d[m HEAD@{114}: checkout: moving from main to wimukthi
+[33m6ba9032[m HEAD@{115}: pull origin main: Fast-forward
+[33m1504cbc[m HEAD@{116}: checkout: moving from wimukthi to main
+[33md2fe61d[m HEAD@{117}: commit: add signout and delete account function
+[33m10d8ef4[m HEAD@{118}: commit: add signout
+[33m1504cbc[m HEAD@{119}: merge main: Fast-forward
+[33m92e2b22[m HEAD@{120}: checkout: moving from main to wimukthi
+[33m1504cbc[m HEAD@{121}: pull origin main: Fast-forward
+[33m0a8d70e[m HEAD@{122}: checkout: moving from wimukthi to main
+[33m92e2b22[m HEAD@{123}: commit: done
+[33m9d16442[m HEAD@{124}: commit: all changes
+[33m9bd27b9[m HEAD@{125}: commit: don some changes in header file
+[33m9de6081[m HEAD@{126}: commit: add margin and fix the heights of the map
+[33m2ac38cf[m HEAD@{127}: commit: change th url
+[33m7e922d1[m HEAD@{128}: commit: corrected code
+[33m695084e[m HEAD@{129}: checkout: moving from main to wimukthi
+[33m0a8d70e[m HEAD@{130}: checkout: moving from wimukthi to main
+[33m695084e[m HEAD@{131}: commit: add frontend changes
+[33m21e435c[m HEAD@{132}: commit (merge): Resolved merge conflicts
+[33m653537e[m HEAD@{133}: checkout: moving from wimukthi to wimukthi
+[33m653537e[m HEAD@{134}: commit: backend correctly connected
+[33m047dd92[m HEAD@{135}: commit: add backend
+[33m0a8d70e[m HEAD@{136}: checkout: moving from main to wimukthi
+[33m0a8d70e[m HEAD@{137}: clone: from https://github.com/randilsk/RealEstate-Web-App.git

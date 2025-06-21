@@ -28,11 +28,10 @@ export const addRentListing = async (req, res) => {
     const imageUrls = req.files ? req.files.map(file => file.path) : [];
     
     // Create new listing with image URLs
-wimukthi-new
-    const newListing = new RentListingListing({
+
 
     const newRentListing = new RentListing({
-Main-New
+
       ...req.body,
       images: imageUrls
     });

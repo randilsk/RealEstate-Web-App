@@ -47,8 +47,7 @@ const RentListingSchema = new mongoose.Schema({
 
 const RentListing = mongoose.model("RentListing", RentListingSchema);
 
- wimukthi-new
-export default RentListing;
+
 
 export default RentListing;
-Main-New
+

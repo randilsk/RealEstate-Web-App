@@ -29,7 +29,13 @@ export const addRentListing = async (req, res) => {
 
     // Create new listing with image URLs
 
+
+
+
+
+
     const newRentListing = new RentListing({
+
       ...req.body,
       images: imageUrls,
     });

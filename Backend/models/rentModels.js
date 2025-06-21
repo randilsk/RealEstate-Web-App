@@ -33,10 +33,11 @@ const RentListingSchema = new mongoose.Schema({
   description: String,
   phone: String,
 
-  status: { // <--- Add this field
+  status: {
+    // <--- Add this field
     type: String,
-    enum: ['pending', 'approved', 'rejected'], // Define allowed values
-    default: 'pending', // Set a default value if desired
+    enum: ["pending", "approved", "rejected"], // Define allowed values
+    default: "pending", // Set a default value if desired
   },
 
   createdAt: {
@@ -46,7 +47,6 @@ const RentListingSchema = new mongoose.Schema({
 });
 
 const RentListing = mongoose.model("RentListing", RentListingSchema);
-
 
 
 export default RentListing;

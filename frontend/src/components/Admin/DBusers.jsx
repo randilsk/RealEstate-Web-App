@@ -193,7 +193,7 @@ function DBusers() {
     // Fetch users data
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('/api/auth/users');
+            const response = await axios.get('http://localhost:3000/api/auth/users');
             const usersData = response.data;
             setUsers(usersData);
             const stats = calculateUserStats(usersData);
@@ -272,7 +272,7 @@ function DBusers() {
     const handleSaveUser = async (updatedUser) => {
         try {
             // Use the correct API endpoint
-            const response = await axios.put(`/api/users/${updatedUser._id}`, updatedUser);
+            const response = await axios.put(`http://localhost:3000/api/users/${updatedUser._id}`, updatedUser);
             
             if (response.data) {
                 // Update the users list with the edited user
@@ -300,7 +300,7 @@ function DBusers() {
     const handleDeleteConfirm = async () => {
         if (userToDelete) {
             try {
-                await axios.delete(`/api/auth/users/${userToDelete._id}`);
+                await axios.delete(`http://localhost:3000/api/auth/users/${userToDelete._id}`);
                 await fetchUsers();
                 setShowDeleteConfirm(false);
                 setUserToDelete(null);

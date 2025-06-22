@@ -3,11 +3,71 @@ import React, { useState, useEffect } from "react";
 import Header_varient_1 from "../../components/Header_varient_1.jsx";
 import MapSection from "../../components/BuyPageContent/MapSection.jsx";
 import CardSection from "../../components/BuyPageContent/CardSection.jsx";
+import { fetchAllListings } from "@/lib/api";
 import { useSearchParams } from "next/navigation";
 
 function page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
+  const [listings, setListings] = useState([]);
+  const [filteredListings, setFilteredListings] = useState([]);
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filtering is active
+  const [searchArea, setSearchArea] = useState(null); // Lifted search area state
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const getListings = async () => {
+      try {
+        const data = await fetchAllListings();
+        setListings(data);
+        setFilteredListings(data); // Default: show all
+      } catch (err) {
+        setListings([]);
+        setFilteredListings([]);
+      }
+    };
+    getListings();
+  }, []);
+
+  // Haversine formula to filter listings within a radius
+  const filterListingsByLocation = (lat, lng, radius = 5) => {
+    const R = 6371; // Earth's radius in km
+    const filtered = listings.filter((listing) => {
+      if (!listing.lat || !listing.lng) return false;
+      const dLat = (listing.lat - lat) * Math.PI / 180;
+      const dLng = (listing.lng - lng) * Math.PI / 180;
+      const a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = R * c;
+      return distance <= radius;
+    });
+    setFilteredListings(filtered);
+    setIsFiltered(true);
+  };
+
+  // Listen for locationSelected event from Header_varient_1 or query params
+  useEffect(() => {
+    const handleLocationSelected = (event) => {
+      const { lat, lng } = event.detail;
+      filterListingsByLocation(lat, lng, 5);
+      setSearchArea({ center: { lat, lng }, radius: 5000 });
+    };
+    window.addEventListener("locationSelected", handleLocationSelected);
+    return () => {
+      window.removeEventListener("locationSelected", handleLocationSelected);
+    };
+  }, [listings]);
+
+  // Handle zoom change from MapSection
+  const handleZoomChange = (zoom) => {
+    if (zoom <= 11 && isFiltered) {
+      setFilteredListings(listings);
+      setIsFiltered(false);
+      setSearchArea(null); // Optionally remove the circle when zoomed out
+    }
+  };
 
   useEffect(() => {
     const lat = searchParams.get("lat");
@@ -43,7 +103,7 @@ function page() {
               : 'translate-x-0 md:w-1/2'
           }`}
         >
-          <MapSection />
+          <MapSection listings={listings} searchArea={searchArea} onZoomChange={handleZoomChange} />
         </div>
         
         {/* Card Section - Scrollable */}
@@ -54,13 +114,13 @@ function page() {
               : 'translate-x-[100%] md:translate-x-[100%] md:w-1/2'
           }`}
         >
-          <CardSection />
+          <CardSection listings={filteredListings} />
         </div>
 
         {/* Mobile Toggle Button */}
         <button
           onClick={() => setIsCardSectionOpen(!isCardSectionOpen)}
-          className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-main-blue text-white px-8 py-4 rounded-full shadow-lg z-50 hover:bg-[#4b5eef] transition-all duration-300 font-medium text-base flex items-center gap-2 backdrop-blur-sm bg-opacity-90 border border-white/20"
+          className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-main-blue text-white px-8 py-4 rounded-full shadow-lg z-50 hover:bg-[#4b5eef] transition-all duration-300 font-medium text-base flex items-center gap-2 backdrop-blur-sm bg-opacity-90 border-white/20"
         >
           {isCardSectionOpen ? (
             <>

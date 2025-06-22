@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
   <div 
@@ -22,6 +23,7 @@ const NavItem = ({ children, isBold, onClick = () => {} }) => (
 function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -29,14 +31,16 @@ function Header() {
 
   const navItems = (
     <>
-      <NavItem>
+      <NavItem isBold={pathname === "/buy"}>
         <Link href={"/buy"}>Buy</Link>
       </NavItem>
-      <NavItem>
-        <Link href={"/sell"}>Sell</Link>
+      <NavItem isBold={pathname === "/rent"}>
+        <Link href={"/rent"}> Rent</Link>
       </NavItem>
-      <NavItem>Rent</NavItem>
-      <NavItem isBold={true}>
+      <NavItem isBold={pathname === "/sell"}>
+        <Link href={"/sell"}>List</Link>
+      </NavItem>
+      <NavItem isBold={pathname === "/"}>
         <Link href={"/"}>Home</Link>
       </NavItem>
       <NavItem>Help</NavItem>
@@ -74,16 +78,15 @@ function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex justify-start items-center gap-7">
-          <NavItem>
+          <NavItem isBold={pathname === "/buy"}>
             <Link href={"/buy"}>Buy</Link>
           </NavItem>
-          <NavItem>
-           <Link href={"rent"}> Rent</Link>
-            </NavItem>
-          <NavItem>
+          <NavItem isBold={pathname === "/rent"}>
+            <Link href={"/rent"}> Rent</Link>
+          </NavItem>
+          <NavItem isBold={pathname === "/sell"}>
             <Link href={"/sell"}>List</Link>
           </NavItem>
-        
         </div>
 
         {/* Logo - Centered on all screens */}
@@ -96,7 +99,7 @@ function Header() {
 
         {/* Desktop Auth/Profile Section */}
         <div className="hidden md:flex justify-start items-center gap-7">
-          <NavItem isBold={true}>
+          <NavItem isBold={pathname === "/"}>
             <Link href={"/"}>Home</Link>
           </NavItem>
           <NavItem>Help</NavItem>

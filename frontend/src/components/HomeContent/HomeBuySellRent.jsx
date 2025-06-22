@@ -12,11 +12,13 @@ const PropertyCard = ({
   buttonLink 
 }) => (
   <article 
-    className="w-full max-w-[280px] sm:max-w-sm mx-auto bg-white rounded-xl sm:rounded-2xl md:rounded-[38px] shadow-lg flex flex-col items-center justify-between p-3 sm:p-6 md:p-8 hover:border-2 hover:border-main-blue hover:bg-main-bg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+    className="w-full max-w-[300px] sm:max-w-sm mx-auto bg-white/60 backdrop-blur-md rounded-2xl border border-main-blue/30 shadow-[0_2px_8px_0_rgba(0,0,0,0.08),0_8px_32px_0_rgba(0,123,255,0.10)] flex flex-col items-center justify-between p-4 sm:p-7 md:p-9 transition-all duration-300 hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.10),0_16px_48px_0_rgba(0,123,255,0.18)] hover:-translate-y-2 hover:border-main-blue/70 group relative overflow-hidden"
     role="article"
   >
-    <div className="flex flex-col items-center space-y-3 sm:space-y-6">
-      <div className="relative w-[120px] h-[140px] sm:w-[160px] sm:h-[180px] md:w-[180px] md:h-[200px] transition-transform duration-300 hover:scale-105">
+    {/* Gradient border accent */}
+    <div className="absolute inset-0 rounded-2xl pointer-events-none border-2 border-transparent group-hover:border-main-blue/60 transition-all duration-300 z-0" />
+    <div className="flex flex-col items-center space-y-4 sm:space-y-7 z-10 relative">
+      <div className="relative w-[120px] h-[140px] sm:w-[160px] sm:h-[180px] md:w-[180px] md:h-[200px] transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_8px_24px_rgba(0,123,255,0.15)]">
         <Image
           src={imageSrc}
           fill
@@ -25,16 +27,16 @@ const PropertyCard = ({
           priority
         />
       </div>
-      <h3 className="text-center text-black text-lg sm:text-xl md:text-2xl font-bold font-poppins">
+      <h3 className="text-center text-black text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins tracking-wide group-hover:text-main-blue transition-colors duration-300">
         {title}
       </h3>
-      <p className="text-center text-gray-600 text-xs sm:text-sm font-light font-poppins leading-relaxed max-w-[240px] sm:max-w-[280px]">
+      <p className="text-center text-gray-700 text-sm sm:text-base font-light font-poppins leading-relaxed max-w-[240px] sm:max-w-[280px]">
         {description}
       </p>
     </div>
-    <div className="w-full flex justify-center pt-3 sm:pt-6">
+    <div className="w-full flex justify-center pt-4 sm:pt-7 z-10 relative">
       <Button 
-        className="bg-white border-main-blue text-main-blue hover:bg-main-blue hover:text-white w-[200px] sm:w-52 font-bold border-2 transition-all duration-300 hover:shadow-md text-xs sm:text-base py-1.5 sm:py-2 h-8 sm:h-10"
+        className="bg-gradient-to-r from-main-blue/90 to-main-blue/60 text-white font-bold border-none shadow-md hover:from-main-blue hover:to-blue-400 w-[200px] sm:w-52 text-sm sm:text-base py-2 sm:py-2.5 h-10 sm:h-12 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg"
         aria-label={`${buttonText} - ${title}`}
       >
         <Link href={buttonLink} className="w-full h-full flex items-center justify-center">
@@ -75,7 +77,7 @@ function HomeBuySellRent() {
 
   return (
     <section 
-      className="bg-main-bg flex flex-col md:flex-row justify-center items-center gap-8 md:gap-6 lg:gap-8 py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12"
+      className="bg-main-bg flex flex-col md:flex-row justify-center items-center gap-10 md:gap-8 lg:gap-12 py-14 sm:py-20 md:py-24 px-4 sm:px-8 md:px-12 lg:px-20"
       aria-label="Property services"
     >
       {propertyCards.map((card, index) => (

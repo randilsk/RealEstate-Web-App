@@ -158,11 +158,14 @@ function DBMainContent() {
         try {
             const response = await axios.get('http://localhost:3000/api/listing/getallListing');
             console.log('Listings fetched:', response.data); // Debug log
+            console.log('Number of listings:', response.data.length); // Log number of listings
+            console.log('Pending listings:', response.data.filter(listing => listing.status === 'pending').length); // Log pending listings
             setListings(response.data);
             setListCount(response.data.length);
             setPendingListings(response.data.filter(listing => listing.status === 'pending').length);
         } catch (error) {
             console.error('Error fetching listings:', error);
+            console.error('Error details:', error.response?.data || error.message); // More detailed error logging
         } finally {
             setLoading(false);
         }

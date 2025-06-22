@@ -88,7 +88,7 @@ function DBMainContentApproveAdds() {
     // Handle Approve button click
     const handleApprove = async (listingId) => {
         try {
-            await axios.put(`http://localhost:3000/api/listing/${listingId}`, { status: 'approved' });
+            await axios.put(`http://localhost:3000/api/listing/${listingId}/status`, { status: 'approved' });
             fetchListings(); // Refresh listings after approval
         } catch (error) {
             console.error('Error approving listing:', error);
@@ -99,7 +99,7 @@ function DBMainContentApproveAdds() {
     // Handle Reject button click
     const handleReject = async (listingId) => {
         try {
-            await axios.put(`http://localhost:3000/api/listing/${listingId}`, { status: 'rejected' });
+            await axios.put(`http://localhost:3000/api/listing/${listingId}/status`, { status: 'rejected' });
             fetchListings(); // Refresh listings after rejection
         } catch (error) {
             console.error('Error rejecting listing:', error);

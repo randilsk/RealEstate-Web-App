@@ -10,7 +10,7 @@ function SellPageHeroSection() {
 
   console.log("Current User from Redux:", currentUser); // Debugging
 
-  const handlePostAdClick = () => {
+  const handlePostAdClickSell = () => {
     if (currentUser) {
       console.log("✅ User is signed in, redirecting to add_address");
       router.push("/sell/add_address");
@@ -20,6 +20,17 @@ function SellPageHeroSection() {
     }
   };
 
+  const handlePostAdClickRent = () => {
+    if (currentUser) {
+      console.log("✅ User is signed in, redirecting to add_address");
+      router.push("/rent_listing/add_rent_address");
+    } else {
+      console.log("❌ User not signed in, redirecting to SignIn");
+      router.push("/sign_in");
+    }
+  };
+
+
   return (
     <div className="w-full">
       <div className="flex flex-col items-center justify-center text-center h-[80vh] px-4 sm:px-6 md:px-8">
@@ -27,14 +38,23 @@ function SellPageHeroSection() {
           Every home deserves the <br className="hidden sm:block" />
           perfect buyer
         </div>
-        <div className="flex justify-center items-center mt-6 sm:mt-8 md:mt-10">
+        <div className="flex justify-center items-center mt-6 sm:mt-8 md:mt-10 ">
           <Button
-            className="bg-transparent border-white text-white hover:bg-main-bg hover:text-black w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
-            onClick={handlePostAdClick}
+            className="bg-transparent border-white text-white px-10 py-3 rounded-lg shadow-md hover:bg-main-bg hover:text-black hover:shadow-lg transition-all duration-200 w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
+            onClick={handlePostAdClickSell}
           >
-            Post your advertisement
+            List for Sale
           </Button>
         </div>
+        <div className="flex justify-center items-center  sm:mt-4 md:mt-4 ">
+          <Button
+            className="bg-transparent border-white text-white px-10 py-3 rounded-lg shadow-md hover:bg-main-bg hover:text-black hover:shadow-lg transition-all duration-200 w-full sm:w-52 font-bold border-2 text-sm sm:text-base"
+            onClick={handlePostAdClickRent}
+          >
+            List for Rent
+          </Button>
+        </div>
+       
       </div>
     </div>
   );

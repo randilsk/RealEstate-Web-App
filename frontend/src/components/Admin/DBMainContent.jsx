@@ -220,22 +220,23 @@ function DBMainContent() {
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
+
+
             
-<div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-    <div className="w-1/3">
-        {/* Empty div for spacing */}
-    </div>
-    <div className="w-1/3 flex justify-center">
+            
+<div className="  p-4 flex justify-center items-center text-white mt-5  ">
+    
+    <div className="w-1/3 flex justify-center mt-5  font-poppins  ">
         <input 
             type="text" 
             placeholder="Enter an address, city, district, province" 
-            className="p-2 border rounded-md w-full text-black" 
+            className="p-2 border rounded-md w-full text-black border-[#3b50df] rounded-[50px]" 
         />
     </div>
-    <div className="w-1/3 flex justify-end gap-4 text-xl">
+    {/* <div className="w-full flex justify-end gap-4 text-xl">
         <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
         <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
-    </div>
+    </div> */}
 </div>
 
 

@@ -237,10 +237,25 @@ function MapSection({ listings, searchArea, onZoomChange }) {
               }}
               onCloseClick={handleInfoWindowClose}
             >
-              <div className="p-2">
-                <h3 className="font-bold">{selectedListing.title}</h3>
-                <p>${selectedListing.price.toLocaleString()}</p>
-                <p>{selectedListing.address}</p>
+              <div className="bg-white rounded-xl shadow-lg p-0 w-[220px] overflow-hidden font-sans">
+                <div className="w-full h-[120px] overflow-hidden">
+                  <img
+                    src={selectedListing.images && selectedListing.images.length > 0
+                      ? selectedListing.images[0]
+                      : "/images/home-image/home-page-image2.png"}
+                    alt={selectedListing.title}
+                    className="w-full h-[120px] object-cover rounded-t-xl"
+                  />
+                </div>
+                <div className="p-3">
+                  <div className="font-bold text-base mb-1 text-gray-900 truncate">{selectedListing.title}</div>
+                  <div className="font-semibold text-blue-600 text-sm mb-1">
+                    {selectedListing.price > 500000
+                      ? `Rs. ${(selectedListing.price / 1000000).toFixed(1)} M`
+                      : `Rs. ${Number(selectedListing.price).toLocaleString()}`}
+                  </div>
+                  <div className="text-gray-500 text-xs mb-1 truncate">{selectedListing.address}</div>
+                </div>
               </div>
             </InfoWindow>
           )}

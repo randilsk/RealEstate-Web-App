@@ -88,12 +88,21 @@ export const deleteUser = async (req, res, next) => {
     if (!userExists) {
       return next(errorHandler(404, 'User not found'));
     }
+
+    // Verify that the user is deleting their own account
+    if (req.user._id.toString() !== userId) {
+      return next(errorHandler(403, 'You can only delete your own account'));
+    }
     
     // Delete the user
-    const deletedUser = await User.findByIdAndDelete(userId);
+    await User.findByIdAndDelete(userId);
     
     // Clear the authentication cookie
-    res.clearCookie('access_token');
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
     
     // Log the deletion for audit purposes
     console.log(`User deleted: ${userId}`);
@@ -105,6 +114,27 @@ export const deleteUser = async (req, res, next) => {
     });
   } catch (error) {
     console.error('Error deleting user:', error);
+    next(errorHandler(500, 'Error deleting user account'));
+  }
+};
+
+export const verifyPassword = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+
+    const validPassword = bcryptjs.compareSync(password, user.password);
+    if (!validPassword) {
+      return next(errorHandler(401, 'Invalid password'));
+    }
+
+    res.status(200).json({ message: 'Password verified successfully' });
+  } catch (error) {
     next(error);
   }
 };

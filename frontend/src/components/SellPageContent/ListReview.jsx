@@ -87,7 +87,7 @@ function ListReview() {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push('/profile')}
                 className="w-full sm:w-auto px-8 py-3 bg-main-blue text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-sm"
               >
                 Go to Dashboard

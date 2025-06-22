@@ -67,7 +67,7 @@ function LocationConfirmation() {
         <div className="flex flex-col w-full max-w-7xl h-full bg-[#d9d9d9] rounded-md">
           <div className="px-4 sm:px-7 pt-4 sm:pt-5">
             <h1 className="text-2xl sm:text-3xl text-black font-poppins">
-              Location Confirmation
+              Location Confirmation for Sale
             </h1>
             <div className="mt-2 sm:mt-3 text-sm sm:text-[15px] text-black font-poppins">
               {`Address: ${address}, City: ${city}, District: ${district}`}

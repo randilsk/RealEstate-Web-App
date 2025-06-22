@@ -32,7 +32,7 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
   const nearbyListings = getNearbyListings();
 
   return (
-    <div className="w-full md:w-11/12 lg:w-4/5 xl:w-3/4 2xl:w-2/3 max-w-6xl bg-white shadow-lg overflow-hidden">
+    <div className="w-full md:w-11/12 lg:w-4/5 xl:w-3/4 2xl:w-4/5 max-w-7xl bg-white shadow-lg overflow-hidden">
      <div className="pt-6 px-10"> <ListingDetailNavbar /></div>
       
 
@@ -77,9 +77,54 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
         <div className="text-gray-500 text-sm mt-1">{listing.city}, {listing.district}</div>
       </div>
 
+      <div className="px-10 py-2">
+      {listing.createdAt && <div><b>Listed on:</b> {new Date(listing.createdAt).toLocaleDateString()}</div>}
+
+      </div>
+
+      {/* Property Details (International Style, HomeType Aware) */}
+      <div className="px-10 pt-2 pb-4">
+        <div className="font-semibold text-lg mb-2 border-b pb-1">Property Details</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-700">
+       
+          {listing.homeType && <div><b>Type:</b> {listing.homeType}</div>}
+          {/* Show only for non-Land and non-Apartment */}
+          {(listing.homeType !== 'Land' && listing.homeType !== 'Apartment') && (
+            <>
+              {listing.bedrooms !== undefined && <div><b>Bedrooms:</b> {listing.bedrooms}</div>}
+              {listing.attachedBathrooms !== undefined && <div><b>Attached Bathrooms:</b> {listing.attachedBathrooms}</div>}
+              {listing.detachedBathrooms !== undefined && <div><b>Detached Bathrooms:</b> {listing.detachedBathrooms}</div>}
+              {listing.floors !== undefined && <div><b>Floors:</b> {listing.floors}</div>}
+              {listing.houseArea && <div><b>House Area:</b> {listing.houseArea} sqft</div>}
+              {listing.parking && <div><b>Parking:</b> {listing.parking}</div>}
+              {listing.buildYear && <div><b>Build Year:</b> {listing.buildYear}</div>}
+            </>
+          )}
+          {/* Show only for Land */}
+          {listing.homeType === 'Land' && (
+            <>
+              {listing.landArea && <div><b>Land Area:</b> {listing.landArea} sqft</div>}
+              {listing.landArea && <div><b>Land Area:</b> {listing.landArea} sqft</div>}
+            </>
+          )}
+          {/* Show for Apartment if present */}
+          {listing.homeType === 'Apartment' && (
+            <>
+              {listing.bedrooms !== undefined && <div><b>Bedrooms:</b> {listing.bedrooms}</div>}
+              {listing.attachedBathrooms !== undefined && <div><b>Attached Bathrooms:</b> {listing.attachedBathrooms}</div>}
+              {listing.detachedBathrooms !== undefined && <div><b>Detached Bathrooms:</b> {listing.detachedBathrooms}</div>}
+              {listing.floors !== undefined && <div><b>Floors:</b> {listing.floors}</div>}
+              {listing.houseArea && <div><b>House Area:</b> {listing.houseArea} sqft</div>}
+              {listing.parking && <div><b>Parking:</b> {listing.parking}</div>}
+              {listing.buildYear && <div><b>Build Year:</b> {listing.buildYear}</div>}
+            </>
+          )}
+        </div>
+      </div>
+
       {/* Description */}
       <div className="px-10 py-2">
-        <div className="font-semibold text-lg mb-1">Description</div>
+        <div className="font-semibold text-lg mb-1">What's Special</div>
         <div className="text-gray-700 text-sm whitespace-pre-line">{listing.description || "No description provided."}</div>
         <div className="text-gray-400 text-xs mt-2">{listing.createdAt ? new Date(listing.createdAt).toLocaleDateString() : ""} Posted | {listing.views || 0} views</div>
       </div>
@@ -144,11 +189,12 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
       <div className="px-10 py-2">
         <div className="font-semibold text-lg mb-1">Owner's Contact Information</div>
         <div className="text-sm text-gray-700">
+        {listing.username && <div><b>Owner Name:</b> {listing.username}</div>}
           <div>📞 <b>Phone:</b></div>
-          <div className="ml-4">Primary: {listing.ownerPhone || "+1 (123) 456-7890"}</div>
-          <div className="ml-4">Secondary: {listing.ownerPhone2 || "+1 (123) 555-6789"}</div>
+          <div className="ml-4">Primary: {listing.phone || "+1 (123) 456-7890"}</div>
+          {/* <div className="ml-4">Secondary: {listing.ownerPhone2 || "+1 (123) 555-6789"}</div> */}
           <div className="mt-2">✉️ <b>Email:</b></div>
-          <div className="ml-4">{listing.ownerEmail || "inquiries@eliterealty.com"}</div>
+          <div className="ml-4">{listing.email || "inquiries@eliterealty.com"}</div>
         </div>
       </div>
 

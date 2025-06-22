@@ -201,7 +201,7 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
       {/* Footer */}
       <div className="bg-gray-100 px-10 py-3 mt-2 text-xs text-gray-600 flex flex-col md:flex-row md:justify-between items-center gap-2 border-t">
         <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-          <span>Home</span>
+          <span><Link href={"/"}>Home</Link></span>
           <span>Help</span>
           <span>About Us</span>
           <span>Privacy Policy</span>
@@ -210,11 +210,11 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
           <span>Cookies</span>
         </div>
         <div className="flex gap-2 items-center">
-          <Image src="/icons/appstore.svg" alt="App Store" width={80} height={24} />
-          <Image src="/icons/googleplay.svg" alt="Google Play" width={80} height={24} />
+          <Image src="/images/home-image/appstore.png" alt="App Store" width={80} height={24} />
+          <Image src="/images/home-image/googleplay.png" alt="Google Play" width={80} height={24} />
         </div>
       </div>
-      <div className="text-center text-xs text-gray-400 py-2">© 2024 Urban Nest. All rights reserved.</div>
+      <div className="text-center text-xs text-gray-400 py-2">© 2025 Urban Nest. All rights reserved.</div>
     </div>
   );
 } 

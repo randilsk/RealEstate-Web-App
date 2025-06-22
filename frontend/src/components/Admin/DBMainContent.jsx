@@ -144,7 +144,7 @@ function DBMainContent() {
     // fetch data from backend
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('/api/auth/users');
+            const response = await axios.get('http://localhost:3000/api/auth/users');
             setUsers(response.data);
             setUserCount(response.data.length);
         } catch (error) {
@@ -296,7 +296,7 @@ function DBMainContent() {
                     />
                     <StatCard 
                         title="Revenue" 
-                        value="$12,000" 
+                        value="$0" 
                         icon={FaDollarSign} 
                         iconColor="text-green-600"
                         percentChange="+5.2% from last month"

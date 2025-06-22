@@ -41,7 +41,7 @@ export default function AdminSignUp() {
     
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/signup", {
+      const res = await fetch("http://localhost:3000/api/admin/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

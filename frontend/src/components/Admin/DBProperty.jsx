@@ -542,7 +542,7 @@ const DBProperty = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await axios.get('/api/listing/getallListing');
+      const response = await axios.get('http://localhost:3000/api/listing/getallListing');
       // Transform the data to match our table structure with all property details
       const transformedProperties = response.data.map(listing => ({
         _id: listing._id,
@@ -588,7 +588,7 @@ const DBProperty = () => {
   const handleDeleteConfirm = async () => {
     if (propertyToDelete) {
       try {
-        await axios.delete(`/api/listing/${propertyToDelete._id}`);
+        await axios.delete(`http://localhost:3000/api/listing/${propertyToDelete._id}`);
         await fetchProperties();
         setShowDeleteConfirm(false);
         setPropertyToDelete(null);
@@ -606,7 +606,7 @@ const DBProperty = () => {
 
   const handleStatusChange = async (propertyId, newStatus) => {
     try {
-      await axios.put(`/api/listing/${propertyId}`, { status: newStatus });
+      await axios.put(`http://localhost:3000/api/listing/${propertyId}`, { status: newStatus });
       // Refresh the properties list after status update
       await fetchProperties();
     } catch (error) {
@@ -617,7 +617,7 @@ const DBProperty = () => {
 
   const handleUpdateProperty = async (updatedProperty) => {
     try {
-      await axios.put(`/api/listing/${updatedProperty._id}`, updatedProperty);
+      await axios.put(`http://localhost:3000/api/listing/${updatedProperty._id}`, updatedProperty);
       // Update the properties state with the updated property
       setProperties(prevProperties => 
         prevProperties.map(property => 

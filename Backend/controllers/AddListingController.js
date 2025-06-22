@@ -66,8 +66,14 @@ export const addListing = async (req, res) => {
   try {
     console.log("Received listing data:", JSON.stringify(req.body, null, 2));
 
+    // Get Cloudinary image URLs from uploaded files
+    const imageUrls = req.files ? req.files.map(file => file.path) : [];
+
     // Clean up the request body based on homeType
     const listingData = { ...req.body };
+
+    // Attach image URLs to the listing data
+    listingData.images = imageUrls;
 
     // Remove fields that shouldn't be present for certain homeTypes
     if (listingData.homeType === "Land") {

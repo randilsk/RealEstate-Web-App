@@ -60,6 +60,28 @@ function page() {
     };
   }, [listings]);
 
+  // Listen for districtSelected event from Header_varient_1
+  useEffect(() => {
+    const handleDistrictSelected = (event) => {
+      const { districtName } = event.detail;
+      console.log('DISTRICT SELECTED:', districtName);
+      console.log('ALL LISTINGS:', listings);
+      const filtered = listings.filter(
+        (listing) =>
+          listing.district &&
+          listing.district.toLowerCase() === districtName.toLowerCase()
+      );
+      console.log('FILTERED LISTINGS:', filtered);
+      setFilteredListings(filtered);
+      setIsFiltered(true);
+      setSearchArea(null); // Optionally remove the circle when filtering by district
+    };
+    window.addEventListener("districtSelected", handleDistrictSelected);
+    return () => {
+      window.removeEventListener("districtSelected", handleDistrictSelected);
+    };
+  }, [listings]);
+
   // Handle zoom change from MapSection
   const handleZoomChange = (zoom) => {
     if (zoom <= 11 && isFiltered) {

@@ -43,11 +43,19 @@ export default function DBreports() {
     { name: "Sales", value: 40 }
   ];
 
-  const COLORS = ["#3B82F6", "#F59E0B"];
+  const COLORS = [
+    '#3B82F6', '#F59E0B', '#10B981', '#EF4444', '#6366F1', '#F472B6', '#FCD34D', '#60A5FA', '#34D399', '#F87171',
+    '#A78BFA', '#FBBF24', '#6EE7B7', '#FCA5A5', '#818CF8', '#FDE68A', '#4ADE80', '#F9A8D4', '#FACC15', '#5EEAD4',
+    '#FCA5A5', '#C4B5FD', '#FDE68A', '#6EE7B7', '#FBBF24', '#A7F3D0', '#F472B6', '#FCD34D', '#60A5FA', '#34D399',
+    '#F87171', '#A78BFA', '#FBBF24', '#6EE7B7', '#FCA5A5', '#818CF8', '#FDE68A', '#4ADE80', '#F9A8D4', '#FACC15',
+    '#5EEAD4', '#FCA5A5', '#C4B5FD', '#FDE68A', '#6EE7B7', '#FBBF24', '#A7F3D0', '#F472B6', '#FCD34D', '#60A5FA'
+  ];
+
+
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('/api/auth/users');
+            const response = await axios.get('http://localhost:3000/api/auth/users');
             setTotalUsers(response.data.length);
             setUsers(response.data);
         } catch (error) {
@@ -57,7 +65,7 @@ export default function DBreports() {
         }
     };
 
-    const fetchListings = async () => {
+const fetchListings = async () => {
         try {
             const response = await axios.get('http://localhost:3000/api/listing/getallListing');
             const allListings = response.data;
@@ -67,25 +75,29 @@ export default function DBreports() {
 
             // Process data for charts
             const monthlyListings = {};
-            const propertyTypes = {};
+            const districtCounts = {};
 
             allListings.forEach(listing => {
                 const month = new Date(listing.createdAt).toLocaleString('en-us', { month: 'short' });
                 monthlyListings[month] = (monthlyListings[month] || 0) + 1;
 
-                const type = listing.homeType || 'Other'; // Assuming 'homeType' field exists
-                propertyTypes[type] = (propertyTypes[type] || 0) + 1;
+                if (listing.district) {
+                    const district = listing.district.trim();
+                    districtCounts[district] = (districtCounts[district] || 0) + 1;
+                }
             });
 
             const sortedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const processedLineChartData = sortedMonths
-                .filter(month => monthlyListings[month] !== undefined)
-                .map(month => ({ month, listings: monthlyListings[month] }));
-
-            const processedPieChartData = Object.keys(propertyTypes).map(type => ({
-                name: type,
-                value: propertyTypes[type]
+            const processedLineChartData = sortedMonths.map(month => ({
+                month,
+                listings: monthlyListings[month] || 0
             }));
+
+            const processedPieChartData = Object.entries(districtCounts)
+                .map(([name, value]) => ({ name, value }))
+
+
+.filter(d => d.value > 0);
 
             setLineChartDynamicData(processedLineChartData);
             setPieChartDynamicData(processedPieChartData);
@@ -97,9 +109,13 @@ export default function DBreports() {
         }
     };
 
+
+          
+    
+
     const fetchTransactions = async () => {
         try {
-            const response = await axios.get('/api/transactions'); // Placeholder endpoint for transactions
+            const response = await axios.get('http://localhost:3000/api/transactions'); // Placeholder endpoint for transactions
             const transactionsData = response.data;
             setTransactions(transactionsData);
             const totalAmount = transactionsData.reduce((sum, transaction) => sum + (transaction.amount || 0), 0);
@@ -148,17 +164,7 @@ export default function DBreports() {
   return (
     <div className="space-y-6 w-full">
         {/* Navbar */}
-        <div className="bg-indigo-600 w-full shadow-md p-4 flex justify-between items-center text-white">
-                <input
-                    type="text"
-                    placeholder="Enter an address, city, district, province"
-                    className="p-2 border rounded-md w-1/3 text-black"
-                />
-                <div className="flex gap-4 text-xl">
-                    <FaBell className="cursor-pointer hover:text-indigo-200" />
-                    <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
-                </div>
-            </div>
+        
       <h1 className="text-3xl font-bold text-center">Admin Report Page</h1>
 
       {/* Summary Cards */}
@@ -222,31 +228,40 @@ export default function DBreports() {
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-white p-3 rounded-xl shadow-md flex-1">
-          <h2 className="text-sm font-semibold mb-2">Property Distribution</h2>
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                <Pie
-                  data={pieChartDynamicData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={60}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                >
-                  {pieChartDynamicData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+ <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto">
+            <h2 className="text-sm font-semibold mb-2">Property Distribution</h2>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                  <Pie
+                    data={pieChartDynamicData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={60}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {pieChartDynamicData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Legend 
+                    layout="vertical" 
+                    verticalAlign="middle" 
+                    align="right"
+                    formatter={(value, entry, index) => {
+                      const total = pieChartDynamicData.reduce((sum, d) => sum + d.value, 0);
+                      const percent = total > 0 ? ((pieChartDynamicData[index].value / total) * 100).toFixed(1) : 0;
+                      return `${value}: ${percent}%`;
+                    }}
+                  />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+
       </div>
 
       {/* User Activity Table */}

@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react"; //Hook Componets
 import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes, FaMapMarkerAlt } from 'react-icons/fa';
 import axios from 'axios';      //call API
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from "@react-google-maps/api";
+import dayjs from 'dayjs';
+
 
 //modal component for the listings
 const ListingModal = ({ isOpen, onClose, listings }) => {
@@ -133,7 +135,7 @@ function DBMainContent() {
     const [selectedListing, setSelectedListing] = useState(null);
     const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
     const [pendingListings, setPendingListings] = useState(0);
-
+    const [filterType, setFilterType] = useState('Monthly');
     // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -142,7 +144,7 @@ function DBMainContent() {
     // fetch data from backend
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('/api/auth/users');
+            const response = await axios.get('http://localhost:3000/api/auth/users');
             setUsers(response.data);
             setUserCount(response.data.length);
         } catch (error) {
@@ -189,6 +191,22 @@ function DBMainContent() {
     const handleListCardClick = () => {
         setIsListingModalOpen(true);
     };
+     const filterByType = (arr, dateField = 'createdAt') => {
+        const now = dayjs();
+        return arr.filter(item => {
+            const date = dayjs(item[dateField]);
+            if (filterType === 'Today') {
+                return date.isSame(now, 'day');
+            } else if (filterType === 'Monthly') {
+                return date.isSame(now, 'month');
+            } else if (filterType === 'Yearly') {
+                return date.isSame(now, 'year');
+            }
+            return true;
+        });
+    };
+    const filteredListings = filterByType(listings);
+    const filteredUsers = filterByType(users);
 
     // Map options
     const mapOptions = {
@@ -220,22 +238,13 @@ function DBMainContent() {
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
+
+
             
-<div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-    <div className="w-1/3">
-        {/* Empty div for spacing */}
-    </div>
-    <div className="w-1/3 flex justify-center">
-        <input 
-            type="text" 
-            placeholder="Enter an address, city, district, province" 
-            className="p-2 border rounded-md w-full text-black" 
-        />
-    </div>
-    <div className="w-1/3 flex justify-end gap-4 text-xl">
-        <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
-        <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
-    </div>
+            
+<div className="  p-4 flex justify-center items-center text-white mt-5  ">
+    
+   
 </div>
 
 
@@ -249,25 +258,27 @@ function DBMainContent() {
                 <div className="flex flex-wrap items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
                     <div className="flex gap-2 mt-4 sm:mt-0">
-                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Today</button>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Monthly</button>
-                        <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Yearly</button>
+                        <button onClick={() => setFilterType('Today')} className={`px-4 py-2 ${filterType === 'Today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Today</button>
+                        <button onClick={() => setFilterType('Monthly')} className={`px-4 py-2 ${filterType === 'Monthly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Monthly</button>
+                        <button onClick={() => setFilterType('Yearly')} className={`px-4 py-2 ${filterType === 'Yearly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Yearly</button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard 
                         title="Total Listings" 
-                        value={loading ? "Loading..." : listCount}  
+                        value={loading ? "Loading..." : filteredListings.length}  
                         icon={FaTachometerAlt} 
                         onClick={handleListCardClick}
-                        iconColor="text-blue-600"
+
+
+iconColor="text-blue-600"
                         percentChange="+12.5% from last month"
                         trend="up"
                     />
                     <StatCard 
                         title="Active Users" 
-                        value={loading ? "Loading..." : userCount} 
+                        value={loading ? "Loading..." : filteredUsers.length} 
                         icon={FaUsers} 
                         onClick={handleUserCardClick}
                         iconColor="text-indigo-600"
@@ -276,7 +287,7 @@ function DBMainContent() {
                     />
                     <StatCard 
                         title="Revenue" 
-                        value="$12,000" 
+                        value="$0" 
                         icon={FaDollarSign} 
                         iconColor="text-green-600"
                         percentChange="+5.2% from last month"
@@ -296,6 +307,7 @@ function DBMainContent() {
 
 
                 </div>
+
 
                 {/* Recent Properties Table */}
                 <div className="bg-white mt-6 p-6 rounded-lg shadow">

@@ -47,7 +47,7 @@ function Header_varient_1() {
   const handleLocationSearch = async (e) => {
     const value = e.target.value;
     setSearchLocation(value);
-    
+
     if (value.length > 2) {
       try {
         const response = await fetch(
@@ -104,15 +104,15 @@ function Header_varient_1() {
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-col gap-3">
-      <NavItem>
-            <Link href={"/buy"}>Buy</Link>
-          </NavItem>
-          <NavItem>
-           <Link href={"/rent"}> Rent</Link>
-            </NavItem>
-          <NavItem>
-            <Link href={"/sell"}>List</Link>
-          </NavItem>
+        <NavItem>
+          <Link href={"/buy"}>Buy</Link>
+        </NavItem>
+        <NavItem>
+          <Link href={"/rent"}> Rent</Link>
+        </NavItem>
+        <NavItem>
+          <Link href={"/sell"}>List</Link>
+        </NavItem>
         <Link href={"/"}>
           <NavItem label="Home" />
         </Link>
@@ -140,35 +140,54 @@ function Header_varient_1() {
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
-      <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+            <FilterButton label="District" />
+          </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
-
+          <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+            {[
+              "Ampara",
+              "Anuradhapura",
+              "Badulla",
+              "Batticaloa",
+              "Colombo",
+              "Galle",
+              "Gampaha",
+              "Hambantota",
+              "Jaffna",
+              "Kalutara",
+              "Kandy",
+              "Kegalle",
+              "Kilinochchi",
+              "Kurunegala",
+              "Mannar",
+              "Matale",
+              "Matara",
+              "Monaragala",
+              "Mullaitivu",
+              "Nuwara Eliya",
+              "Polonnaruwa",
+              "Puttalam",
+              "Ratnapura",
+              "Trincomalee",
+              "Vavuniya",
+            ].map((district) => (
+              <DropdownMenuItem
+                key={district}
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent("districtSelected", {
+                      detail: { districtName: district },
+                    })
+                  )
+                }
+              >
+                {district}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="w-full">
@@ -240,18 +259,25 @@ function Header_varient_1() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex gap-8">
-           <Link href={"/buy"}> <NavItem label="Buy"/></Link>
+            <Link href={"/buy"}>
+              {" "}
+              <NavItem label="Buy" />
+            </Link>
             <Link href={"/rent"}>
               <NavItem label="Rent" />
             </Link>
-           <Link href={"/sell"}> <NavItem label="Sell" /></Link>
+            <Link href={"/sell"}>
+              {" "}
+              <NavItem label="List" />
+            </Link>
           </div>
 
           {/* Logo */}
           <Link href={"/"} className="flex items-center gap-2">
-            <div className="text-white text-xl md:text-2xl font-bold">Urban Nest</div>
+            <div className="text-white text-xl md:text-2xl font-bold">
+              Urban Nest
+            </div>
           </Link>
-          
 
           {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
@@ -304,15 +330,18 @@ function Header_varient_1() {
               type="text"
               value={searchLocation}
               onChange={handleLocationSearch}
-              onKeyDown={(e)=> {
-                if(e.key === "Enter"){
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   handleSearchIconClick();
                 }
               }}
               placeholder="Enter an address, city, district, province"
               className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -338,35 +367,54 @@ function Header_varient_1() {
 
           {/* Filter Buttons */}
           <div className="w-36">
-           <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="District" />
+              </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
-
+              <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
+                {[
+                  "Ampara",
+                  "Anuradhapura",
+                  "Badulla",
+                  "Batticaloa",
+                  "Colombo",
+                  "Galle",
+                  "Gampaha",
+                  "Hambantota",
+                  "Jaffna",
+                  "Kalutara",
+                  "Kandy",
+                  "Kegalle",
+                  "Kilinochchi",
+                  "Kurunegala",
+                  "Mannar",
+                  "Matale",
+                  "Matara",
+                  "Monaragala",
+                  "Mullaitivu",
+                  "Nuwara Eliya",
+                  "Polonnaruwa",
+                  "Puttalam",
+                  "Ratnapura",
+                  "Trincomalee",
+                  "Vavuniya",
+                ].map((district) => (
+                  <DropdownMenuItem
+                    key={district}
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent("districtSelected", {
+                          detail: { districtName: district },
+                        })
+                      )
+                    }
+                  >
+                    {district}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="w-36">
             <DropdownMenu>
@@ -426,7 +474,10 @@ function Header_varient_1() {
               placeholder="Enter an address, city..."
               className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -458,7 +509,10 @@ function Header_varient_1() {
                 <span className="text-black text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-main-blue h-[80vh] rounded-t-2xl">
+            <SheetContent
+              side="bottom"
+              className="bg-main-blue h-[80vh] rounded-t-2xl"
+            >
               <MobileFiltersContent />
             </SheetContent>
           </Sheet>

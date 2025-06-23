@@ -31,7 +31,7 @@ export default function AdminSignIn() {
     e.preventDefault();
     try {
       dispatch(adminsignInStart());
-      const res = await fetch("/api/admin/signin", {
+      const res = await fetch("http://localhost:3000/api/admin/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,12 @@ export default function AdminSignIn() {
       const data = await res.json();
 
       if (!res.ok) {
-        dispatch(adminsignInFailure(data.message || "Only @urbannest.com email addresses are allowed for admin access"));
+        dispatch(
+          adminsignInFailure(
+            data.message ||
+              "Only @urbannest.com email addresses are allowed for admin access"
+          )
+        );
         return;
       }
 
@@ -49,7 +54,9 @@ export default function AdminSignIn() {
       router.replace("/Admin/");
     } catch (err) {
       dispatch(
-        adminsignInFailure(err instanceof Error ? err.message : "An error occurred")
+        adminsignInFailure(
+          err instanceof Error ? err.message : "An error occurred"
+        )
       );
     }
   };
@@ -61,13 +68,13 @@ export default function AdminSignIn() {
         backgroundImage: `url(/images/sign_in-images/signIn_Image.png)`,
       }}
     >
-      <div
-        className="w-full max-w-[425px] sm:max-w-[425px] md:max-w-[425px] lg:max-w-[425px] xl:max-w-[425px] h-auto sm:h-[530px] rounded-3xl sm:rounded-[48px] p-6 py-8 sm:p-5 sm:py-5 mx-auto shadow-lg border bg-[#d9d9d9] border-t-4"
-      >
+      <div className="w-full max-w-[425px] sm:max-w-[425px] md:max-w-[425px] lg:max-w-[425px] xl:max-w-[425px] h-auto sm:h-[530px] rounded-3xl sm:rounded-[48px] p-6 py-8 sm:p-5 sm:py-5 mx-auto shadow-lg border bg-[#d9d9d9] border-t-4">
         <h1 className="text-2xl sm:text-3xl text-center font-semibold my-4 sm:my-5">
           Welcome to UrbanNest Admin
         </h1>
-        <h2 className="text-lg sm:text-xl font-semibold my-3 sm:my-4 text-center">Admin Sign In</h2>
+        <h2 className="text-lg sm:text-xl font-semibold my-3 sm:my-4 text-center">
+          Admin Sign In
+        </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-4">
           <input
             type="email"
@@ -94,11 +101,18 @@ export default function AdminSignIn() {
         </form>
         {/* Error message display */}
         {error && (
-          <p className="text-red-600 text-center mt-2 text-sm sm:text-base">{error}</p>
+          <p className="text-red-600 text-center mt-2 text-sm sm:text-base">
+            {error}
+          </p>
         )}
         <p className="text-center mt-4 text-sm sm:text-base">
-          Don&apos;t have an account?{' '}
-          <Link href="/Admin/Sign-up" className="text-blue-600 hover:underline font-semibold">Create an account</Link>
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/Admin/Sign-up"
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            Create an account
+          </Link>
         </p>
       </div>
     </div>

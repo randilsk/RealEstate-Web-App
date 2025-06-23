@@ -3,16 +3,20 @@
 import React from 'react';
 import DBSideBar from '../../../components/Admin/DBSideBar';
 import DBProperty from '../../../components/Admin/DBProperty';
+import AdminNavbar from '../AdminNavbar';
 
 function PropertiesPage() {
     return (
         <>
-        <div className='flex'> 
-            <DBSideBar/>
-            <div className='flex-1 ml-64'>
+        <div className='flex flex-col '>
+            <div className=''> 
+            <AdminNavbar/>
+            <div className='p-10'>
                 <DBProperty/>
             </div>
         </div>
+        </div>
+        
         </>
     );
 }

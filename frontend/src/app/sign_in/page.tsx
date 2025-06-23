@@ -20,10 +20,10 @@ import 'swiper/css/navigation';
 import Image from 'next/image';
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
 import signInImage from '../../../public/images/sign_in-images/signIn_Image.png';
-import slide_image_2 from '../../../public/images/home/home1.jpg';
-import slide_image_3 from '../../../public/images/home/home2.jpg';
-import slide_image_4 from '../../../public/images/home/home3.jpg';
-import slide_image_5 from '../../../public/images/home/home4.jpg';
+import slide_image_2 from '../../../public/images/sign_in-images/sign2.jpg';
+import slide_image_3 from '../../../public/images/sign_in-images/sign3.jpg';
+import slide_image_4 from '../../../public/images/sign_in-images/sign4.jpg';
+import slide_image_5 from '../../../public/images/sign_in-images/sign5.jpg';
 import slide_image_6 from '../../../public/images/sign_in-images/sign1.png';
 import { motion } from 'framer-motion';
 
@@ -98,12 +98,16 @@ export default function SignIn() {
         </Link>
       </div>
       {/* Left: Welcome Text & Sign In Form */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-center py-8 sm:py-10 px-2 sm:px-6">
+
+
+
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
+
           className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-indigo-700 mb-6 sm:mb-8 drop-shadow-lg"
+
         >
           Welcome to UrbanNest
         </motion.h1>
@@ -193,6 +197,7 @@ export default function SignIn() {
           className='swiper_container h-full max-w-[90vw] md:max-w-[500px] lg:max-w-[700px] xl:max-w-[900px]'
         >
            <SwiperSlide className="h-full flex items-center justify-center">
+
             <Image src={slide_image_6} alt='slide_image' width={1200} height={800} className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
@@ -209,6 +214,7 @@ export default function SignIn() {
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
             <Image src={slide_image_5} alt='slide_image' width={1200} height={800} className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200" />
+
           </SwiperSlide>
         </Swiper>
       </div>

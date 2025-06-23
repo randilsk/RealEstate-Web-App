@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import {
+  adminsignInStart,
+  adminsignInSuccess,
+  adminsignInFailure,
+} from "../../../redux/Features/user/adminSlice";
 
 export default function AdminSignUp() {
   const [formData, setFormData] = useState({
@@ -15,6 +21,7 @@ export default function AdminSignUp() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -41,7 +48,7 @@ export default function AdminSignUp() {
     
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/signup", {
+      const res = await fetch("http://localhost:3000/api/admin/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +68,25 @@ export default function AdminSignUp() {
         return;
       }
       
-      // Success - redirect to sign in
+      // Automatically sign in after successful sign up
+      dispatch(adminsignInStart());
+      const signInRes = await fetch("http://localhost:3000/api/admin/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      const signInData = await signInRes.json();
+      if (!signInRes.ok) {
+        dispatch(adminsignInFailure(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually."));
+        setError(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually.");
+        return;
+      }
+      dispatch(adminsignInSuccess(signInData.admin));
       router.replace("/Admin/");
     } catch (err) {
       console.error("Signup error:", err);  // Added logging

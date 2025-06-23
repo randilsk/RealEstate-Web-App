@@ -92,7 +92,7 @@ function AdminNavbar() {
         <Link href={'/Admin/ApproveAdds'}>Approvals</Link>
       </NavItem>
             <NavItem>
-            <Link href={'/Admin/users'}>Reports</Link>
+            <Link href={'/Admin/reports'}>Reports</Link>
           </NavItem>
           <NavItem>Help</NavItem>
           

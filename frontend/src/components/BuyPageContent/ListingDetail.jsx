@@ -204,7 +204,7 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
           <span><Link href={"/"}>Home</Link></span>
           <span>Help</span>
           <span>About Us</span>
-          <span>Privacy Policy</span>
+          <span><Link href={"/policies/privacy_policy"}>Privacy Policy</Link></span>
           <span>Mobile App</span>
           <span>Advertise</span>
           <span>Cookies</span>

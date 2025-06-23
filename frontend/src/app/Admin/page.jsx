@@ -14,11 +14,13 @@ import 'swiper/css/navigation'
 import Image from 'next/image';
 
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+import AdminNavbar from '../Admin/AdminNavbar';
 
 import slide_image_2 from '../../../public/images/home/home1.jpg';
 import slide_image_3 from '../../../public/images/home/home2.jpg';
 import slide_image_4 from '../../../public/images/home/home3.jpg';
 import slide_image_5 from '../../../public/images/home/home4.jpg';
+import { div } from 'framer-motion/client';
 
 function Dashboard() {
     const { currentUser } = useSelector((state) => state.admin);
@@ -114,14 +116,16 @@ function Dashboard() {
     }
 
     return (
-        <div className='flex flex-col md:flex-row min-h-screen'>
-            <div className="w-full md:w-64 flex-shrink-0">
-                <DBSideBar/>
-            </div>
-            <div className='flex-1 ml-0 md:ml-64'>
+
+        <div className='flex flex-col w-full' >
+          <div className='flex flex-col pb-10'> 
+            <AdminNavbar/>
+            <div className='flex-1 ml-10 mr-10 pt-10 '>
                 <DBMainContent/>
             </div>
         </div>
+        </div>
+        
     );
 }
 

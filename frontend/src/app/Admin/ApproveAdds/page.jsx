@@ -7,12 +7,16 @@ import AdminNavbar from '../AdminNavbar';
 function Dashboard() {
     return (
         <>
-        <div className='flex'> 
+        <div className='flex flex-col'>
+            <div className=''> 
             <AdminNavbar/>
-            <div className='flex-1 ml-64'>
+            <div className='p-10'>
             <DBMainContentApproveAdds/>
                 </div>
         </div>
+
+        </div>
+        
         </>
     );
     

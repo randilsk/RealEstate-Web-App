@@ -88,6 +88,9 @@ function AdminNavbar() {
 
         {/* Desktop Auth/Profile Section */}
         <div className="hidden md:flex justify-start items-center gap-7">
+          <NavItem onClick={closeMenu}>
+        <Link href={'/Admin/ApproveAdds'}>Approvals</Link>
+      </NavItem>
             <NavItem>
             <Link href={'/Admin/users'}>Reports</Link>
           </NavItem>

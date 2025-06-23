@@ -542,7 +542,7 @@ const DBProperty = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await axios.get('/api/listing/getallListing');
+      const response = await axios.get('http://localhost:3000/api/listing/getallListing');
       // Transform the data to match our table structure with all property details
       const transformedProperties = response.data.map(listing => ({
         _id: listing._id,
@@ -650,16 +650,13 @@ const DBProperty = () => {
   return (
     <div className="flex-2 bg-gray-100 min-h-screen">
       {/* Blue Navigation Bar */}
-      <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-between items-center text-white">
+      <div className=" w-full  p-4 flex justify-center items-center text-white">
         <input
           type="text"
           placeholder="Enter an address, city, district, province"
-          className="p-2 border rounded-md w-1/3 text-black"
+          className="p-2 border rounded-md w-1/3 text-black border-[#3b50df] rounded-[50px] "
         />
-        <div className="flex gap-4 text-xl">
-          <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
-          <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
-        </div>
+        
       </div>
 
       {/* Main Content */}

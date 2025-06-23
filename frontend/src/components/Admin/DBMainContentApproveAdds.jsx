@@ -108,94 +108,95 @@ function DBMainContentApproveAdds() {
     };
 
     return (
-        <div className="flex-1 bg-gray-100">
-            {/* Navbar */}
-            <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-                <input 
-                    type="text" 
-                    placeholder="Enter an address, city, district, province" 
-                    className="p-2 border rounded-md w-1/3 text-black" 
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
-                <div className="flex gap-4 text-xl">
-                    <FaBell />
-                    <FaUserCircle />
-                </div>
-            </div>
-
-            {/* Dashboard */}
-            <div className="p-10">
-                <h3 className="text-2xl font-bold mb-6">Pending Approvals</h3>
-
-                {loading ? (
-                    <div className="text-center py-10 text-gray-600">Loading listings...</div>
-                ) : error ? (
-                    <div className="text-center py-4 text-red-500">{error}</div>
-                ) : filteredListings.length === 0 ? (
-                    <div className="text-center py-10 text-gray-600">No listings available matching your search.</div>
-                ) : (
-                    <>
-                        {/* Listing Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {filteredListings.map((listing) => (
-                                <div key={listing._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                                    <img 
-                                        src={listing.images?.[0] || '/images/placeholder-property.jpg'} 
-                                        alt={listing.title || listing.address} 
-                                        className="w-full h-48 object-cover" 
-                                    />
-                                    <div className="p-4">
-                                        <h4 className="text-xl font-semibold mb-2">{listing.title || listing.address}</h4>
-                                        <p className="text-gray-600 mb-2">{listing.description}</p>
-                                        <div className="flex items-center text-gray-600 mb-2">
-                                            <FaMapMarkerAlt className="mr-2" />
-                                            {listing.address}
+                                    <div className="flex-1 bg-gray-100">
+                                        {/* Navbar */}
+                                        <div className=" p-4 flex justify-center items-center text-white">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Enter an address, city, district, province" 
+                                                className="p-2 border rounded-md w-1/3 text-black border-[#3b50df] rounded-[50px]" 
+                                                value={searchTerm}
+                                                onChange={handleSearchChange}
+                                            />
+                                            
                                         </div>
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span className="text-lg font-bold text-[#3B50DF]">Rs. {listing.price}</span>
-                                            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
-                                                {listing.status || 'Pending'}
-                                            </span>
+
+                                        {/* Dashboard */}
+                                        <div className="p-10">
+                                            <h3 className="text-2xl font-bold mb-6">Pending Approvals</h3>
+
+                                            {loading ? (
+                                                <div className="text-center py-10 text-gray-600">Loading listings...</div>
+                                            ) : error ? (
+                                                <div className="text-center py-4 text-red-500">{error}</div>
+                                            ) : filteredListings.length === 0 ? (
+                                                <div className="text-center py-10 text-gray-600">No listings available matching your search.</div>
+                                            ) : (
+                                                <>
+                                                    {/* Listing Cards */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                {filteredListings.map((listing) => (
+                                    <div key={listing._id} className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
+                                        <div className="relative overflow-hidden">
+                                            <img 
+                                                src={listing.images?.[0] || '/images/placeholder-property.jpg'} 
+                                                alt={listing.title || listing.address} 
+                                                className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110" 
+                                            />
+                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
                                         </div>
-                                        <div className="flex gap-4 mb-4">
-                                            {listing.bedrooms && (
-                                                <div className="flex items-center text-gray-600">
-                                                    <FaBed className="mr-2" />
-                                                    {listing.bedrooms} Beds
+                                        <div className="p-4">
+                                            <h4 className="text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-[#3B50DF]">{listing.title || listing.address}</h4>
+                                            <p className="text-gray-600 mb-2">{listing.description}</p>
+                                            <div className="flex items-center text-gray-600 mb-2 transition-colors duration-300 group-hover:text-gray-700">
+                                                <FaMapMarkerAlt className="mr-2 transition-colors duration-300 group-hover:text-[#3B50DF]" />
+                                                {listing.address}
+                                            </div>
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span className="text-lg font-bold text-[#3B50DF] transition-all duration-300 group-hover:text-2xl">Rs. {listing.price}</span>
+                                                <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm transition-all duration-300 group-hover:bg-yellow-200 group-hover:px-4">
+                                                    {listing.status || 'Pending'}
+                                                </span>
+                                            </div>
+                                            <div className="flex gap-4 mb-4">
+                                                {listing.bedrooms && (
+                                                    <div className="flex items-center text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                                                        <FaBed className="mr-2 transition-colors duration-300 group-hover:text-[#3B50DF]" />
+                                                        {listing.bedrooms} Beds
+                                                    </div>
+                                                )}
+                                                {listing.attachedBathrooms && (
+                                                    <div className="flex items-center text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                                                        <FaBath className="mr-2 transition-colors duration-300 group-hover:text-[#3B50DF]" />
+                                                        {listing.attachedBathrooms} Baths
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                                                    <FaRulerCombined className="mr-2 transition-colors duration-300 group-hover:text-[#3B50DF]" />
+                                                    {listing.houseArea || listing.landArea} sq ft
                                                 </div>
-                                            )}
-                                            {listing.attachedBathrooms && (
-                                                <div className="flex items-center text-gray-600">
-                                                    <FaBath className="mr-2" />
-                                                    {listing.attachedBathrooms} Baths
-                                                </div>
-                                            )}
-                                            <div className="flex items-center text-gray-600">
-                                                <FaRulerCombined className="mr-2" />
-                                                {listing.houseArea || listing.landArea} sq ft
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => handleApprove(listing._id)}
+                                                    className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                                                >
+                                                    <FaCheck className="mr-2" />
+                                                    Approve
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleReject(listing._id)}
+                                                    className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                                                >
+                                                    <FaTimes className="mr-2" />
+                                                    Reject
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => handleApprove(listing._id)}
-                                                className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 flex items-center justify-center"
-                                            >
-                                                <FaCheck className="mr-2" />
-                                                Approve
-                                            </button>
-                                            <button 
-                                                onClick={() => handleReject(listing._id)}
-                                                className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center"
-                                            >
-                                                <FaTimes className="mr-2" />
-                                                Reject
-                                            </button>
-                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                                                        
 
                         {/* Map Section */}
                         {isLoaded && (

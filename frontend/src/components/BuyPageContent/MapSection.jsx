@@ -6,8 +6,8 @@ import {
   InfoWindow,
   useJsApiLoader,
   Circle,
+  Polygon
 } from "@react-google-maps/api";
-import { fetchAllListings } from "@/lib/api";
 import { useSearchParams } from "next/navigation";
 
 // Define the libraries we need
@@ -30,18 +30,16 @@ const mapOptions = {
   fullscreenControl: true,
 };
 
-function MapSection() {
-  const [listings, setListings] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [center, setCenter] = useState({ lat: 33.749, lng: -84.388 }); // Default to Atlanta
+function MapSection({ listings, searchArea, onZoomChange }) {
+  const [center, setCenter] = useState({ lat: 7.8731, lng: 80.7718 });
   const [selectedListing, setSelectedListing] = useState(null);
-  const [zoom, setZoom] = useState(10);
+  const [zoom, setZoom] = useState(7); // Suitable zoom for Sri Lanka
   const [map, setMap] = useState(null);
-  const [searchArea, setSearchArea] = useState(null);
-  const [isSearchActive, setIsSearchActive] = useState(false);
   const searchParams = useSearchParams();
+  const [districtCircle, setDistrictCircle] = useState(null);
+  const [districtPolygons, setDistrictPolygons] = useState([]);
+
+
 
   // Load Google Maps API with proper configuration
   const { isLoaded, loadError } = useJsApiLoader({
@@ -50,98 +48,78 @@ function MapSection() {
     libraries: libraries,
   });
 
-  // Fetch listings from the API
-  useEffect(() => {
-    const getListings = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchAllListings();
-        setListings(data);
-        setFilteredListings(data);
-
-        // If we have listings, center the map on the first one
-        if (data.length > 0 && data[0].lat && data[0].lng) {
-          setCenter({ lat: data[0].lat, lng: data[0].lng });
-        }
-      } catch (err) {
-        console.error("Error fetching listings:", err);
-        setError("Failed to load property listings");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isLoaded) {
-      getListings();
-    }
-  }, [isLoaded]);
+  // Center map on first listing if available
+  // useEffect(() => {
+  //   if (listings && listings.length > 0 && listings[0].lat && listings[0].lng) {
+  //     setCenter({ lat: listings[0].lat, lng: listings[0].lng });
+  //   }
+  // }, [listings]);
 
   // Handle location selection from header or query params
   useEffect(() => {
     const handleLocationSelected = (event) => {
       const { lat, lng, address } = event.detail;
       setCenter({ lat, lng });
-      setZoom(13); // Zoom in closer when a location is selected
-      setIsSearchActive(true);
-
-      // Set search area circle
-      setSearchArea({
-        center: { lat, lng },
-        radius: 5000, // 5km radius
-      });
-
-      // Filter listings based on distance from selected location
-      const filtered = listings.filter((listing) => {
-        if (!listing.lat || !listing.lng) return false;
-        // Calculate distance between points using Haversine formula
-        const R = 6371; // Earth's radius in km
-        const dLat = (listing.lat - lat) * Math.PI / 180;
-        const dLng = (listing.lng - lng) * Math.PI / 180;
-        const a =
-          Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
-          Math.sin(dLng/2) * Math.sin(dLng/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const distance = R * c;
-        return distance <= 5; // Show listings within 5km radius
-      });
-      setFilteredListings(filtered);
+      setZoom(13);
     };
 
-    window.addEventListener("locationSelected", handleLocationSelected);
+    const handleDistrictSelected = async (event) => {
+      const districtName = event.detail.districtName;
 
-    // --- NEW: Handle query params for initial load ---
-    const lat = searchParams.get("lat");
-    const lng = searchParams.get("lng");
-    const address = searchParams.get("address");
-    if (lat && lng && address && listings.length > 0) {
-      // Simulate the event handler directly
-      handleLocationSelected({
-        detail: {
-          lat: parseFloat(lat),
-          lng: parseFloat(lng),
-          address,
-        },
-      });
-    }
-    // --- END NEW ---
+      try {
+        const res = await fetch("/data/sl-district.json");
+        const geojson = await res.json();
 
+        const matchedFeatures = geojson.features.filter(
+          (feature) =>
+            feature.properties.name.toLowerCase() === districtName.toLowerCase()
+        );
+
+        if (matchedFeatures.length > 0) {
+          setDistrictPolygons(matchedFeatures);
+
+          // Try to use the first coordinate for center
+          const coords = matchedFeatures[0].geometry.coordinates[0][0];
+          const centerLat = coords[1];
+          const centerLng = coords[0];
+          setCenter({ lat: centerLat, lng: centerLng });
+          setZoom(10);
+        } else {
+          console.warn("District not found in GeoJSON:", districtName);
+        }
+      } catch (error) {
+        console.error("Failed to load district boundaries:", error);
+      }
+    };
+
+    // Example event listeners (uncomment and adjust as needed)
+    window.addEventListener('locationSelected', handleLocationSelected);
+    window.addEventListener('districtSelected', handleDistrictSelected);
+
+    // Cleanup (uncomment if using event listeners)
     return () => {
-      window.removeEventListener("locationSelected", handleLocationSelected);
+      window.removeEventListener('locationSelected', handleLocationSelected);
+      window.removeEventListener('districtSelected', handleDistrictSelected);
     };
-  }, [listings, searchParams]);
+  }, []);
+
+  const drawDistrictCircle = (location) => {
+    setDistrictCircle({
+      center: { lat: location.lat, lng: location.lng },
+      radius: 15000, // You can adjust this value per district
+    });
+  };
+  
 
   // Handle zoom changes
   const handleZoomChanged = () => {
     if (map) {
       const newZoom = map.getZoom();
       setZoom(newZoom);
-      
-      // If zoomed out enough, show all listings
-      if (newZoom <= 11 && isSearchActive) {
-        setFilteredListings(listings);
-        setIsSearchActive(false);
+      if (typeof onZoomChange === 'function') {
+        onZoomChange(newZoom);
       }
+      // Do NOT reset isSearchActive or remove the circle when zoomed out
     }
   };
 
@@ -179,22 +157,6 @@ function MapSection() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-        Loading property listings...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-red-500">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-full bg-gray-100">
       {isLoaded && (
@@ -226,8 +188,33 @@ function MapSection() {
             />
           )}
 
+{districtPolygons.map((feature, index) => {
+  const coordinates = feature.geometry.coordinates;
+
+  const paths = coordinates.map((ring) =>
+    ring.map(([lng, lat]) => ({ lat, lng }))
+  );
+
+  return (
+    <Polygon
+      key={index}
+      paths={paths}
+      options={{
+        strokeColor: "#1E3A8A",
+        strokeOpacity: 0.9,
+        strokeWeight: 2,
+        fillColor: "#60A5FA",
+        fillOpacity: 0.1,
+        zIndex: 2,
+      }}
+    />
+  );
+})}
+
+
+
           {/* Render markers for each filtered listing */}
-          {filteredListings.map((listing) =>
+          {listings.map((listing) =>
             listing.lat && listing.lng ? (
               <Marker
                 key={listing._id}

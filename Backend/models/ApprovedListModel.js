@@ -85,11 +85,7 @@ const ApprovedListingSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  Status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
-  },
+ 
 });
 
 const ApprovedListing = mongoose.model("ApprovedListing", ApprovedListingSchema);

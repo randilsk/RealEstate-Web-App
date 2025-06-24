@@ -1,4 +1,4 @@
-import ApprovedListing from "../models/ApprovedListModel";
+import ApprovedListing from "../models/ApprovedListModel.js";
 
 // Get all listings
 export const getAllApprovedListings = async (req, res) => {
@@ -35,7 +35,7 @@ export const getAllApprovedListings = async (req, res) => {
       district: approvedListing.district || "District not provided",
       homeType: approvedListing.homeType || "Other",
       images: approvedListing.images || [],
-      Status: approvedListing.Status,
+      status: approvedListing.status,
     }));
 
     res.status(200).json(transformedApprovedListings);
@@ -157,7 +157,7 @@ export const updateApprovedListing = async (req, res) => {
 export const deleteApprovedListing = async (req, res) => {
   try {
     const deletedapprovedListing = await ApprovedListing.findByIdAndDelete(req.params.id);
-    if (!deletedApprovedListing) {
+    if (!deletedapprovedListing) {
       return res.status(404).json({ message: "Listing not found" });
     }
     res.status(200).json({ message: "Listing deleted successfully" });

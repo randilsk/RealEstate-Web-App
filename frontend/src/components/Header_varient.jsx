@@ -70,7 +70,7 @@ function Header_varient() {
               <div className="text-black text-xl flex items-center justify-between w-full">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                    <span>For Sale</span>
+                    <span>Fo</span>
                     <Image
                       src="/icons/dropdown-icon.png"
                       alt="Search Icon"

@@ -85,21 +85,20 @@ export const addApprovedListing = async (req, res) => {
 
     console.log("Cleaned approved listing data:", JSON.stringify(listingApprovedData, null, 2));
 
-    const newApprovedListing = new ApprovedListing(listingApprovedData); // ✅ Fixed: was 'ApprovedData'
+    const newApprovedListing = new ApprovedListing(listingApprovedData);
     console.log("Created new Approved listing instance:", newApprovedListing);
 
-    const savedListing = await newApprovedListing.save(); // ✅ Fixed: was 'newListing'
+    const savedListing = await newApprovedListing.save();
     console.log("Successfully saved listing:", savedListing);
 
     res.status(201).json(savedListing);
   } catch (error) {
-    console.error("Error in addListing:", error);
+    console.error("Error in addApprovedListing:", error); // ✅ Fixed function name
     console.error("Error name:", error.name);
     console.error("Error message:", error.message);
     console.error("Error stack:", error.stack);
 
     if (error.name === "ValidationError") {
-      // Handle validation errors
       const validationErrors = Object.values(error.errors).map(
         (err) => err.message
       );

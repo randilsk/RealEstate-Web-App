@@ -85,10 +85,12 @@ function DBMainContentApproveAdds() {
         setFilteredListings(filtered);
     };
 
-    // Handle Approve button click
+   
     const handleApprove = async (listingId) => {
         try {
-            await axios.put(`http://localhost:3000/api/listing/${listingId}/status`, { status: 'approved' });
+             await axios.patch(`http://localhost:3000/api/approve/${listingId}/status`, { 
+            status: 'approved' 
+        });
             fetchListings(); // Refresh listings after approval
         } catch (error) {
             console.error('Error approving listing:', error);

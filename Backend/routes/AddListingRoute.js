@@ -7,6 +7,7 @@ import {
   updateListing,
   deleteListing,
   updateListingStatus,
+  getListedUsers,
 } from "../controllers/AddListingController.js";
 import { uploadMultiple } from "../middleware/upload.midlware.js";
 
@@ -48,6 +49,8 @@ const cleanRequestBody = (req, res, next) => {
 
 // Get all listings
 router.get("/getallListing", getAllListings);
+
+router.get("/getListedUsers", getListedUsers);
 
 // Get listings by user email
 router.get("/user/:email", getUserListings);

@@ -8,8 +8,8 @@ import { useSearchParams } from "next/navigation";
 
 function page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
-  const [listings, setListings] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
+  const [listings, setListings] = useState([]); // stores data from the backend
+  const [filteredListings, setFilteredListings] = useState([]);  //hold current displayed listings
   const [isFiltered, setIsFiltered] = useState(false); // Track if filtering is active
   const [searchArea, setSearchArea] = useState(null); // Lifted search area state
   const searchParams = useSearchParams();

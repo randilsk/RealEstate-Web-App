@@ -117,12 +117,15 @@ export default function SignIn() {
         </Link>
       </div>
       {/* Left: Welcome Text & Sign In Form */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-center py-8 sm:py-10 px-2 sm:px-6">
+
+
+
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-indigo-700 mb-6 sm:mb-8 drop-shadow-lg"
+
         >
           Welcome to UrbanNest
         </motion.h1>

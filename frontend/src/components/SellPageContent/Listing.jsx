@@ -80,7 +80,6 @@ function Listing() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   // Handle select changes with transition
   const handleSelectChange = (name, value) => {
     if (name === "homeType") {

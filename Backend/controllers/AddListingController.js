@@ -1,4 +1,5 @@
 import Listing from "../models/AddListingModel.js";
+import User from '../models/UserModel.js';
 
 // Get all listings
 export const getAllListings = async (req, res) => {
@@ -197,6 +198,21 @@ export const updateListingStatus = async (req, res) => {
     console.error("Error updating listing status:", error);
     res.status(500).json({
       message: "Failed to update listing status",
+      error: error.message,
+    });
+  }
+};
+export const getListedUsers = async (req, res) => {
+  try {
+   
+    const userIds = await Listing.distinct("user");
+    
+    const listedUsers = await User.find({ _id: { $in: userIds } }).select("-password"); 
+    res.status(200).json(listedUsers);
+  } catch (error) {
+    console.error("Error in getListedUsers:", error);
+    res.status(500).json({
+      message: "Failed to fetch listed users",
       error: error.message,
     });
   }

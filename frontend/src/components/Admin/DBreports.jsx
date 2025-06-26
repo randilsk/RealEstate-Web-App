@@ -228,7 +228,7 @@ const fetchListings = async () => {
         </div>
 
         {/* Pie Chart */}
- <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto">
+ <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto ">
             <h2 className="text-sm font-semibold mb-2">Property Distribution</h2>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
@@ -241,12 +241,14 @@ const fetchListings = async () => {
                     outerRadius={60}
                     fill="#8884d8"
                     dataKey="value"
+                   
                   >
                     {pieChartDynamicData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Legend 
+                  className="m-2"
                     layout="vertical" 
                     verticalAlign="middle" 
                     align="right"

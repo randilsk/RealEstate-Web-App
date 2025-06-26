@@ -3,7 +3,7 @@
 // not appere in Dashboad
 
 import React, { useState, useEffect } from "react";
-import { FaBell, FaUserCircle, FaSearch, FaEdit, FaTrash, FaSave, FaTimes, FaUsers, FaUserCheck } from 'react-icons/fa';
+import { FaBell, FaUserCircle, FaSearch, FaEdit, FaTrash, FaSave, FaTimes, FaUsers, FaUserCheck, FaEye } from 'react-icons/fa';
 import axios from 'axios';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 const StatCard = ({ title, value, icon: Icon, color = "text-blue-600" }) => {
     return (
         <div className="bg-white p-4 rounded-lg shadow text-center">
-            <div className={`text-2xl mb-2 flex justify-center ${color}`}>
+            <div className="text-2xl mb-2 flex justify-center ${color}">
                 <Icon />
             </div>
             <p className="text-gray-600">{title}</p>
@@ -169,16 +169,65 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     );
 };
 
+// View User Modal Component
+const ViewUserModal = ({ user, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-indigo-800">User Details</h3>
+                    <button 
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-700"
+                    >
+                        <FaTimes size={24} />
+                    </button>
+                </div>
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-3">User Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <p className="text-sm text-gray-600">ID</p>
+                            <p className="font-medium">{user._id?.slice(-4) || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">Joined Date</p>
+                            <p className="font-medium">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">Username</p>
+                            <p className="font-medium">{user.username || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">Email</p>
+                            <p className="font-medium">{user.email || 'N/A'}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-6 flex justify-end gap-4">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 function DBusers() {
     const [users, setUsers] = useState([]);
+    const [listedusers, setListedUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('all');
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    const [editingUser, setEditingUser] = useState(null);
-    const [activeUsersCount, setActiveUsersCount] = useState(0);
+    const [viewingUser, setViewingUser] = useState(null);
+    const [listedUsersCount, setListedUsersCount] = useState(0);
     const [totalUsersCount, setTotalUsersCount] = useState(0);
     const [pendingUsersCount, setPendingUsersCount] = useState(0);
 
@@ -192,12 +241,13 @@ function DBusers() {
 
     // Fetch users data
     const fetchUsers = async () => {
+        setError(null); // Clear error before fetching
         try {
             const response = await axios.get('http://localhost:3000/api/auth/users');
             const usersData = response.data;
             setUsers(usersData);
             const stats = calculateUserStats(usersData);
-            setActiveUsersCount(stats.active);
+            setListedUsersCount(stats.active);
             setPendingUsersCount(stats.pending);
             setTotalUsersCount(stats.total);
             setLoading(false);
@@ -207,11 +257,34 @@ function DBusers() {
             setLoading(false);
         }
     };
+       const fetchListedUsers = async () => {
+    setError(null);
+    try {
+        const response = await axios.get('http://localhost:3000/api/listing/getListedUsers');
+        const listedusersData = response.data;
+        setListedUsers(listedusersData);
+        
+        // Set the listed users count to the total length of listed users
+        setListedUsersCount(listedusersData.length);
+        
+        setLoading(false);
+    } catch (error) {
+        console.error('Error fetching listed users:', error);
+        setError('Failed to fetch listed users data');
+        setLoading(false);
+    }
+};
 
     useEffect(() => {
         fetchUsers();
         // Refresh data every 30 seconds
         const interval = setInterval(fetchUsers, 30000);
+        return () => clearInterval(interval);
+    }, []);
+    useEffect(() => {
+        fetchListedUsers();
+        // Refresh data every 30 seconds - fix the interval function
+        const interval = setInterval(fetchListedUsers, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -265,33 +338,6 @@ function DBusers() {
         return roleMap[role.toLowerCase()] || role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
     };
 
-    const handleEditUser = (user) => {
-        setEditingUser(user);
-    };
-
-    const handleSaveUser = async (updatedUser) => {
-        try {
-            // Use the correct API endpoint
-            const response = await axios.put(`/api/users/${updatedUser._id}`, updatedUser);
-            
-            if (response.data) {
-                // Update the users list with the edited user
-                setUsers(prevUsers => 
-                    prevUsers.map(user => 
-                        user._id === updatedUser._id ? response.data : user
-                    )
-                );
-            } else {
-                throw new Error('No data received from server');
-            }
-        } catch (error) {
-            console.error('Error updating user:', error);
-            // Get the error message from the backend response if available
-            const errorMessage = error.response?.data?.message || error.message || 'Failed to save changes. Please try again.';
-            throw new Error(errorMessage);
-        }
-    };
-
     const handleDeleteClick = (user) => {
         setUserToDelete(user);
         setShowDeleteConfirm(true);
@@ -300,7 +346,7 @@ function DBusers() {
     const handleDeleteConfirm = async () => {
         if (userToDelete) {
             try {
-                await axios.delete(`/api/auth/users/${userToDelete._id}`);
+                await axios.delete("http://localhost:3000/api/auth/users/${userToDelete._id");
                 await fetchUsers();
                 setShowDeleteConfirm(false);
                 setUserToDelete(null);
@@ -314,30 +360,34 @@ function DBusers() {
     return (
         <div className="flex-2 bg-gray-100 min-h-screen">
             {/* Navbar */}
-            <div className="  p-4 flex justify-center items-center text-white">
-                <input type="text" placeholder="Enter an address, city, district, province" className="p-2 border rounded-md w-1/3 text-black border-[#3b50df] rounded-[50px]" />
-                
-            </div>
+            {/* <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+                <input type="text" placeholder="Enter an address, city, district, province" className="p-2 border rounded-md w-1/3 text-black" />
+                <div className="flex gap-4 text-xl">
+                    <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+                    <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
+                </div>
+            </div> */}
 
             {/* Dashboard Stats Section */}
             <div className="p-10">
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">User Statistics</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6  ">User Statistics</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <StatCard 
                             title="Total Users" 
                             value={loading ? "..." : totalUsersCount}
                             icon={FaUsers}
                             color="text-indigo-600"
+                           
                         />
                         <StatCard 
-                            title="Active Users" 
-                            value={loading ? "..." : activeUsersCount}
+                            title="Listed Users" 
+                            value={loading ? "..." : listedUsersCount}
                             icon={FaUserCheck}
                             color="text-green-600"
                         />
                         <StatCard 
-                            title="Pending Users" 
+                            title="Subscribed Users" 
                             value={loading ? "..." : pendingUsersCount}
                             icon={FaUserCircle}
                             color="text-amber-600"
@@ -376,7 +426,10 @@ function DBusers() {
                     {loading ? (
                         <div className="text-center py-10 text-gray-600">Loading users...</div>
                     ) : error ? (
-                        <div className="text-center py-4 text-red-500">{error}</div>
+                        <div className="text-center py-4 text-red-500">
+                            {error}
+                            <button onClick={fetchUsers} className="ml-4 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors">Retry</button>
+                        </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
@@ -408,10 +461,10 @@ function DBusers() {
                                                 <div className="flex justify-center space-x-2">
                                                     <button 
                                                         className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-md transition-colors"
-                                                        title="Edit User"
-                                                        onClick={() => handleEditUser(user)}
+                                                        title="View Details"
+                                                        onClick={() => setViewingUser(user)}
                                                     >
-                                                        <FaEdit />
+                                                        <FaEye />
                                                     </button>
                                                     <button 
                                                         className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
@@ -438,12 +491,11 @@ function DBusers() {
                 </div>
             </div>
 
-            {/* Edit User Modal */}
-            {editingUser && (
-                <EditUserModal
-                    user={editingUser}
-                    onClose={() => setEditingUser(null)}
-                    onSave={handleSaveUser}
+            {/* View User Modal */}
+            {viewingUser && (
+                <ViewUserModal
+                    user={viewingUser}
+                    onClose={() => setViewingUser(null)}
                 />
             )}
 

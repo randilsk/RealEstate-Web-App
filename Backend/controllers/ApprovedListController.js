@@ -1,4 +1,6 @@
-import ApprovedListing from "../models/ApprovedListModel";
+import ApprovedListing from "../models/ApprovedListModel.js";
+import User from "../models/UserModel.js";
+import Listing from "../models/AddListingModel.js";
 
 // Get all listings
 export const getAllApprovedListings = async (req, res) => {
@@ -18,24 +20,24 @@ export const getAllApprovedListings = async (req, res) => {
     console.log("Found listings:", approvedlistings.length);
     console.log(
       "Approved Listing statuses:",
-      listings.map((l) => l.status)
+      approvedlistings.map((l) => l.status) // ✅ Fixed: was 'listings'
     );
 
     // Transform the data to ensure all required fields are present
-    const transformedApprovedListings = approvedlistings.map((ApprovedListing) => ({
-      ...listing,
-      bedrooms: ApprovedListing.bedrooms || 0,
-      attachedBathrooms: ApprovedListing.attachedBathrooms || 0,
-      detachedBathrooms: ApprovedListing.detachedBathrooms || 0,
-      houseArea: ApprovedListing.houseArea || 0,
-      landArea: ApprovedListing.landArea || 0,
-      price: ApprovedListing.price || 0,
-      address: ApprovedListing.address || "Address not provided",
-      city: ApprovedListing.city || "City not provided",
-      district: ApprovedListing.district || "District not provided",
-      homeType: ApprovedListing.homeType || "Other",
-      images: ApprovedListing.images || [],
-      Status: ApprovedListing.Status,
+    const transformedApprovedListings = approvedlistings.map((approvedListing) => ({
+      ...approvedListing, // ✅ Fixed: was 'listing'
+      bedrooms: approvedListing.bedrooms || 0,
+      attachedBathrooms: approvedListing.attachedBathrooms || 0,
+      detachedBathrooms: approvedListing.detachedBathrooms || 0,
+      houseArea: approvedListing.houseArea || 0,
+      landArea: approvedListing.landArea || 0,
+      price: approvedListing.price || 0,
+      address: approvedListing.address || "Address not provided",
+      city: approvedListing.city || "City not provided",
+      district: approvedListing.district || "District not provided",
+      homeType: approvedListing.homeType || "Other",
+      images: approvedListing.images || [],
+      status: approvedListing.status,
     }));
 
     res.status(200).json(transformedApprovedListings);
@@ -52,7 +54,7 @@ export const getAllApprovedListings = async (req, res) => {
 // Get listings for a specific user by email
 export const getApprovedListings = async (req, res) => {
   try {
-    const approvedlistings = await ApprovedListingL.find({ email: req.params.email });
+    const approvedlistings = await ApprovedListing.find({ email: req.params.email }); // ✅ Fixed: was 'ApprovedListingL'
     res.status(200).json(approvedlistings);
   } catch (error) {
     console.error("Error in getApprovedListings:", error);
@@ -65,45 +67,37 @@ export const getApprovedListings = async (req, res) => {
 
 export const addApprovedListing = async (req, res) => {
   try {
-    console.log("Received Approved listing data:", JSON.stringify(req.body, null, 2));
-
-    // Clean up the request body based on homeType
-    const listingApprovedData = { ...req.body };
-
-    // Remove fields that shouldn't be present for certain homeTypes
-    if (listingApprovedData.homeType === "Land") {
-      delete listingApprovedData.bedrooms;
-      delete listingApprovedData.attachedBathrooms;
-      delete listingApprovedData.detachedBathrooms;
-      delete listingApprovedData.floors;
-      delete listingApprovedData.houseArea;
-      delete listingApprovedData.parking;
-      delete listingApprovedData.buildYear;
-    } else if (listingApprovedData.homeType === "Apartment") {
-      delete listingApprovedData.landArea;
+    // Expecting listingId in req.body
+    const { listingId } = req.body;
+    if (!listingId) {
+      return res.status(400).json({ message: "listingId is required" });
     }
 
-    console.log("Cleaned approved listing data:", JSON.stringify(listingApprovedData, null, 2));
+    // Fetch the listing from AddListing
+    const listing = await Listing.findById(listingId).lean();
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found in AddListing" });
+    }
 
-    const newApprovedListing = new ApprovedListing(ApprovedData);
-    console.log("Created new Approved listing instance:", newApprovedListing);
+    // Prepare data for ApprovedListing (remove _id and status)
+    const { _id, status, ...approvedData } = listing;
+    approvedData.listingId = listingId; // keep reference to original
+    approvedData.status = "approved";
 
-    const savedListing = await newListing.save();
-    console.log("Successfully saved listing:", savedListing);
+    // Create new ApprovedListing
+    const newApprovedListing = new ApprovedListing(approvedData);
+    const savedListing = await newApprovedListing.save();
+
+    // Delete the original listing from AddListing
+    await Listing.findByIdAndDelete(listingId);
 
     res.status(201).json(savedListing);
   } catch (error) {
-    console.error("Error in addListing:", error);
-    console.error("Error name:", error.name);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-
+    console.error("Error in addApprovedListing:", error);
     if (error.name === "ValidationError") {
-      // Handle validation errors
       const validationErrors = Object.values(error.errors).map(
         (err) => err.message
       );
-      console.error("Validation errors:", validationErrors);
       return res.status(400).json({
         message: "Validation failed",
         errors: validationErrors,
@@ -134,30 +128,30 @@ export const getSingleApprovedListing = async (req, res) => {
   }
 };
 
-export const updateListing = async (req, res) => {
+export const updateApprovedListing = async (req, res) => {
   try {
-    const updatedListing = await Listing.findByIdAndUpdate(
+    const updatedApprovedListing = await ApprovedListing.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
-    if (!updatedListing) {
-      return res.status(404).json({ message: "Listing not found" });
+    if (!updatedApprovedListing) {
+      return res.status(404).json({ message: "Approved Listing not found" });
     }
-    res.status(200).json(updatedListing);
+    res.status(200).json(updatedApprovedListing);
   } catch (error) {
-    console.error("Error in updateListing:", error);
+    console.error("Error in update Approved Listing:", error);
     res.status(500).json({
-      message: "Failed to update listing",
+      message: "Failed to update the listing",
       error: error.message,
     });
   }
 };
 
-export const deleteListing = async (req, res) => {
+export const deleteApprovedListing = async (req, res) => {
   try {
-    const deletedListing = await Listing.findByIdAndDelete(req.params.id);
-    if (!deletedListing) {
+    const deletedapprovedListing = await ApprovedListing.findByIdAndDelete(req.params.id);
+    if (!deletedapprovedListing) {
       return res.status(404).json({ message: "Listing not found" });
     }
     res.status(200).json({ message: "Listing deleted successfully" });
@@ -170,24 +164,24 @@ export const deleteListing = async (req, res) => {
   }
 };
 
-export const updateListingStatus = async (req, res) => {
+export const updateApprovedListingStatus = async (req, res) => {
   try {
     const { status } = req.body;
     if (!["pending", "approved", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const updatedListing = await Listing.findByIdAndUpdate(
+    const updatedApprovedListing = await ApprovedListing.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
     );
 
-    if (!updatedListing) {
+    if (!updatedApprovedListing) {
       return res.status(404).json({ message: "Listing not found" });
     }
 
-    res.status(200).json(updatedListing);
+    res.status(200).json(updatedApprovedListing);
   } catch (error) {
     console.error("Error updating listing status:", error);
     res.status(500).json({

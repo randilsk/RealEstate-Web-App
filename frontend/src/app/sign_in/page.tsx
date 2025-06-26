@@ -4,7 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThunkDispatch } from "@reduxjs/toolkit"; // For typing Redux dispatch
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { AnyAction } from "redux";
 import {
   signInStart,
@@ -32,7 +32,6 @@ import slide_image_5 from "../../../public/images/home/home4.jpg";
 import slide_image_6 from "../../../public/images/sign_in-images/sign1.png";
 import { motion } from "framer-motion";
 
-// Define types for the form data and root state
 interface FormData {
   email: string;
   password: string;
@@ -81,10 +80,8 @@ export default function SignIn() {
       }
 
       dispatch(signInSuccess(data));
-      // Replace router.push with router.replace for a complete navigation
+      // Fixed: Redirect to home page, not API endpoint
       router.replace("/");
-      // Force a hard reload to ensure all state is updated
-      window.location.href = "/api/";
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")
@@ -116,16 +113,18 @@ export default function SignIn() {
           </svg>
         </Link>
       </div>
+
       {/* Left: Welcome Text & Sign In Form */}
-      <div className="flex flex-col items-center justify-center w-full md:w-1/2 py-8 sm:py-10">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
           className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-indigo-700 mb-6 sm:mb-8 drop-shadow-lg"
         >
           Welcome to UrbanNest
         </motion.h1>
+        
         <motion.h2
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -136,6 +135,7 @@ export default function SignIn() {
           or <span className="font-semibold text-indigo-600">Sign Up</span> to
           continue.
         </motion.h2>
+
         <motion.form
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -169,6 +169,7 @@ export default function SignIn() {
             <OAuth />
           </div>
         </motion.form>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -183,7 +184,8 @@ export default function SignIn() {
             Sign Up
           </Link>
         </motion.p>
-        {/* {error && (
+
+        {error && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -192,9 +194,10 @@ export default function SignIn() {
           >
             {error}
           </motion.p>
-        )} */}
+        )}
       </div>
-      {/* Right: Animated Image Slider (hidden on mobile) */}
+
+      {/* Right: Animated Image Slider */}
       <div className="hidden md:flex w-full md:w-1/2 items-center justify-center py-8 sm:py-10 h-full mt-6 md:mt-0 md:pr-8 lg:pr-16">
         <Swiper
           effect={"coverflow"}
@@ -223,13 +226,7 @@ export default function SignIn() {
           className="swiper_container h-full max-w-[90vw] md:max-w-[500px] lg:max-w-[700px] xl:max-w-[900px]"
         >
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image
-              src={slide_image_6}
-              alt="slide_image"
-              width={1200}
-              height={800}
-              className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200"
-            />
+            <Image src={slide_image_6} alt='slide_image' width={1200} height={800} className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
             <Image
@@ -268,17 +265,10 @@ export default function SignIn() {
             />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
-            <Image
-              src={slide_image_5}
-              alt="slide_image"
-              width={1200}
-              height={800}
-              className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200"
-            />
+            <Image src={slide_image_5} alt='slide_image' width={1200} height={800} className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
         </Swiper>
       </div>
     </div>
   );
-}
-//commenting
+} 

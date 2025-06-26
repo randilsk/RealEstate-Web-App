@@ -10,6 +10,7 @@ import reviewRouts from "./routes/reviewRoutes.js"
 
 import rentRoutes from "./routes/Rentroutes.js"
 import AdminRoute from "./routes/admin.route.js";
+import ApproveRoute from './routes/approve.listingRoute.js';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use("/api/listing", ListingRoute);
 app.use("/api/reviews", reviewRouts);
 app.use("/api/admin", AdminRoute);
 app.use("/api/Rentroutes",rentRoutes);
+app.use("/api/approve", ApproveRoute);
 
 
 

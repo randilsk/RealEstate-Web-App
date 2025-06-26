@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:3000/api";
 // Fetch all listings
 export const fetchAllListings = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/listing/getallListing`);
+    const response = await axios.get(`${API_BASE_URL}/approve/getAllApprove`);
     if (!response.data) {
       throw new Error('No data received from server');
     }

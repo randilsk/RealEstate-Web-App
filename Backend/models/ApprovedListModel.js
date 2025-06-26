@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const ApprovedListingSchema = new mongoose.Schema({
+  listingId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AddListing",
+    required: true, 
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -85,11 +90,7 @@ const ApprovedListingSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  Status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
-  },
+ 
 });
 
 const ApprovedListing = mongoose.model("ApprovedListing", ApprovedListingSchema);

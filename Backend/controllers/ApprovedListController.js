@@ -1,4 +1,6 @@
 import ApprovedListing from "../models/ApprovedListModel.js";
+import User from "../models/UserModel.js";
+import Listing from "../models/AddListingModel.js";
 
 // Get all listings
 export const getAllApprovedListings = async (req, res) => {
@@ -65,44 +67,37 @@ export const getApprovedListings = async (req, res) => {
 
 export const addApprovedListing = async (req, res) => {
   try {
-    console.log("Received Approved listing data:", JSON.stringify(req.body, null, 2));
-
-    // Clean up the request body based on homeType
-    const listingApprovedData = { ...req.body };
-
-    // Remove fields that shouldn't be present for certain homeTypes
-    if (listingApprovedData.homeType === "Land") {
-      delete listingApprovedData.bedrooms;
-      delete listingApprovedData.attachedBathrooms;
-      delete listingApprovedData.detachedBathrooms;
-      delete listingApprovedData.floors;
-      delete listingApprovedData.houseArea;
-      delete listingApprovedData.parking;
-      delete listingApprovedData.buildYear;
-    } else if (listingApprovedData.homeType === "Apartment") {
-      delete listingApprovedData.landArea;
+    // Expecting listingId in req.body
+    const { listingId } = req.body;
+    if (!listingId) {
+      return res.status(400).json({ message: "listingId is required" });
     }
 
-    console.log("Cleaned approved listing data:", JSON.stringify(listingApprovedData, null, 2));
+    // Fetch the listing from AddListing
+    const listing = await Listing.findById(listingId).lean();
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found in AddListing" });
+    }
 
-    const newApprovedListing = new ApprovedListing(listingApprovedData);
-    console.log("Created new Approved listing instance:", newApprovedListing);
+    // Prepare data for ApprovedListing (remove _id and status)
+    const { _id, status, ...approvedData } = listing;
+    approvedData.listingId = listingId; // keep reference to original
+    approvedData.status = "approved";
 
+    // Create new ApprovedListing
+    const newApprovedListing = new ApprovedListing(approvedData);
     const savedListing = await newApprovedListing.save();
-    console.log("Successfully saved listing:", savedListing);
+
+    // Delete the original listing from AddListing
+    await Listing.findByIdAndDelete(listingId);
 
     res.status(201).json(savedListing);
   } catch (error) {
-    console.error("Error in addApprovedListing:", error); // ✅ Fixed function name
-    console.error("Error name:", error.name);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-
+    console.error("Error in addApprovedListing:", error);
     if (error.name === "ValidationError") {
       const validationErrors = Object.values(error.errors).map(
         (err) => err.message
       );
-      console.error("Validation errors:", validationErrors);
       return res.status(400).json({
         message: "Validation failed",
         errors: validationErrors,

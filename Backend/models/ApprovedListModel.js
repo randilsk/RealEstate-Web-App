@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const ApprovedListingSchema = new mongoose.Schema({
+  listingId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AddListing",
+    required: true, 
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -27,24 +27,24 @@ export default function DBreports() {
     const [filterType, setFilterType] = useState('Monthly');
 
   // Mock data for charts
-  const lineChartData = [
-    { month: "Jan", listings: 100 },
-    { month: "Feb", listings: 250 },
-    { month: "Mar", listings: 300 },
-    { month: "Apr", listings: 400 }
-  ];
+  // const lineChartData = [
+  //   { month: "Jan", listings: 100 },
+  //   { month: "Feb", listings: 250 },
+  //   { month: "Mar", listings: 300 },
+  //   { month: "Apr", listings: 400 }
+  // ];
 
-  const barChartData = [
-    { month: "Jan", revenue: 500000 },
-    { month: "Feb", revenue: 800000 },
-    { month: "Mar", revenue: 900000 },
-    { month: "Apr", revenue: 1200000 }
-  ];
+  // const barChartData = [
+  //   { month: "Jan", revenue: 500000 },
+  //   { month: "Feb", revenue: 800000 },
+  //   { month: "Mar", revenue: 900000 },
+  //   { month: "Apr", revenue: 1200000 }
+  // ];
 
-  const pieChartData = [
-    { name: "Rentals", value: 60 },
-    { name: "Sales", value: 40 }
-  ];
+  // const pieChartData = [
+  //   { name: "Rentals", value: 60 },
+  //   { name: "Sales", value: 40 }
+  // ];
 
   const COLORS = [
     '#3B82F6', '#F59E0B', '#10B981', '#EF4444', '#6366F1', '#F472B6', '#FCD34D', '#60A5FA', '#34D399', '#F87171',
@@ -220,13 +220,14 @@ export default function DBreports() {
   return (
     <div className="space-y-6 w-full">
         {/* Navbar */}
-        <div className="bg-indigo-600 w-full shadow-md p-4 flex justify-between items-center text-white">
-            <input
+        <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-end text-white">
+       
+            {/* <input
                 type="text"
                 placeholder="Enter an address, city, district, province"
                 className="p-2 border rounded-md w-1/3 text-black"
-            />
-            <div className="flex gap-4 text-xl">
+            /> */}
+            <div className="w-1/3 flex justify-end gap-4 text-xl">
                 <FaBell className="cursor-pointer hover:text-indigo-200" />
                 <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
             </div>
@@ -296,7 +297,7 @@ export default function DBreports() {
           </div>
 
           {/* Pie Chart */}
-          <div className="bg-white p-3 rounded-xl shadow-md flex-1">
+          <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto">
             <h2 className="text-sm font-semibold mb-2">Property Distribution</h2>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">

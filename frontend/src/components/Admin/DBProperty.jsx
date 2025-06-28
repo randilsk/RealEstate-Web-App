@@ -82,6 +82,7 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
                 src={property.images[currentImageIndex] || '/images/placeholder-property.jpg'}
                 alt={`Property image ${currentImageIndex + 1}`}
                 className="w-full h-[400px] object-cover"
+              
               />
             </div>
             {property.images.length > 1 && (
@@ -484,13 +485,6 @@ const PropertyDetailsModal = ({ property, onClose, onUpdate }) => {
               >
                 Back to Properties
               </button>
-              <button
-                onClick={handleEdit}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
-              >
-                <FaEdit />
-                Edit Property
-              </button>
             </>
           )}
         </div>
@@ -535,12 +529,14 @@ const DBProperty = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchProperties();
   }, []);
 
   const fetchProperties = async () => {
+    setError(null); // Clear error before fetching
     try {
       const response = await axios.get('http://localhost:3000/api/listing/getallListing');
       // Transform the data to match our table structure with all property details
@@ -576,6 +572,7 @@ const DBProperty = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching properties:', error);
+      setError('Failed to fetch property data');
       setLoading(false);
     }
   };
@@ -588,7 +585,7 @@ const DBProperty = () => {
   const handleDeleteConfirm = async () => {
     if (propertyToDelete) {
       try {
-        await axios.delete(`http://localhost:3000/api/listing/${propertyToDelete._id}`);
+        await axios.delete('http://localhost:3000/api/listing/${propertyToDelete._id}');
         await fetchProperties();
         setShowDeleteConfirm(false);
         setPropertyToDelete(null);
@@ -606,7 +603,7 @@ const DBProperty = () => {
 
   const handleStatusChange = async (propertyId, newStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/listing/${propertyId}`, { status: newStatus });
+      await axios.put('/api/listing/${propertyId}, { status: newStatus }');
       // Refresh the properties list after status update
       await fetchProperties();
     } catch (error) {
@@ -617,7 +614,7 @@ const DBProperty = () => {
 
   const handleUpdateProperty = async (updatedProperty) => {
     try {
-      await axios.put(`http://localhost:3000/api/listing/${updatedProperty._id}`, updatedProperty);
+      await axios.put('http://localhost:3000/api/listing/${updatedProperty._id}, updatedProperty');
       // Update the properties state with the updated property
       setProperties(prevProperties => 
         prevProperties.map(property => 
@@ -649,20 +646,7 @@ const DBProperty = () => {
 
   return (
     <div className="flex-2 bg-gray-100 min-h-screen">
-      {/* Blue Navigation Bar */}
-      <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-between items-center text-white">
-        <input
-          type="text"
-          placeholder="Enter an address, city, district, province"
-          className="p-2 border rounded-md w-1/3 text-black"
-        />
-        <div className="flex gap-4 text-xl">
-          <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
-          <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
-        </div>
-      </div>
-
-      {/* Main Content */}
+     
       <div className="p-10">
         {/* Page Title */}
         <div className="mb-6">
@@ -715,7 +699,7 @@ const DBProperty = () => {
               <div className="bg-blue-100 p-3 rounded-full mb-3">
                 <FaTag className="text-blue-600 text-2xl" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Sold Listings</p>
+              <p className="text-sm font-medium text-gray-600">Boosted Listings</p>
               <p className="text-2xl font-bold text-blue-600 mt-1">
                 {properties.filter(property => property.status === 'sold').length}
               </p>
@@ -752,6 +736,11 @@ const DBProperty = () => {
 
           {loading ? (
             <div className="text-center py-10 text-gray-600">Loading properties...</div>
+          ) : error ? (
+            <div className="text-center py-4 text-red-500">
+              {error}
+              <button onClick={fetchProperties} className="ml-4 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors">Retry</button>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
@@ -799,18 +788,10 @@ const DBProperty = () => {
                         </div>
                       </td>
                       <td className="border border-gray-300 p-2">
-                        <select
-                          value={property.status}
-                          onChange={(e) => handleStatusChange(property._id, e.target.value)}
-                          className={`px-2 py-1 rounded-full text-xs font-medium border
-                            ${property.status === 'active' ? 'bg-green-100 text-green-800 border-green-300' : 
-                              property.status === 'pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
-                              'bg-blue-100 text-blue-800 border-blue-300'}`}
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="active">Active</option>
-                          <option value="sold">Sold</option>
-                        </select>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${(property.status === 'active' || property.status === 'approved') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                          {(property.status === 'active' || property.status === 'approved') ? 'Approved' : 'Pending'}
+                        </span>
                       </td>
                       <td className="border border-gray-300 p-2">
                         <div className="flex justify-center space-x-4">

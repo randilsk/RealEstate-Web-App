@@ -1,17 +1,20 @@
 import React from 'react';
-import DBSideBar from '../../../components/Admin/DBSideBar';
+import AdminNavbar from '../AdminNavbar';
 import DBusers from '../../../components/Admin/DBusers';
 
 
 function Dashboard() {
     return (
         <>
-        <div className='flex'> 
-            <DBSideBar/>
-            <div className='flex-1 ml-64'>
+        <div className='flex flex-col'>
+            <div className=''> 
+            <AdminNavbar/>
+            <div className='p-10'>
             <DBusers/>
                 </div>
         </div>
+        </div>
+        
         </>
     );
     

@@ -66,7 +66,7 @@ export default function DBreports() {
         }
     };
 
-    const fetchListings = async () => {
+const fetchListings = async () => {
         try {
             const response = await axios.get('http://localhost:3000/api/listing/getallListing');
             const allListings = response.data;
@@ -107,6 +107,10 @@ export default function DBreports() {
             // setLoading(false);
         }
     };
+
+
+          
+    
 
     const fetchTransactions = async () => {
         try {
@@ -221,7 +225,6 @@ export default function DBreports() {
     <div className="space-y-6 w-full">
         {/* Navbar */}
         <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-end text-white">
-       
             {/* <input
                 type="text"
                 placeholder="Enter an address, city, district, province"

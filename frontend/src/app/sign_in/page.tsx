@@ -4,7 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThunkDispatch } from "@reduxjs/toolkit"; // For typing Redux dispatch
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { AnyAction } from "redux";
 import {
   signInStart,
@@ -20,14 +20,13 @@ import 'swiper/css/navigation';
 import Image from 'next/image';
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
 import signInImage from '../../../public/images/sign_in-images/signIn_Image.png';
-import slide_image_2 from '../../../public/images/home/home1.jpg';
-import slide_image_3 from '../../../public/images/home/home2.jpg';
-import slide_image_4 from '../../../public/images/home/home3.jpg';
-import slide_image_5 from '../../../public/images/home/home4.jpg';
+import slide_image_2 from '../../../public/images/sign_in-images/sign2.jpg';
+import slide_image_3 from '../../../public/images/sign_in-images/sign3.jpg';
+import slide_image_4 from '../../../public/images/sign_in-images/sign4.jpg';
+import slide_image_5 from '../../../public/images/sign_in-images/sign5.jpg';
 import slide_image_6 from '../../../public/images/sign_in-images/sign1.png';
 import { motion } from 'framer-motion';
 
-// Define types for the form data and root state
 interface FormData {
   email: string;
   password: string;
@@ -76,10 +75,8 @@ export default function SignIn() {
       }
 
       dispatch(signInSuccess(data));
-      // Replace router.push with router.replace for a complete navigation
+      // Fixed: Redirect to home page, not API endpoint
       router.replace("/");
-      // Force a hard reload to ensure all state is updated
-      window.location.href = "/api/";
     } catch (err) {
       dispatch(
         signInFailure(err instanceof Error ? err.message : "An error occurred")
@@ -97,8 +94,9 @@ export default function SignIn() {
           </svg>
         </Link>
       </div>
+
       {/* Left: Welcome Text & Sign In Form */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-center py-8 sm:py-10 px-2 sm:px-6">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -107,6 +105,7 @@ export default function SignIn() {
         >
           Welcome to UrbanNest
         </motion.h1>
+        
         <motion.h2
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -115,6 +114,7 @@ export default function SignIn() {
         >
           Please <span className="font-semibold text-indigo-600">Sign In</span> or <span className="font-semibold text-indigo-600">Sign Up</span> to continue.
         </motion.h2>
+
         <motion.form
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,6 +148,7 @@ export default function SignIn() {
             <OAuth />
           </div>
         </motion.form>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -157,14 +158,20 @@ export default function SignIn() {
           Don&apos;t have an account?{' '}
           <Link href="/sign-up" className="text-blue-600 hover:underline font-semibold">Sign Up</Link>
         </motion.p>
-        {error && <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="text-red-500 mt-5 text-center text-sm sm:text-base"
-        >{error}</motion.p>}
+
+        {error && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="text-red-500 mt-5 text-center text-sm sm:text-base"
+          >
+            {error}
+          </motion.p>
+        )}
       </div>
-      {/* Right: Animated Image Slider (hidden on mobile) */}
+
+      {/* Right: Animated Image Slider */}
       <div className="hidden md:flex w-full md:w-1/2 items-center justify-center py-8 sm:py-10 h-full mt-6 md:mt-0 md:pr-8 lg:pr-16">
         <Swiper
           effect={'coverflow'}
@@ -192,7 +199,7 @@ export default function SignIn() {
           modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
           className='swiper_container h-full max-w-[90vw] md:max-w-[500px] lg:max-w-[700px] xl:max-w-[900px]'
         >
-           <SwiperSlide className="h-full flex items-center justify-center">
+          <SwiperSlide className="h-full flex items-center justify-center">
             <Image src={slide_image_6} alt='slide_image' width={1200} height={800} className="object-cover w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-3xl shadow-lg border border-gray-200" />
           </SwiperSlide>
           <SwiperSlide className="h-full flex items-center justify-center">
@@ -214,4 +221,4 @@ export default function SignIn() {
       </div>
     </div>
   );
-}
+} 

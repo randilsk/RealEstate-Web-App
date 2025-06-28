@@ -1,0 +1,192 @@
+import ApprovedListing from "../models/ApprovedListModel.js";
+import User from "../models/UserModel.js";
+import Listing from "../models/AddListingModel.js";
+
+// Get all listings
+export const getAllApprovedListings = async (req, res) => {
+  try {
+    // Add query parameters for filtering
+    const query = {};
+
+    // Remove the status filter to get all listings
+    // query.status = "approved";
+
+    console.log("Fetching Approved listings with query:", query);
+
+    const approvedlistings = await ApprovedListing.find(query)
+      .select("-__v") // Exclude version field
+      .lean(); // Convert to plain JavaScript objects
+
+    console.log("Found listings:", approvedlistings.length);
+    console.log(
+      "Approved Listing statuses:",
+      approvedlistings.map((l) => l.status) // ✅ Fixed: was 'listings'
+    );
+
+    // Transform the data to ensure all required fields are present
+    const transformedApprovedListings = approvedlistings.map((approvedListing) => ({
+      ...approvedListing, // ✅ Fixed: was 'listing'
+      bedrooms: approvedListing.bedrooms || 0,
+      attachedBathrooms: approvedListing.attachedBathrooms || 0,
+      detachedBathrooms: approvedListing.detachedBathrooms || 0,
+      houseArea: approvedListing.houseArea || 0,
+      landArea: approvedListing.landArea || 0,
+      price: approvedListing.price || 0,
+      address: approvedListing.address || "Address not provided",
+      city: approvedListing.city || "City not provided",
+      district: approvedListing.district || "District not provided",
+      homeType: approvedListing.homeType || "Other",
+      images: approvedListing.images || [],
+      status: approvedListing.status,
+    }));
+
+    res.status(200).json(transformedApprovedListings);
+  } catch (error) {
+    console.error("Error in getAllListings:", error);
+    res.status(500).json({
+      error: "Failed to fetch listings",
+      message: error.message,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+};
+
+// Get listings for a specific user by email
+export const getApprovedListings = async (req, res) => {
+  try {
+    const approvedlistings = await ApprovedListing.find({ email: req.params.email }); // ✅ Fixed: was 'ApprovedListingL'
+    res.status(200).json(approvedlistings);
+  } catch (error) {
+    console.error("Error in getApprovedListings:", error);
+    res.status(500).json({
+      error: "Failed to fetch Approved listings",
+      message: error.message,
+    });
+  }
+};
+
+export const addApprovedListing = async (req, res) => {
+  try {
+    // Expecting listingId in req.body
+    const { listingId } = req.body;
+    if (!listingId) {
+      return res.status(400).json({ message: "listingId is required" });
+    }
+
+    // Fetch the listing from AddListing
+    const listing = await Listing.findById(listingId).lean();
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found in AddListing" });
+    }
+
+    // Prepare data for ApprovedListing (remove _id and status)
+    const { _id, status, ...approvedData } = listing;
+    approvedData.listingId = listingId; // keep reference to original
+    approvedData.status = "approved";
+
+    // Create new ApprovedListing
+    const newApprovedListing = new ApprovedListing(approvedData);
+    const savedListing = await newApprovedListing.save();
+
+    // Delete the original listing from AddListing
+    await Listing.findByIdAndDelete(listingId);
+
+    res.status(201).json(savedListing);
+  } catch (error) {
+    console.error("Error in addApprovedListing:", error);
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (err) => err.message
+      );
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: validationErrors,
+      });
+    }
+    res.status(500).json({
+      message: "Failed to add Approved listing",
+      error: error.message,
+      errorName: error.name,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+};
+
+export const getSingleApprovedListing = async (req, res) => {
+  try {
+    const approvedListing = await ApprovedListing.findById(req.params.id);
+    if (!approvedListing) {
+      return res.status(404).json({ message: "Approved Listing not found" });
+    }
+    res.status(200).json(approvedListing);
+  } catch (error) {
+    console.error("Error in getSingle Approved Listing:", error);
+    res.status(500).json({
+      message: "Failed to fetch listing",
+      error: error.message,
+    });
+  }
+};
+
+export const updateApprovedListing = async (req, res) => {
+  try {
+    const updatedApprovedListing = await ApprovedListing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedApprovedListing) {
+      return res.status(404).json({ message: "Approved Listing not found" });
+    }
+    res.status(200).json(updatedApprovedListing);
+  } catch (error) {
+    console.error("Error in update Approved Listing:", error);
+    res.status(500).json({
+      message: "Failed to update the listing",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteApprovedListing = async (req, res) => {
+  try {
+    const deletedapprovedListing = await ApprovedListing.findByIdAndDelete(req.params.id);
+    if (!deletedapprovedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+    res.status(200).json({ message: "Listing deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteListing:", error);
+    res.status(500).json({
+      message: "Failed to delete listing",
+      error: error.message,
+    });
+  }
+};
+
+export const updateApprovedListingStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["pending", "approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const updatedApprovedListing = await ApprovedListing.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedApprovedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json(updatedApprovedListing);
+  } catch (error) {
+    console.error("Error updating listing status:", error);
+    res.status(500).json({
+      message: "Failed to update listing status",
+      error: error.message,
+    });
+  }
+};

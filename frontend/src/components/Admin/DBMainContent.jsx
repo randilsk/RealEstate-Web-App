@@ -192,6 +192,23 @@ function DBMainContent() {
         setIsListingModalOpen(true);
     };
 
+    const filterByType = (arr, dateField = 'createdAt') => {
+        const now = dayjs();
+        return arr.filter(item => {
+            const date = dayjs(item[dateField]);
+            if (filterType === 'Today') {
+                return date.isSame(now, 'day');
+            } else if (filterType === 'Monthly') {
+                return date.isSame(now, 'month');
+            } else if (filterType === 'Yearly') {
+                return date.isSame(now, 'year');
+            }
+            return true;
+        });
+    };
+    const filteredListings = filterByType(listings);
+    const filteredUsers = filterByType(users);
+
     // Map options
     const mapOptions = {
         disableDefaultUI: false,
@@ -219,49 +236,25 @@ function DBMainContent() {
         setSelectedListing(null);
     };
 
-    // Filtering logic
-    const filterByType = (arr, dateField = 'createdAt') => {
-        const now = dayjs();
-        return arr.filter(item => {
-            const date = dayjs(item[dateField]);
-            if (filterType === 'Today') {
-                return date.isSame(now, 'day');
-            } else if (filterType === 'Monthly') {
-                return date.isSame(now, 'month');
-            } else if (filterType === 'Yearly') {
-                return date.isSame(now, 'year');
-            }
-            return true;
-        });
-    };
-    const filteredListings = filterByType(listings);
-    const filteredUsers = filterByType(users);
-
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
-          
-<div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
-    <div className="w-1/3">
-        
-    </div>
-    {/* <div className="w-1/3 flex justify-center">
-        <input 
-            type="text" 
-            placeholder="Enter an address, city, district, province" 
-            className="p-2 border rounded-md w-full text-black" 
-        />
-    </div> */}
-    <div className="w-1/3 flex justify-end gap-4 text-xl">
-        <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
-        <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
-    </div>
-</div> 
-
-
-
-
-
+            <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+                <div className="w-1/3">
+                    
+                </div>
+                {/* <div className="w-1/3 flex justify-center">
+                    <input 
+                        type="text" 
+                        placeholder="Enter an address, city, district, province" 
+                        className="p-2 border rounded-md w-full text-black" 
+                    />
+                </div> */}
+                <div className="w-1/3 flex justify-end gap-4 text-xl">
+                    <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+                    <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
+                </div>
+            </div>
 
             {/* Dashboard */}
             <div className="p-10">
@@ -275,7 +268,7 @@ function DBMainContent() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard 
                         title="Total Listings" 
                         value={loading ? "Loading..." : filteredListings.length}  
@@ -310,11 +303,6 @@ function DBMainContent() {
                         percentChange="-2.1% from last month"
                         trend="down"
                     />
-
-          
-
-
-
                 </div>
 
                 {/* Recent Properties Table */}

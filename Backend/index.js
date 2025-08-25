@@ -11,8 +11,11 @@ import reviewRouts from "./routes/reviewRoutes.js"
 import rentRoutes from "./routes/Rentroutes.js"
 import AdminRoute from "./routes/admin.route.js";
 import ApproveRoute from './routes/approve.listingRoute.js';
+import stripeRoutes from './routes/stripe.routes.js';
 
 dotenv.config();
+
+
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -49,6 +52,7 @@ app.use("/api/reviews", reviewRouts);
 app.use("/api/admin", AdminRoute);
 app.use("/api/Rentroutes",rentRoutes);
 app.use("/api/approve", ApproveRoute);
+app.use("/api/stripe", stripeRoutes);
 
 
 

@@ -105,6 +105,13 @@ function page() {
       const { districtName } = event.detail;
       console.log("DISTRICT SELECTED:", districtName);
 
+      // Handle "All" selection - clear district filter and reset map
+      if (districtName === "All") {
+        applyFilters({ district: null });
+        setSearchArea(null);
+        return;
+      }
+
       // Apply district filter
       applyFilters({ district: districtName });
 

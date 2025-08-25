@@ -7,11 +7,11 @@ import { Blend } from 'lucide-react';
 const HeroSection = dynamic(() => import("../components/HomeContent/HeroSection.jsx"), {
   loading: () => <div>Loading...</div>,
   ssr: true
-});
+});   //home count 
 
 const HomeRecommendation = dynamic(() => import("../components/HomeContent/HomeRecommendation.jsx"), {
   loading: () => <div>Loading...</div>,
-  ssr: true
+  ssr: true //home Recomendation
 });
 
 const HomeBuySellRent = dynamic(() => import("../components/HomeContent/HomeBuySellRent.jsx"), {
@@ -36,6 +36,7 @@ export default function Home() {
         <Bluebar />
         <Header />
         <HeroSection />
+        
         <HomeRecommendation />
         <HomeBuySellRent />
         <Bluebar />

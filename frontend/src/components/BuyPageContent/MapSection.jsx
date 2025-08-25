@@ -107,6 +107,14 @@ function MapSection({ listings, searchArea, onZoomChange }) {
     const handleDistrictSelected = async (event) => {
       const districtName = event.detail.districtName;
 
+      if (districtName === 'None') {
+        setDistrictPolygons([]);
+        setDistrictCircle(null);
+        setCenter({ lat: 7.8731, lng: 80.7718 });
+        setZoom(7);
+        return;
+      }
+
       try {
         const res = await fetch("/data/sl-district.json");
         const geojson = await res.json();

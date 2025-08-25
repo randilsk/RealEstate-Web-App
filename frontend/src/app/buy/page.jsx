@@ -18,6 +18,8 @@ function page() {
     const getListings = async () => {
       try {
         const data = await fetchAllListings();
+        console.log("Fetched listings:", data);
+        console.log("Sample listing district:", data[0]?.district);
         setListings(data);
         setFilteredListings(data); // Default: show all
       } catch (err) {
@@ -68,11 +70,37 @@ function page() {
       const { districtName } = event.detail;
       console.log("DISTRICT SELECTED:", districtName);
       console.log("ALL LISTINGS:", listings);
-      const filtered = listings.filter(
-        (listing) =>
-          listing.district &&
-          listing.district.toLowerCase() === districtName.toLowerCase()
-      );
+
+      // Handle "All" district selection
+      if (districtName === "All") {
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        setSearchArea(null);
+        return;
+      }
+
+      // Filter by specific district
+      console.log("Filtering by district:", districtName);
+      console.log("Available districts in listings:", [
+        ...new Set(listings.map((l) => l.district).filter(Boolean)),
+      ]);
+
+      // Normalize district names for comparison
+      const normalizedDistrictName = districtName
+        .toLowerCase()
+        .replace(/[-\s]/g, "");
+
+      const filtered = listings.filter((listing) => {
+        if (!listing.district) return false;
+
+        // Normalize the listing district name
+        const normalizedListingDistrict = listing.district
+          .toLowerCase()
+          .replace(/[-\s]/g, "");
+
+        return normalizedListingDistrict === normalizedDistrictName;
+      });
+
       console.log("FILTERED LISTINGS:", filtered);
       setFilteredListings(filtered);
       setIsFiltered(true);
@@ -91,6 +119,22 @@ function page() {
       setIsFiltered(false);
       setSearchArea(null); // Optionally remove the circle when zoomed out
     }
+  };
+
+  // Function to clear district filter
+  const clearDistrictFilter = () => {
+    setFilteredListings(listings);
+    setIsFiltered(false);
+    setSearchArea(null);
+  };
+
+  // Function to get available districts from listings
+  const getAvailableDistricts = () => {
+    const districts = [
+      ...new Set(listings.map((l) => l.district).filter(Boolean)),
+    ];
+    console.log("Available districts in listings:", districts);
+    return districts;
   };
 
   // Cleanup effect to clear search area when component unmounts
@@ -136,7 +180,7 @@ function page() {
           }`}
         >
           <MapSection
-            listings={listings}
+            listings={filteredListings}
             searchArea={searchArea}
             onZoomChange={handleZoomChange}
           />
@@ -150,7 +194,11 @@ function page() {
               : "translate-x-[100%] md:translate-x-[100%] md:w-1/2"
           }`}
         >
-          <CardSection listings={filteredListings} />
+          <CardSection
+            listings={filteredListings}
+            isFiltered={isFiltered}
+            onClearFilter={clearDistrictFilter}
+          />
         </div>
 
         {/* Mobile Toggle Button */}

@@ -39,12 +39,55 @@ function MapSection({ listings, searchArea, onZoomChange }) {
   const [districtCircle, setDistrictCircle] = useState(null);
   const [districtPolygons, setDistrictPolygons] = useState([]);
 
+  // 1) add this state
+  const [activeArea, setActiveArea] = useState(null);
+
   // Load Google Maps API with proper configuration
   const { isLoaded, loadError } = useJsApiLoader({
     id: "script-loader",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
+
+  // 2) normalize the incoming prop so it's always a single object
+  useEffect(() => {
+    if (!searchArea) {
+      setActiveArea(null);
+      return;
+    }
+
+    // Clear any existing search area first
+    setActiveArea(null);
+
+    // Set the new search area (take the last one if it's an array)
+    const newActiveArea = Array.isArray(searchArea)
+      ? searchArea[searchArea.length - 1]
+      : searchArea;
+
+    // Validate the new area has valid center and radius
+    if (
+      newActiveArea?.center?.lat &&
+      newActiveArea?.center?.lng &&
+      newActiveArea?.radius &&
+      typeof newActiveArea.center.lat === "number" &&
+      typeof newActiveArea.center.lng === "number" &&
+      typeof newActiveArea.radius === "number" &&
+      !isNaN(newActiveArea.center.lat) &&
+      !isNaN(newActiveArea.center.lng) &&
+      !isNaN(newActiveArea.radius) &&
+      newActiveArea.radius > 0
+    ) {
+      setActiveArea(newActiveArea);
+    }
+  }, [searchArea]);
+
+  // Cleanup effect to ensure proper state management
+  useEffect(() => {
+    return () => {
+      // Cleanup when component unmounts
+      setActiveArea(null);
+    };
+  }, []);
 
   // Center map on first listing if available
   // useEffect(() => {
@@ -167,23 +210,30 @@ function MapSection({ listings, searchArea, onZoomChange }) {
           onZoomChanged={handleZoomChanged}
         >
           {/* Search area highlight - only one circle at a time */}
-          {searchArea && searchArea.center && searchArea.radius && (
-            <Circle
-              center={searchArea.center}
-              radius={searchArea.radius}
-              options={{
-                fillColor: "#4285F4",
-                fillOpacity: 0.1,
-                strokeColor: "#4285F4",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                clickable: false,
-                editable: false,
-                visible: true,
-                zIndex: 1,
-              }}
-            />
-          )}
+          {/* 3) render exactly one circle (optionally hide it when district polygons are shown) */}
+          {!districtPolygons.length &&
+            activeArea?.center?.lat &&
+            activeArea?.center?.lng &&
+            activeArea?.radius &&
+            typeof activeArea.center.lat === "number" &&
+            typeof activeArea.center.lng === "number" &&
+            typeof activeArea.radius === "number" && (
+              <Circle
+                center={activeArea.center}
+                radius={activeArea.radius}
+                options={{
+                  fillColor: "#4285F4",
+                  fillOpacity: 0.1,
+                  strokeColor: "#4285F4",
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  clickable: false,
+                  editable: false,
+                  visible: true,
+                  zIndex: 1,
+                }}
+              />
+            )}
 
           {districtPolygons.map((feature, index) => {
             const coordinates = feature.geometry.coordinates;

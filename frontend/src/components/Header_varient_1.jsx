@@ -147,6 +147,7 @@ function Header_varient_1() {
 
           <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
             {[
+              "All",
               "Ampara",
               "Anuradhapura",
               "Badulla",
@@ -374,6 +375,7 @@ function Header_varient_1() {
 
               <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
                 {[
+                  "All",
                   "Ampara",
                   "Anuradhapura",
                   "Badulla",

@@ -11,7 +11,7 @@ const HeroSection = dynamic(() => import("../components/HomeContent/HeroSection.
 
 const HomeRecommendation = dynamic(() => import("../components/HomeContent/HomeRecommendation.jsx"), {
   loading: () => <div>Loading...</div>,
-  ssr: true //home Recomendation
+  ssr: true 
 });
 
 const HomeBuySellRent = dynamic(() => import("../components/HomeContent/HomeBuySellRent.jsx"), {

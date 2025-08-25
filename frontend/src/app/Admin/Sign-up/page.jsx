@@ -68,7 +68,6 @@ export default function AdminSignUp() {
         return;
       }
 
-      
       // Automatically sign in after successful sign up
       dispatch(adminsignInStart());
       const signInRes = await fetch("http://localhost:3000/api/admin/signin", {
@@ -83,8 +82,16 @@ export default function AdminSignUp() {
       });
       const signInData = await signInRes.json();
       if (!signInRes.ok) {
-        dispatch(adminsignInFailure(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually."));
-        setError(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually.");
+        dispatch(
+          adminsignInFailure(
+            signInData.message ||
+              "Sign up succeeded, but failed to sign in. Please try signing in manually."
+          )
+        );
+        setError(
+          signInData.message ||
+            "Sign up succeeded, but failed to sign in. Please try signing in manually."
+        );
         return;
       }
       dispatch(adminsignInSuccess(signInData.admin));

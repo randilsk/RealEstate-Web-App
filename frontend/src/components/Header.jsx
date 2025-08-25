@@ -1,4 +1,4 @@
-"use client";  // This directive makes it a Client Component
+"use client"; // This directive makes it a Client Component
 
 import Link from "next/link";
 import React, { useState } from "react";
@@ -8,12 +8,14 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
-  <div 
+  <div
     className="p-2.5 flex justify-center items-center gap-2.5 cursor-pointer hover:bg-[#4b5eef] rounded-lg transition-colors"
     onClick={onClick}
   >
     <div
-      className={`text-white text-base md:text-xl ${isBold ? "font-bold" : "font-normal"}`}
+      className={`text-white text-base md:text-xl ${
+        isBold ? "font-bold" : "font-normal"
+      }`}
     >
       {children}
     </div>
@@ -43,11 +45,13 @@ function Header() {
       <NavItem isBold={pathname === "/"}>
         <Link href={"/"}>Home</Link>
       </NavItem>
-      <NavItem>Help</NavItem>
+      <NavItem isBold={pathname === "/help"}>
+        <Link href={"/help"}>Help</Link>
+      </NavItem>
       {currentUser ? (
         <Link href="/profile" className="flex items-center">
-          <Image 
-            src={currentUser.avatar} 
+          <Image
+            src={currentUser.avatar}
             alt="Profile"
             width={40}
             height={40}
@@ -69,10 +73,7 @@ function Header() {
         style={{ maxWidth: "calc(100% - 40px)" }}
       >
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-white p-2"
-          onClick={toggleMenu}
-        >
+        <button className="md:hidden text-white p-2" onClick={toggleMenu}>
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
@@ -91,10 +92,11 @@ function Header() {
 
         {/* Logo - Centered on all screens */}
         <div className="p-2.5 flex justify-center items-center">
-          <Link href={'/'}>
-           <div className="text-white text-xl md:text-[26px] font-bold cursor-pointer" >UrbanNest</div>
+          <Link href={"/"}>
+            <div className="text-white text-xl md:text-[26px] font-bold cursor-pointer">
+              UrbanNest
+            </div>
           </Link>
-         
         </div>
 
         {/* Desktop Auth/Profile Section */}
@@ -102,11 +104,13 @@ function Header() {
           <NavItem isBold={pathname === "/"}>
             <Link href={"/"}>Home</Link>
           </NavItem>
-          <NavItem>Help</NavItem>
+          <NavItem isBold={pathname === "/help"}>
+            <Link href={"/help"}>Help</Link>
+          </NavItem>
           {currentUser ? (
             <Link href="/profile">
-              <Image 
-                src={currentUser.avatar} 
+              <Image
+                src={currentUser.avatar}
                 alt="Profile"
                 width={40}
                 height={40}
@@ -123,11 +127,11 @@ function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-[#3b50df]/90 backdrop-blur-md rounded-[20px] p-4 z-50 shadow-lg border border-white/10"
-          style={{ width: "calc(100% - 40px)", maxWidth: "calc(100% - 80px)" }}>
-          <div className="flex flex-col gap-2">
-            {navItems}
-          </div>
+        <div
+          className="md:hidden absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-[#3b50df]/90 backdrop-blur-md rounded-[20px] p-4 z-50 shadow-lg border border-white/10"
+          style={{ width: "calc(100% - 40px)", maxWidth: "calc(100% - 80px)" }}
+        >
+          <div className="flex flex-col gap-2">{navItems}</div>
         </div>
       )}
     </div>

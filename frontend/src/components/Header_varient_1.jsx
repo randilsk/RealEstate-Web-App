@@ -43,6 +43,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedDistricts, setSelectedDistricts] = useState(new Set());
 
   const handleLocationSearch = async (e) => {
     const value = e.target.value;
@@ -99,6 +100,49 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
         },
       })
     );
+  };
+
+  const handleDistrictSelection = (districtName) => {
+    if (districtName === "All") {
+      // If "All" is selected, clear all individual district selections
+      setSelectedDistricts(new Set());
+      
+      // For rent page, dispatch "None" to reset the map to initial state
+      if (districtHasNone) {
+        window.dispatchEvent(
+          new CustomEvent("districtSelected", {
+            detail: { districtName: "None" },
+          })
+        );
+      } else {
+        // For other pages, dispatch "All"
+        window.dispatchEvent(
+          new CustomEvent("districtSelected", {
+            detail: { districtName: "All" },
+          })
+        );
+      }
+    } else {
+      // If an individual district is selected, remove "All" from selections
+      const newSelectedDistricts = new Set(selectedDistricts);
+      newSelectedDistricts.delete("All");
+      
+      // Toggle the selected district
+      if (newSelectedDistricts.has(districtName)) {
+        newSelectedDistricts.delete(districtName);
+      } else {
+        newSelectedDistricts.add(districtName);
+      }
+      
+      setSelectedDistricts(newSelectedDistricts);
+
+      // Dispatch the district selection event
+      window.dispatchEvent(
+        new CustomEvent("districtSelected", {
+          detail: { districtName: districtName },
+        })
+      );
+    }
   };
 
   const MobileNavContent = () => (
@@ -176,13 +220,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
             ].map((district) => (
               <DropdownMenuItem
                 key={district}
-                onClick={() =>
-                  window.dispatchEvent(
-                    new CustomEvent("districtSelected", {
-                      detail: { districtName: district },
-                    })
-                  )
-                }
+                onClick={() => handleDistrictSelection(district)}
               >
                 {district}
               </DropdownMenuItem>
@@ -585,18 +623,12 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   "Trincomalee",
                   "Vavuniya",
                 ].map((district) => (
-                  <DropdownMenuItem
-                    key={district}
-                    onClick={() =>
-                      window.dispatchEvent(
-                        new CustomEvent("districtSelected", {
-                          detail: { districtName: district },
-                        })
-                      )
-                    }
-                  >
-                    {district}
-                  </DropdownMenuItem>
+                                     <DropdownMenuItem
+                     key={district}
+                     onClick={() => handleDistrictSelection(district)}
+                   >
+                     {district}
+                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>

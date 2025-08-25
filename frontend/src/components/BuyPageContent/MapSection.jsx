@@ -6,12 +6,12 @@ import {
   InfoWindow,
   useJsApiLoader,
   Circle,
-  Polygon
+  Polygon,
 } from "@react-google-maps/api";
 import { useSearchParams } from "next/navigation";
 
 // Define the libraries we need
-const libraries = ['maps'];
+const libraries = ["maps"];
 
 // Map container style
 const mapContainerStyle = {
@@ -39,11 +39,9 @@ function MapSection({ listings, searchArea, onZoomChange }) {
   const [districtCircle, setDistrictCircle] = useState(null);
   const [districtPolygons, setDistrictPolygons] = useState([]);
 
-
-
   // Load Google Maps API with proper configuration
   const { isLoaded, loadError } = useJsApiLoader({
-    id: 'script-loader',
+    id: "script-loader",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
@@ -93,13 +91,13 @@ function MapSection({ listings, searchArea, onZoomChange }) {
     };
 
     // Example event listeners (uncomment and adjust as needed)
-    window.addEventListener('locationSelected', handleLocationSelected);
-    window.addEventListener('districtSelected', handleDistrictSelected);
+    window.addEventListener("locationSelected", handleLocationSelected);
+    window.addEventListener("districtSelected", handleDistrictSelected);
 
     // Cleanup (uncomment if using event listeners)
     return () => {
-      window.removeEventListener('locationSelected', handleLocationSelected);
-      window.removeEventListener('districtSelected', handleDistrictSelected);
+      window.removeEventListener("locationSelected", handleLocationSelected);
+      window.removeEventListener("districtSelected", handleDistrictSelected);
     };
   }, []);
 
@@ -109,14 +107,13 @@ function MapSection({ listings, searchArea, onZoomChange }) {
       radius: 15000, // You can adjust this value per district
     });
   };
-  
 
   // Handle zoom changes
   const handleZoomChanged = () => {
     if (map) {
       const newZoom = map.getZoom();
       setZoom(newZoom);
-      if (typeof onZoomChange === 'function') {
+      if (typeof onZoomChange === "function") {
         onZoomChange(newZoom);
       }
       // Do NOT reset isSearchActive or remove the circle when zoomed out
@@ -169,8 +166,8 @@ function MapSection({ listings, searchArea, onZoomChange }) {
           onUnmount={onUnmount}
           onZoomChanged={handleZoomChanged}
         >
-          {/* Search area highlight */}
-          {searchArea && (
+          {/* Search area highlight - only one circle at a time */}
+          {searchArea && searchArea.center && searchArea.radius && (
             <Circle
               center={searchArea.center}
               radius={searchArea.radius}
@@ -188,30 +185,28 @@ function MapSection({ listings, searchArea, onZoomChange }) {
             />
           )}
 
-{districtPolygons.map((feature, index) => {
-  const coordinates = feature.geometry.coordinates;
+          {districtPolygons.map((feature, index) => {
+            const coordinates = feature.geometry.coordinates;
 
-  const paths = coordinates.map((ring) =>
-    ring.map(([lng, lat]) => ({ lat, lng }))
-  );
+            const paths = coordinates.map((ring) =>
+              ring.map(([lng, lat]) => ({ lat, lng }))
+            );
 
-  return (
-    <Polygon
-      key={index}
-      paths={paths}
-      options={{
-        strokeColor: "#1E3A8A",
-        strokeOpacity: 0.9,
-        strokeWeight: 2,
-        fillColor: "#60A5FA",
-        fillOpacity: 0.1,
-        zIndex: 2,
-      }}
-    />
-  );
-})}
-
-
+            return (
+              <Polygon
+                key={index}
+                paths={paths}
+                options={{
+                  strokeColor: "#1E3A8A",
+                  strokeOpacity: 0.9,
+                  strokeWeight: 2,
+                  fillColor: "#60A5FA",
+                  fillOpacity: 0.1,
+                  zIndex: 2,
+                }}
+              />
+            );
+          })}
 
           {/* Render markers for each filtered listing */}
           {listings.map((listing) =>
@@ -240,21 +235,28 @@ function MapSection({ listings, searchArea, onZoomChange }) {
               <div className="bg-white rounded-xl shadow-lg p-0 w-[220px] overflow-hidden font-sans">
                 <div className="w-full h-[120px] overflow-hidden">
                   <img
-                    src={selectedListing.images && selectedListing.images.length > 0
-                      ? selectedListing.images[0]
-                      : "/images/home-image/home-page-image2.png"}
+                    src={
+                      selectedListing.images &&
+                      selectedListing.images.length > 0
+                        ? selectedListing.images[0]
+                        : "/images/home-image/home-page-image2.png"
+                    }
                     alt={selectedListing.title}
                     className="w-full h-[120px] object-cover rounded-t-xl"
                   />
                 </div>
                 <div className="p-3">
-                  <div className="font-bold text-base mb-1 text-gray-900 truncate">{selectedListing.title}</div>
+                  <div className="font-bold text-base mb-1 text-gray-900 truncate">
+                    {selectedListing.title}
+                  </div>
                   <div className="font-semibold text-blue-600 text-sm mb-1">
                     {selectedListing.price > 500000
                       ? `Rs. ${(selectedListing.price / 1000000).toFixed(1)} M`
                       : `Rs. ${Number(selectedListing.price).toLocaleString()}`}
                   </div>
-                  <div className="text-gray-500 text-xs mb-1 truncate">{selectedListing.address}</div>
+                  <div className="text-gray-500 text-xs mb-1 truncate">
+                    {selectedListing.address}
+                  </div>
                 </div>
               </div>
             </InfoWindow>

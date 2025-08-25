@@ -39,7 +39,7 @@ const FilterButton = ({ label }) => (
   </div>
 );
 
-function Header_varient_1() {
+function Header_varient_1({ showFilters = true, showDistrictOnly = false, districtHasNone = false }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -146,13 +146,24 @@ function Header_varient_1() {
   </DropdownMenuTrigger>
 
   <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
+    {(
+      districtHasNone
+        ? [
+            "None",
+            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
+          ]
+        : [
+            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
+          ]
+    ).map((district) => (
       <DropdownMenuItem
         key={district}
         onClick={() =>
@@ -335,7 +346,8 @@ function Header_varient_1() {
               </div>
             )}
           </div>
-
+          {showFilters && (
+          <>
           {/* Filter Buttons */}
           <div className="w-36">
            <DropdownMenu>
@@ -344,13 +356,24 @@ function Header_varient_1() {
   </DropdownMenuTrigger>
 
   <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
+    {(
+      districtHasNone
+        ? [
+            "None",
+            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+          ]
+        : [
+            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+          ]
+    ).map((district) => (
       <DropdownMenuItem
         key={district}
         onClick={() =>
@@ -368,6 +391,7 @@ function Header_varient_1() {
 </DropdownMenu>
 
           </div>
+          {!showDistrictOnly && (
           <div className="w-36">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -383,6 +407,8 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          {!showDistrictOnly && (
           <div className="w-52">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -398,6 +424,8 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          {!showDistrictOnly && (
           <div className="w-32">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -413,6 +441,9 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          </>
+          )}
         </div>
 
         {/* Mobile Search and Filter */}
@@ -451,6 +482,7 @@ function Header_varient_1() {
           </div>
 
           {/* Filter Button */}
+          {showFilters && (
           <Sheet>
             <SheetTrigger className="flex-shrink-0">
               <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/90 rounded-full">
@@ -459,9 +491,55 @@ function Header_varient_1() {
               </div>
             </SheetTrigger>
             <SheetContent side="bottom" className="bg-main-blue h-[80vh] rounded-t-2xl">
-              <MobileFiltersContent />
+              {showDistrictOnly ? (
+                <div className="flex flex-col gap-3 p-4">
+                  <div className="w-full">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                        <FilterButton label="District" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+                        {(
+                          districtHasNone
+                            ? [
+                                "None",
+                                "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+                                "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+                                "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+                                "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+                                "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+                              ]
+                            : [
+                                "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+                                "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+                                "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+                                "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
+                                "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+                              ]
+                        ).map((district) => (
+                          <DropdownMenuItem
+                            key={district}
+                            onClick={() =>
+                              window.dispatchEvent(
+                                new CustomEvent("districtSelected", {
+                                  detail: { districtName: district },
+                                })
+                              )
+                            }
+                          >
+                            {district}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              ) : (
+                <MobileFiltersContent />
+              )}
             </SheetContent>
           </Sheet>
+          )}
         </div>
       </div>
     </div>

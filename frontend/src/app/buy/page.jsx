@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 function page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
   const [listings, setListings] = useState([]); // stores data from the backend
-  const [filteredListings, setFilteredListings] = useState([]);  //hold current displayed listings
+  const [filteredListings, setFilteredListings] = useState([]); //hold current displayed listings
   const [isFiltered, setIsFiltered] = useState(false); // Track if filtering is active
   const [searchArea, setSearchArea] = useState(null); // Lifted search area state
   const searchParams = useSearchParams();
@@ -33,13 +33,15 @@ function page() {
     const R = 6371; // Earth's radius in km
     const filtered = listings.filter((listing) => {
       if (!listing.lat || !listing.lng) return false;
-      const dLat = (listing.lat - lat) * Math.PI / 180;
-      const dLng = (listing.lng - lng) * Math.PI / 180;
+      const dLat = ((listing.lat - lat) * Math.PI) / 180;
+      const dLng = ((listing.lng - lng) * Math.PI) / 180;
       const a =
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat * Math.PI) / 180) *
+          Math.cos((listing.lat * Math.PI) / 180) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       const distance = R * c;
       return distance <= radius;
     });
@@ -64,14 +66,14 @@ function page() {
   useEffect(() => {
     const handleDistrictSelected = (event) => {
       const { districtName } = event.detail;
-      console.log('DISTRICT SELECTED:', districtName);
-      console.log('ALL LISTINGS:', listings);
+      console.log("DISTRICT SELECTED:", districtName);
+      console.log("ALL LISTINGS:", listings);
       const filtered = listings.filter(
         (listing) =>
           listing.district &&
           listing.district.toLowerCase() === districtName.toLowerCase()
       );
-      console.log('FILTERED LISTINGS:', filtered);
+      console.log("FILTERED LISTINGS:", filtered);
       setFilteredListings(filtered);
       setIsFiltered(true);
       setSearchArea(null); // Optionally remove the circle when filtering by district
@@ -90,6 +92,14 @@ function page() {
       setSearchArea(null); // Optionally remove the circle when zoomed out
     }
   };
+
+  // Cleanup effect to clear search area when component unmounts
+  useEffect(() => {
+    return () => {
+      // Clear search area when component unmounts to prevent lingering circles
+      setSearchArea(null);
+    };
+  }, []);
 
   useEffect(() => {
     const lat = searchParams.get("lat");
@@ -118,22 +128,26 @@ function page() {
       {/* Main Content */}
       <div className="flex-1 flex relative overflow-hidden">
         {/* Map Section - Fixed */}
-        <div 
+        <div
           className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
-            isCardSectionOpen 
-              ? 'translate-x-[-100%] md:translate-x-0 md:w-1/2' 
-              : 'translate-x-0 md:w-1/2'
+            isCardSectionOpen
+              ? "translate-x-[-100%] md:translate-x-0 md:w-1/2"
+              : "translate-x-0 md:w-1/2"
           }`}
         >
-          <MapSection listings={listings} searchArea={searchArea} onZoomChange={handleZoomChange} />
+          <MapSection
+            listings={listings}
+            searchArea={searchArea}
+            onZoomChange={handleZoomChange}
+          />
         </div>
-        
+
         {/* Card Section - Scrollable */}
-        <div 
+        <div
           className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
-            isCardSectionOpen 
-              ? 'translate-x-0 md:translate-x-[100%] md:w-1/2' 
-              : 'translate-x-[100%] md:translate-x-[100%] md:w-1/2'
+            isCardSectionOpen
+              ? "translate-x-0 md:translate-x-[100%] md:w-1/2"
+              : "translate-x-[100%] md:translate-x-[100%] md:w-1/2"
           }`}
         >
           <CardSection listings={filteredListings} />
@@ -146,7 +160,16 @@ function page() {
         >
           {isCardSectionOpen ? (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                 <path d="M9 12l2 2l4 -4" />
               </svg>
@@ -154,7 +177,16 @@ function page() {
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                 <path d="M9 12l2 2l4 -4" />
               </svg>

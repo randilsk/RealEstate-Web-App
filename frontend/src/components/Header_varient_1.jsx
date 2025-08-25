@@ -47,7 +47,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
   const handleLocationSearch = async (e) => {
     const value = e.target.value;
     setSearchLocation(value);
-    
+
     if (value.length > 2) {
       try {
         const response = await fetch(
@@ -104,15 +104,15 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-col gap-3">
-      <NavItem>
-            <Link href={"/buy"}>Buy</Link>
-          </NavItem>
-          <NavItem>
-           <Link href={"/rent"}> Rent</Link>
-            </NavItem>
-          <NavItem>
-            <Link href={"/sell"}>List</Link>
-          </NavItem>
+        <NavItem>
+          <Link href={"/buy"}>Buy</Link>
+        </NavItem>
+        <NavItem>
+          <Link href={"/rent"}> Rent</Link>
+        </NavItem>
+        <NavItem>
+          <Link href={"/sell"}>List</Link>
+        </NavItem>
         <Link href={"/"}>
           <NavItem label="Home" />
         </Link>
@@ -140,46 +140,57 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
-      <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
-    {(
-      districtHasNone
-        ? [
-            "None",
-            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
-          ]
-        : [
-            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
-          ]
-    ).map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+            <FilterButton label="District" />
+          </DropdownMenuTrigger>
+    
 
+          <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+            {[
+              "All",
+              "Ampara",
+              "Anuradhapura",
+              "Badulla",
+              "Batticaloa",
+              "Colombo",
+              "Galle",
+              "Gampaha",
+              "Hambantota",
+              "Jaffna",
+              "Kalutara",
+              "Kandy",
+              "Kegalle",
+              "Kilinochchi",
+              "Kurunegala",
+              "Mannar",
+              "Matale",
+              "Matara",
+              "Monaragala",
+              "Mullaitivu",
+              "Nuwara Eliya",
+              "Polonnaruwa",
+              "Puttalam",
+              "Ratnapura",
+              "Trincomalee",
+              "Vavuniya",
+            ].map((district) => (
+              <DropdownMenuItem
+                key={district}
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent("districtSelected", {
+                      detail: { districtName: district },
+                    })
+                  )
+                }
+              >
+                {district}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="w-full">
@@ -433,18 +444,25 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex gap-8">
-           <Link href={"/buy"}> <NavItem label="Buy"/></Link>
+            <Link href={"/buy"}>
+              {" "}
+              <NavItem label="Buy" />
+            </Link>
             <Link href={"/rent"}>
               <NavItem label="Rent" />
             </Link>
-           <Link href={"/sell"}> <NavItem label="Sell" /></Link>
+            <Link href={"/sell"}>
+              {" "}
+              <NavItem label="List" />
+            </Link>
           </div>
 
           {/* Logo */}
           <Link href={"/"} className="flex items-center gap-2">
-            <div className="text-white text-xl md:text-2xl font-bold">Urban Nest</div>
+            <div className="text-white text-xl md:text-2xl font-bold">
+              Urban Nest
+            </div>
           </Link>
-          
 
           {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
@@ -497,15 +515,18 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               type="text"
               value={searchLocation}
               onChange={handleLocationSearch}
-              onKeyDown={(e)=> {
-                if(e.key === "Enter"){
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   handleSearchIconClick();
                 }
               }}
               placeholder="Enter an address, city, district, province"
               className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -532,46 +553,57 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           <>
           {/* Filter Buttons */}
           <div className="w-36">
-           <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
-    {(
-      districtHasNone
-        ? [
-            "None",
-            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-          ]
-        : [
-            "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-            "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-            "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-            "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-            "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-          ]
-    ).map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+                <FilterButton label="District" />
+              </DropdownMenuTrigger>
+       
 
+              <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
+                {[
+                  "All",
+                  "Ampara",
+                  "Anuradhapura",
+                  "Badulla",
+                  "Batticaloa",
+                  "Colombo",
+                  "Galle",
+                  "Gampaha",
+                  "Hambantota",
+                  "Jaffna",
+                  "Kalutara",
+                  "Kandy",
+                  "Kegalle",
+                  "Kilinochchi",
+                  "Kurunegala",
+                  "Mannar",
+                  "Matale",
+                  "Matara",
+                  "Monaragala",
+                  "Mullaitivu",
+                  "Nuwara Eliya",
+                  "Polonnaruwa",
+                  "Puttalam",
+                  "Ratnapura",
+                  "Trincomalee",
+                  "Vavuniya",
+                ].map((district) => (
+                  <DropdownMenuItem
+                    key={district}
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent("districtSelected", {
+                          detail: { districtName: district },
+                        })
+                      )
+                    }
+                  >
+                    {district}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           {!showDistrictOnly && (
           <div className="w-36">
@@ -582,10 +614,72 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Prices
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "0-1000000" },
+                      })
+                    )
+                  }
+                >
+                  Under Rs. 1M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "1000000-5000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 1M - 5M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "5000000-10000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 5M - 10M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "10000000-20000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 10M - 20M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "20000000+" },
+                      })
+                    )
+                  }
+                >
+                  Above Rs. 20M
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -599,10 +693,130 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuLabel>Number of bathrooms</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "1" },
+                      })
+                    )
+                  }
+                >
+                  1 Bedroom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "2" },
+                      })
+                    )
+                  }
+                >
+                  2 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "3" },
+                      })
+                    )
+                  }
+                >
+                  3 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "4" },
+                      })
+                    )
+                  }
+                >
+                  4 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "5+" },
+                      })
+                    )
+                  }
+                >
+                  5+ Bedrooms
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "1" },
+                      })
+                    )
+                  }
+                >
+                  1 Bathroom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "2" },
+                      })
+                    )
+                  }
+                >
+                  2 Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "3" },
+                      })
+                    )
+                  }
+                >
+                  3 Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "4+" },
+                      })
+                    )
+                  }
+                >
+                  4+ Bathrooms
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -639,7 +853,10 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               placeholder="Enter an address, city..."
               className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -672,53 +889,13 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                 <span className="text-black text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-main-blue h-[80vh] rounded-t-2xl">
-              {showDistrictOnly ? (
-                <div className="flex flex-col gap-3 p-4">
-                  <div className="w-full">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                        <FilterButton label="District" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
-                        {(
-                          districtHasNone
-                            ? [
-                                "None",
-                                "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-                                "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-                                "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-                                "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-                                "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-                              ]
-                            : [
-                                "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-                                "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-                                "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-                                "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-                                "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-                              ]
-                        ).map((district) => (
-                          <DropdownMenuItem
-                            key={district}
-                            onClick={() =>
-                              window.dispatchEvent(
-                                new CustomEvent("districtSelected", {
-                                  detail: { districtName: district },
-                                })
-                              )
-                            }
-                          >
-                            {district}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              ) : (
-                <MobileFiltersContent />
-              )}
+
+            <SheetContent
+              side="bottom"
+              className="bg-main-blue h-[80vh] rounded-t-2xl"
+            >
+              <MobileFiltersContent />
+
             </SheetContent>
           </Sheet>
           )}

@@ -140,14 +140,10 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
-
-       
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
             <FilterButton label="District" />
           </DropdownMenuTrigger>
-
-        
 
           <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
             {[
@@ -555,12 +551,11 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           <>
           {/* Filter Buttons */}
           <div className="w-36">
-
-        
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
                 <FilterButton label="District" />
-              </DropdownMenuTrigger>      
+              </DropdownMenuTrigger>
+
               <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
                 {[
                   "All",
@@ -890,8 +885,6 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                 <span className="text-black text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>
-
-        
             <SheetContent
               side="bottom"
               className="bg-main-blue h-[80vh] rounded-t-2xl"

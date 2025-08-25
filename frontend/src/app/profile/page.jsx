@@ -2,20 +2,25 @@
 
 import React, { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { app } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
 import {
   signOutUserStart,
   signOutUserSuccess,
-  signOutUserFailure
+  signOutUserFailure,
 } from "../../redux/Features/user/userSlice";
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
-import Image from 'next/image';
-import MoreOptions from '../../components/Profile/editProfile';
-import EditProfile from '../../components/Profile/changeProfile';
-import UserListings from '../../components/Profile/UserListings';
+import Image from "next/image";
+import MoreOptions from "../../components/Profile/editProfile";
+import EditProfile from "../../components/Profile/changeProfile";
+import UserListings from "../../components/Profile/UserListings";
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -23,7 +28,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState("");
   const [formData, setFormData] = useState({});
   const [signOutError, setSignOutError] = useState("");
-  const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile', 'userListings'
+  const [currentView, setCurrentView] = useState("profile"); // 'profile', 'moreOptions', 'editProfile', 'userListings'
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -38,7 +43,8 @@ export default function Profile() {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFilePerc(Math.round(progress));
       },
       (error) => {
@@ -77,23 +83,23 @@ export default function Profile() {
 
   // Navigation handlers
   const handleMoreOptions = () => {
-    setCurrentView('moreOptions');
+    setCurrentView("moreOptions");
   };
 
   const handleEditProfile = () => {
-    setCurrentView('editProfile');
+    setCurrentView("editProfile");
   };
 
   const handleUserListings = () => {
-    setCurrentView('userListings');
+    setCurrentView("userListings");
   };
 
   const handleBackToProfile = () => {
-    setCurrentView('profile');
+    setCurrentView("profile");
   };
 
   const handleBackToMoreOptions = () => {
-    setCurrentView('moreOptions');
+    setCurrentView("moreOptions");
   };
 
   const handleSignOut = async () => {
@@ -101,30 +107,31 @@ export default function Profile() {
       dispatch(signOutUserStart());
 
       // Make the signout request to the backend
-      const response = await fetch('/api/auth/signout', {
-        method: 'GET',
+      const response = await fetch("http://localhost:3000/api/auth/signout", {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
       });
+      router.push("/sign_in");
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to sign out');
+        throw new Error(data.message || "Failed to sign out");
       }
 
       // If successful, update Redux state and redirect
       dispatch(signOutUserSuccess());
-      toast.success('Signed out successfully');
+      toast.success("Signed out successfully");
 
       // Clear local storage
-      localStorage.removeItem('persist:root');
+      localStorage.removeItem("persist:root");
 
       // Redirect to sign-in page after a short delay
       setTimeout(() => {
-        router.push('/sign_in');
+        router.push("/sign_in");
       }, 1000);
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
@@ -135,30 +142,22 @@ export default function Profile() {
   };
 
   // Render based on current view
-  if (currentView === 'moreOptions') {
+  if (currentView === "moreOptions") {
     return (
-      <MoreOptions 
-        onBack={handleBackToProfile} 
+      <MoreOptions
+        onBack={handleBackToProfile}
         onEditProfile={handleEditProfile}
         onUserListings={handleUserListings}
       />
     );
   }
 
-  if (currentView === 'editProfile') {
-    return (
-      <EditProfile 
-        onBack={handleBackToMoreOptions} 
-      />
-    );
+  if (currentView === "editProfile") {
+    return <EditProfile onBack={handleBackToMoreOptions} />;
   }
 
-  if (currentView === 'userListings') {
-    return (
-      <UserListings 
-        onBack={handleBackToMoreOptions}
-      />
-    );
+  if (currentView === "userListings") {
+    return <UserListings onBack={handleBackToMoreOptions} />;
   }
 
   // Default profile view
@@ -191,7 +190,9 @@ export default function Profile() {
           <div className="flex justify-center">
             <Image
               onClick={() => fileRef.current.click()}
-              src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
+              src={
+                formData.avatar || currentUser?.avatar || "/default-avatar.png"
+              }
               alt="profile"
               className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
               width={96}
@@ -234,10 +235,7 @@ export default function Profile() {
         </div>
 
         <div className="flex justify-center mt-5">
-          <span
-            onClick={handleSignOut}
-            className="text-red-700 cursor-pointer"
-          >
+          <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
             Sign Out
           </span>
         </div>

@@ -68,54 +68,79 @@ export default function ProductCard({ listing }) {
           {/* Price and Home Type Tag */}
           <div className="flex items-center gap-0">
             <div className="text-xl font-bold text-gray-900 dark:text-white">
-              {listing.price > 500000 ? 
-                `Rs. ${(listing.price / 1000000).toFixed(1)} M` : 
-                `Rs. ${Number(listing.price).toLocaleString()}`}
+              {listing.price > 500000
+                ? `Rs. ${(listing.price / 1000000).toFixed(1)} M`
+                : `Rs. ${Number(listing.price).toLocaleString()}`}
             </div>
-             {/* Home Type Tag */}
-             {listing.homeType && (
-               <span className="bg-white border border-blue-600 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full flex-none m-1.5">
-                 {listing.homeType === 'Single Family' || listing.homeType === 'Multi Family' || listing.homeType === 'Apartment' ? 'House' : listing.homeType === 'Land' ? 'Land' : 'Other'}
-               </span>
-             )}
+            {/* Home Type Tag */}
+            {listing.homeType && (
+              <span className="bg-white border border-blue-600 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full flex-none m-1.5">
+                {listing.homeType === "Single Family" ||
+                listing.homeType === "Multi Family" ||
+                listing.homeType === "Apartment"
+                  ? "House"
+                  : listing.homeType === "Land"
+                  ? "Land"
+                  : "Other"}
+              </span>
+            )}
           </div>
 
-           {/* City tag */}
-           {listing.city && (
-             <span className="bg-white text-black border border-black text-xs font-medium px-2 py-0.5 rounded-md">
+          {/* City tag */}
+          {listing.city && (
+            <span className="bg-white text-black border border-black text-xs font-medium px-2 py-0.5 rounded-md">
               {listing.city}
             </span>
-           )}
+          )}
         </div>
 
         {/* Features Summary */}
         <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-          {listing.homeType === 'Land' ? (
+          {listing.homeType === "Land" ? (
             <span className="font-semibold">{listing.landArea} sqft</span>
-          ) : listing.homeType === 'Apartment' ? (
+          ) : listing.homeType === "Apartment" ? (
             <>
-              <span className="font-semibold">{listing.bedrooms || 0} beds</span> | 
-              <span className="font-semibold">{listing.attachedBathrooms + (listing.detachedBathrooms || 0)} bath</span> | 
-              <span className="font-semibold">{listing.houseArea || 0} sqft</span>
+              <span className="font-semibold">
+                {listing.bedrooms || 0} beds
+              </span>{" "}
+              |
+              <span className="font-semibold">
+                {listing.attachedBathrooms + (listing.detachedBathrooms || 0)}{" "}
+                bath
+              </span>{" "}
+              |
+              <span className="font-semibold">
+                {listing.houseArea || 0} sqft
+              </span>
             </>
           ) : (
             <>
-              <span className="font-semibold">{listing.bedrooms || 0} beds</span> | 
-              <span className="font-semibold">{listing.attachedBathrooms + (listing.detachedBathrooms || 0)} bath</span> | 
-              <span className="font-semibold">{listing.houseArea || 0} sqft</span>
+              <span className="font-semibold">
+                {listing.bedrooms || 0} beds
+              </span>{" "}
+              |
+              <span className="font-semibold">
+                {listing.attachedBathrooms + (listing.detachedBathrooms || 0)}{" "}
+                bath
+              </span>{" "}
+              |
+              <span className="font-semibold">
+                {listing.houseArea || 0} sqft
+              </span>
             </>
           )}
-          {' - '}
-          {listing.homeType ? (
-            listing.homeType === 'Single Family' || listing.homeType === 'Multi Family' 
-              ? 'Property for sale' 
+          {" - "}
+          {listing.homeType
+            ? listing.homeType === "Single Family" ||
+              listing.homeType === "Multi Family"
+              ? "Property for sale"
               : `${listing.homeType} for sale`
-          ) : 'for sale'}
+            : "for sale"}
         </div>
 
         {/* Address */}
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          {listing.address || 'Address not provided'}
+          {listing.address || "Address not provided"}
         </div>
       </div>
     </div>

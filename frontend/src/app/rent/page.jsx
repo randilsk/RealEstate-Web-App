@@ -52,9 +52,19 @@ function page() {
       filterListingsByLocation(lat, lng, 5);
       setSearchArea({ center: { lat, lng }, radius: 5000 });
     };
+    const handleDistrictSelected = (event) => {
+      const { districtName } = event.detail || {};
+      if (districtName === 'None') {
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        setSearchArea(null);
+      }
+    };
     window.addEventListener("locationSelected", handleLocationSelected);
+    window.addEventListener("districtSelected", handleDistrictSelected);
     return () => {
       window.removeEventListener("locationSelected", handleLocationSelected);
+      window.removeEventListener("districtSelected", handleDistrictSelected);
     };
   }, [listings]);
 
@@ -86,7 +96,7 @@ function page() {
   return (
     <div className="fixed inset-0 flex flex-col">
       <div className="flex-none">
-        <Header_varient_1 />
+        <Header_varient_1 showFilters={true} districtHasNone={true} />
       </div>
 
       <div className="flex-1 flex relative overflow-hidden">

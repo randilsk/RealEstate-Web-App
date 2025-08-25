@@ -190,10 +190,72 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "All" },
+                  })
+                )
+              }
+            >
+              All Prices
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "0-1000000" },
+                  })
+                )
+              }
+            >
+              Under Rs. 1M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "1000000-5000000" },
+                  })
+                )
+              }
+            >
+              Rs. 1M - 5M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "5000000-10000000" },
+                  })
+                )
+              }
+            >
+              Rs. 5M - 10M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "10000000-20000000" },
+                  })
+                )
+              }
+            >
+              Rs. 10M - 20M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "20000000+" },
+                  })
+                )
+              }
+            >
+              Above Rs. 20M
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -206,10 +268,130 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuLabel>Number of bathrooms</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "All" },
+                  })
+                )
+              }
+            >
+              All Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "1" },
+                  })
+                )
+              }
+            >
+              1 Bedroom
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "2" },
+                  })
+                )
+              }
+            >
+              2 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "3" },
+                  })
+                )
+              }
+            >
+              3 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "4" },
+                  })
+                )
+              }
+            >
+              4 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "5+" },
+                  })
+                )
+              }
+            >
+              5+ Bedrooms
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "All" },
+                  })
+                )
+              }
+            >
+              All Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "1" },
+                  })
+                )
+              }
+            >
+              1 Bathroom
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "2" },
+                  })
+                )
+              }
+            >
+              2 Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "3" },
+                  })
+                )
+              }
+            >
+              3 Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "4+" },
+                  })
+                )
+              }
+            >
+              4+ Bathrooms
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

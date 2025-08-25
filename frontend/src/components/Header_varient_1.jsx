@@ -39,7 +39,7 @@ const FilterButton = ({ label }) => (
   </div>
 );
 
-function Header_varient_1() {
+function Header_varient_1({ showFilters = true, showDistrictOnly = false, districtHasNone = false }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -547,7 +547,8 @@ function Header_varient_1() {
               </div>
             )}
           </div>
-
+          {showFilters && (
+          <>
           {/* Filter Buttons */}
           <div className="w-36">
             <DropdownMenu>
@@ -600,6 +601,7 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          {!showDistrictOnly && (
           <div className="w-36">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -677,6 +679,8 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          {!showDistrictOnly && (
           <div className="w-52">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -812,6 +816,8 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          {!showDistrictOnly && (
           <div className="w-32">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-between w-full">
@@ -827,6 +833,9 @@ function Header_varient_1() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          )}
+          </>
+          )}
         </div>
 
         {/* Mobile Search and Filter */}
@@ -868,6 +877,7 @@ function Header_varient_1() {
           </div>
 
           {/* Filter Button */}
+          {showFilters && (
           <Sheet>
             <SheetTrigger className="flex-shrink-0">
               <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/90 rounded-full">
@@ -880,8 +890,10 @@ function Header_varient_1() {
               className="bg-main-blue h-[80vh] rounded-t-2xl"
             >
               <MobileFiltersContent />
+
             </SheetContent>
           </Sheet>
+          )}
         </div>
       </div>
     </div>

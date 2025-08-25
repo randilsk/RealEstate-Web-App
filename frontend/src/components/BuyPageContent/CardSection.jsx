@@ -1,25 +1,67 @@
 import React from "react";
 import Card from "./Card";
 
-function CardSection({ listings, isFiltered, onClearFilter }) {
+function CardSection({
+  listings,
+  isFiltered,
+  onClearFilter,
+  activeFilters,
+  totalListings,
+}) {
+  const getFilterDisplayText = () => {
+    const filters = [];
+    if (activeFilters?.district && activeFilters.district !== "All") {
+      filters.push(`District: ${activeFilters.district}`);
+    }
+    if (activeFilters?.price && activeFilters.price !== "All") {
+      const priceText =
+        activeFilters.price === "0-1000000"
+          ? "Under Rs. 1M"
+          : activeFilters.price === "1000000-5000000"
+          ? "Rs. 1M - 5M"
+          : activeFilters.price === "5000000-10000000"
+          ? "Rs. 5M - 10M"
+          : activeFilters.price === "10000000-20000000"
+          ? "Rs. 10M - 20M"
+          : activeFilters.price === "20000000+"
+          ? "Above Rs. 20M"
+          : activeFilters.price;
+      filters.push(`Price: ${priceText}`);
+    }
+    if (activeFilters?.bedroom && activeFilters.bedroom !== "All") {
+      filters.push(`Bedrooms: ${activeFilters.bedroom}`);
+    }
+    if (activeFilters?.bathroom && activeFilters.bathroom !== "All") {
+      filters.push(`Bathrooms: ${activeFilters.bathroom}`);
+    }
+    return filters.join(", ");
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="sticky top-0 bg-white z-10 px-4 py-1.5 border-b">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-xl md:text-xl">
-            Recent Properties
-          </h2>
+          <div className="flex flex-col">
+            <h2 className="font-semibold text-xl md:text-xl">
+              Recent Properties
+            </h2>
+            {isFiltered && (
+              <span className="text-sm text-gray-500">
+                Showing {listings.length} of {totalListings} listings
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             {isFiltered && (
               <>
                 <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-                  Filtered Results
+                  {getFilterDisplayText()}
                 </span>
                 <button
                   onClick={onClearFilter}
                   className="text-sm text-red-600 bg-red-50 px-2 py-1 rounded-full hover:bg-red-100 transition-colors"
                 >
-                  Clear Filter
+                  Clear All Filters
                 </button>
               </>
             )}
@@ -37,7 +79,10 @@ function CardSection({ listings, isFiltered, onClearFilter }) {
               <div className="text-center py-16 text-gray-600 font-medium">
                 {isFiltered ? (
                   <div className="flex flex-col items-center gap-2">
-                    <p>No listings found for the selected district.</p>
+                    <p>No listings found for the selected filters.</p>
+                    <p className="text-sm text-gray-500">
+                      {getFilterDisplayText()}
+                    </p>
                     <button
                       onClick={onClearFilter}
                       className="text-blue-600 hover:text-blue-800 underline"

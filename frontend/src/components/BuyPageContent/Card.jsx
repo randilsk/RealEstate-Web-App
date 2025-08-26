@@ -17,10 +17,10 @@ export default function ProductCard({ listing }) {
   return (
     <div
       key={listing._id}
-      className="w-full sm:w-[47%] bg-white border border-gray-200 rounded-xl shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-300"
+      className="w-full sm:w-[48%] md:w-[48%] lg:w-[48%] xl:w-[48%] 2xl:w-[48%] bg-white border border-gray-200 rounded-xl shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-300 min-w-0 flex-shrink-0"
     >
       <Link href={`/listing/${listing._id}`}>
-        <div className="relative h-40">
+        <div className="relative h-40 sm:h-48 md:h-52 lg:h-56 xl:h-60">
           {listing.images && listing.images.length > 0 ? (
             <Swiper
               modules={[Pagination, Navigation]}
@@ -41,7 +41,7 @@ export default function ProductCard({ listing }) {
                       console.error(`Failed to load image: ${image}`);
                       e.target.src = "/images/home-image/home-page-image2.png";
                     }}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, 50vw"
                   />
                 </SwiperSlide>
               ))}
@@ -52,29 +52,30 @@ export default function ProductCard({ listing }) {
               alt="Property placeholder"
               fill
               className="object-cover"
+              sizes="(max-width: 640px) 100vw, 50vw"
             />
           )}
 
           {/* Heart icon overlay */}
-          <div className="absolute top-3 right-3 z-10">
-            <HiOutlineHeart className="text-white text-2xl" />
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
+            <HiOutlineHeart className="text-white text-xl sm:text-2xl drop-shadow-md" />
           </div>
         </div>
       </Link>
 
-      <div className="px-4 py-1.5">
+      <div className="px-4 py-2 sm:px-5 sm:py-3 md:px-6 md:py-3">
         {/* Price and City tag on the same line */}
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between mb-1 gap-2">
           {/* Price and Home Type Tag */}
-          <div className="flex items-center gap-0">
-            <div className="text-xl font-bold text-gray-900 dark:text-white">
+          <div className="flex items-center gap-0 min-w-0 flex-1">
+            <div className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white truncate">
               {listing.price > 500000
                 ? `Rs. ${(listing.price / 1000000).toFixed(1)} M`
                 : `Rs. ${Number(listing.price).toLocaleString()}`}
             </div>
             {/* Home Type Tag */}
             {listing.homeType && (
-              <span className="bg-white border border-blue-600 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full flex-none m-1.5">
+              <span className="bg-white border border-blue-600 text-blue-600 text-xs sm:text-xs md:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full flex-none ml-1 sm:ml-1.5 whitespace-nowrap">
                 {listing.homeType === "Single Family" ||
                 listing.homeType === "Multi Family" ||
                 listing.homeType === "Apartment"
@@ -88,58 +89,60 @@ export default function ProductCard({ listing }) {
 
           {/* City tag */}
           {listing.city && (
-            <span className="bg-white text-black border border-black text-xs font-medium px-2 py-0.5 rounded-md">
+            <span className="bg-white text-black border border-black text-xs sm:text-xs md:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-md flex-shrink-0 max-w-[80px] sm:max-w-none truncate">
               {listing.city}
             </span>
           )}
         </div>
 
         {/* Features Summary */}
-        <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+        <div className="text-sm sm:text-base md:text-base text-gray-700 dark:text-gray-300 mb-1 leading-relaxed">
           {listing.homeType === "Land" ? (
             <span className="font-semibold">{listing.landArea} sqft</span>
           ) : listing.homeType === "Apartment" ? (
-            <>
-              <span className="font-semibold">
+            <div className="flex flex-wrap items-center gap-x-1">
+              <span className="font-semibold whitespace-nowrap">
                 {listing.bedrooms || 0} beds
-              </span>{" "}
-              |
-              <span className="font-semibold">
+              </span>
+              <span className="hidden xs:inline">|</span>
+              <span className="font-semibold whitespace-nowrap">
                 {listing.attachedBathrooms + (listing.detachedBathrooms || 0)}{" "}
                 bath
-              </span>{" "}
-              |
-              <span className="font-semibold">
+              </span>
+              <span className="hidden xs:inline">|</span>
+              <span className="font-semibold whitespace-nowrap">
                 {listing.houseArea || 0} sqft
               </span>
-            </>
+            </div>
           ) : (
-            <>
-              <span className="font-semibold">
+            <div className="flex flex-wrap items-center gap-x-1">
+              <span className="font-semibold whitespace-nowrap">
                 {listing.bedrooms || 0} beds
-              </span>{" "}
-              |
-              <span className="font-semibold">
+              </span>
+              <span className="hidden xs:inline">|</span>
+              <span className="font-semibold whitespace-nowrap">
                 {listing.attachedBathrooms + (listing.detachedBathrooms || 0)}{" "}
                 bath
-              </span>{" "}
-              |
-              <span className="font-semibold">
+              </span>
+              <span className="hidden xs:inline">|</span>
+              <span className="font-semibold whitespace-nowrap">
                 {listing.houseArea || 0} sqft
               </span>
-            </>
+            </div>
           )}
-          {" - "}
-          {listing.homeType
-            ? listing.homeType === "Single Family" ||
-              listing.homeType === "Multi Family"
-              ? "Property for sale"
-              : `${listing.homeType} for sale`
-            : "for sale"}
+          <span className="block xs:inline">
+            {listing.homeType === "Land" ? "" : " - "}
+            {listing.homeType
+              ? listing.homeType === "Single Family" ||
+                listing.homeType === "Multi Family"
+                ? "Property for sale"
+                : `${listing.homeType} for sale`
+              : "for sale"}
+          </span>
         </div>
 
         {/* Address */}
-        <div className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
           {listing.address || "Address not provided"}
         </div>
       </div>

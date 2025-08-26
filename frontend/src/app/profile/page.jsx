@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../../lib/firebase";
@@ -24,10 +24,37 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [signOutError, setSignOutError] = useState("");
   const [currentView, setCurrentView] = useState('profile'); // 'profile', 'moreOptions', 'editProfile', 'userListings'
+  const [userType, setUserType] = useState('free');
+  const [loading, setLoading] = useState(true);
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  // Fetch user type on component mount
+  useEffect(() => {
+    const fetchUserType = async () => {
+      if (currentUser?.email) {
+        try {
+          const response = await fetch(`http://localhost:3000/api/user/user-type?email=${encodeURIComponent(currentUser.email)}`);
+          const data = await response.json();
+          
+          if (response.ok) {
+            setUserType(data.userType || 'free');
+          } else {
+            console.error('Failed to fetch user type:', data.message);
+            setUserType('free');
+          }
+        } catch (error) {
+          console.error('Error fetching user type:', error);
+          setUserType('free');
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserType();
+  }, [currentUser?.email]);
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
@@ -179,6 +206,22 @@ export default function Profile() {
           Welcome to UrbanNest
         </h1>
         <h2 className="text-xl font-semibold my-4 text-center">Profile</h2>
+        
+        {/* User Type Display */}
+        {!loading && (
+          <div className="text-center mb-4">
+            <p className="text-lg font-medium">
+              You are a <span className={`font-bold ${
+                userType === 'pro' ? 'text-purple-600' :
+                userType === 'premium' ? 'text-orange-500' :
+                userType === 'basic' ? 'text-blue-600' :
+                'text-gray-600'
+              }`}>
+                {userType === 'free' ? 'Free' : userType.charAt(0).toUpperCase() + userType.slice(1)}
+              </span> user
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col gap-4">
           <input
@@ -189,15 +232,28 @@ export default function Profile() {
             onChange={handleFileChange}
           />
 
-          <div className="flex justify-center">
-            <Image
-              onClick={() => fileRef.current.click()}
-              src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
-              alt="profile"
-              className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
-              width={96}
-              height={96}
-            />
+          <div className="flex justify-center relative">
+            <div className="relative">
+              <Image
+                onClick={() => fileRef.current.click()}
+                src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
+                alt="profile"
+                className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+                width={96}
+                height={96}
+              />
+              {/* User Type Badge */}
+              {!loading && (
+                <div className={`absolute -top-2 -right-2 px-2 py-1 rounded-full text-xs font-bold text-white shadow-lg ${
+                  userType === 'pro' ? 'bg-gradient-to-r from-purple-500 to-pink-500' :
+                  userType === 'premium' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' :
+                  userType === 'basic' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
+                  'bg-gray-400'
+                }`}>
+                  {userType === 'free' ? 'FREE' : userType.toUpperCase()}
+                </div>
+              )}
+            </div>
           </div>
 
           {fileUploadError && (

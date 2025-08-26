@@ -1,20 +1,39 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const PaymentSuccess = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sessionId = searchParams.get('session_id');
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
     if (sessionId) {
       fetchSessionDetails();
     }
   }, [sessionId]);
+
+  // Auto-redirect to profile after 5 seconds
+  useEffect(() => {
+    if (!loading && session) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            router.push('/profile');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [loading, session, router]);
 
   const fetchSessionDetails = async () => {
     try {
@@ -67,6 +86,12 @@ const PaymentSuccess = () => {
           <p className="mt-2 text-sm text-gray-600">
             Thank you for your subscription. Your payment has been processed successfully.
           </p>
+          
+          {!loading && session && (
+            <p className="mt-4 text-sm text-blue-600 font-medium">
+              Redirecting to your profile in {countdown} seconds...
+            </p>
+          )}
         </div>
 
         {session && (
@@ -104,6 +129,13 @@ const PaymentSuccess = () => {
         )}
 
         <div className="space-y-4">
+          <Link
+            href="/profile"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          >
+            Go to Profile Now
+          </Link>
+          
           <Link
             href="/subscription-management"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

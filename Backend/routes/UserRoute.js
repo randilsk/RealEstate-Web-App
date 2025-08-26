@@ -1,5 +1,5 @@
 import express from "express";
-import { test, updateUserProfile, updateUser, deleteUser, getUsers } from "../controllers/UserController.js";
+import { test, updateUserProfile, updateUser, deleteUser, getUsers, getUserTypeByEmail } from "../controllers/UserController.js";
 
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.get("/users", getUsers);
 
 // Route to update user profile
 router.put("/update/:userId", updateUserProfile);
+
+// Get user type by email
+router.get("/user-type", getUserTypeByEmail);
 
 // Admin routes for user management
 router.put("/users/:userId", updateUser);

@@ -1,5 +1,8 @@
-import User from "../models/UserModel.js"; // Import the User model
-import bcryptjs from 'bcryptjs';
+import User from "../models/UserModel.js";
+import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utills/error.js";
+import jwt from "jsonwebtoken";
+import { getUserType, getUserSubscriptionDetails } from "../utills/userTypeUtils.js";
 
 export const test = (req, res) => {
   res.json({
@@ -114,6 +117,31 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ 
       message: "Error deleting user", 
+      error: error.message 
+    });
+  }
+};
+
+// Get user type by email
+export const getUserTypeByEmail = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const userType = await getUserType(email);
+    const subscriptionDetails = await getUserSubscriptionDetails(email);
+
+    res.status(200).json({
+      email,
+      userType,
+      subscriptionDetails
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error getting user type", 
       error: error.message 
     });
   }

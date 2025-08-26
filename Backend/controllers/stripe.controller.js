@@ -22,19 +22,11 @@ export const testAuth = async (req, res) => {
 // Get Stripe configuration (publishable key and price IDs)
 export const getStripeConfig = async (req, res) => {
   try {
-    // Check if required environment variables are set
-    if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || !process.env.STRIPE_SECRET_KEY) {
-      console.error('Missing Stripe environment variables');
-      return res.status(500).json({ 
-        error: 'Stripe configuration missing. Please check environment variables.' 
-      });
-    }
-
     res.json({
-      publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-      basicPriceId: process.env.STRIPE_BASIC_PRICE_ID || 'price_basic_placeholder',
-      proPriceId: process.env.STRIPE_PRO_PRICE_ID || 'price_pro_placeholder',
-      premiumPriceId: process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium_placeholder',
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+      basicPriceId: process.env.STRIPE_BASIC_PRICE_ID,
+      proPriceId: process.env.STRIPE_PRO_PRICE_ID,
+      premiumPriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
     });
   } catch (error) {
     console.error('Error getting Stripe config:', error);
@@ -64,27 +56,12 @@ export const createCheckoutSession = async (req, res) => {
   try {
     console.log('createCheckoutSession called with body:', req.body);
     
-    // Check if Stripe is properly configured
-    if (!process.env.STRIPE_SECRET_KEY) {
-      console.error('STRIPE_SECRET_KEY is not configured');
-      return res.status(500).json({ 
-        error: 'Payment system not configured. Please contact support.' 
-      });
-    }
-    
     const { priceId, planType, customerEmail, customerName } = req.body;
 
     console.log('Extracted data:', { priceId, planType, customerEmail, customerName });
 
     if (!priceId || !planType) {
       return res.status(400).json({ error: 'Price ID and plan type are required' });
-    }
-
-    // For development, handle placeholder price IDs
-    if (priceId.includes('placeholder')) {
-      return res.status(400).json({ 
-        error: 'Please configure real Stripe Price IDs in your environment variables' 
-      });
     }
 
     // Create or find customer by email (if provided)
@@ -157,52 +134,40 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// Handle Stripe webhooks
-export const handleWebhook = async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// Handle successful payment (webhook)
 
-  let event;
+//   try {
+//     switch (event.type) {
+//       case 'checkout.session.completed':
+//         await handleCheckoutSessionCompleted(event.data.object);
+//         break;
+      
+//       case 'invoice.payment_succeeded':
+//         await handleInvoicePaymentSucceeded(event.data.object);
+//         break;
+      
+//       case 'invoice.payment_failed':
+//         await handleInvoicePaymentFailed(event.data.object);
+//         break;
+      
+//       case 'customer.subscription.updated':
+//         await handleSubscriptionUpdated(event.data.object);
+//         break;
+      
+//       case 'customer.subscription.deleted':
+//         await handleSubscriptionDeleted(event.data.object);
+//         break;
+      
+//       default:
+//         console.log(`Unhandled event type: ${event.type}`);
+//     }
 
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  try {
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event.data.object);
-        break;
-      
-      case 'invoice.payment_succeeded':
-        await handleInvoicePaymentSucceeded(event.data.object);
-        break;
-      
-      case 'invoice.payment_failed':
-        await handleInvoicePaymentFailed(event.data.object);
-        break;
-      
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object);
-        break;
-      
-      case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object);
-        break;
-      
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
-    }
-
-    res.json({ received: true });
-  } catch (error) {
-    console.error('Error handling webhook:', error);
-    res.status(500).json({ error: 'Webhook handler failed' });
-  }
-};
+//     res.json({ received: true });
+//   } catch (error) {
+//     console.error('Error handling webhook:', error);
+//     res.status(500).json({ error: 'Webhook handler failed' });
+//   }
+// };
 
 // Webhook handlers (updated to work without user authentication)
 async function handleCheckoutSessionCompleted(session) {

@@ -14,28 +14,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-const NavItem = ({ label, bold, className = "" }) => (
+const NavItem = ({ children, className = "" }) => (
   <div
-    className={`text-white text-base md:text-lg font-poppins ${
-      bold ? "font-bold" : ""
-    } ${className}`}
-  >
-    {label}
+    className={`text-white text-base md:text-lg font-poppins transition-colors hover:text-gray-200 ${className}`}>
+    {children}
   </div>
 );
 
 const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins">
+  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins transition-transform duration-300 ease-in-out group-hover:scale-105">
     <span className="text-black text-sm md:text-base font-normal">{label}</span>
-    <div>
-      <Image
-        src="/icons/dropdown-icon.png"
-        alt="Search Icon"
-        width={14}
-        height={14}
-        className="w-3.5 h-3.5 ml-2"
-      />
-    </div>
+    <Image
+      src="/icons/dropdown-icon.png"
+      alt="Dropdown Icon"
+      width={14}
+      height={14}
+      className="w-3.5 h-3.5 ml-2 transition-transform duration-300 ease-in-out group-hover:rotate-180"
+    />
   </div>
 );
 
@@ -104,19 +99,19 @@ function Header_varient_1() {
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-col gap-3">
-        <NavItem>
+        <NavItem className="font-medium">
           <Link href={"/buy"}>Buy</Link>
         </NavItem>
-        <NavItem>
-          <Link href={"/rent"}> Rent</Link>
+        <NavItem className="font-medium">
+          <Link href={"/rent"}>Rent</Link>
         </NavItem>
-        <NavItem>
+        <NavItem className="font-medium">
           <Link href={"/sell"}>List</Link>
         </NavItem>
         <Link href={"/"}>
-          <NavItem label="Home" />
+          <NavItem className="font-medium">Home</NavItem>
         </Link>
-        <NavItem label="Help" />
+        <NavItem className="font-medium">Help</NavItem>
         {currentUser ? (
           <Link href="/profile" className="flex items-center gap-2">
             <Image
@@ -130,7 +125,7 @@ function Header_varient_1() {
           </Link>
         ) : (
           <Link href="/sign_in">
-            <NavItem>Sign In</NavItem>
+            <NavItem className="font-medium">Sign In</NavItem>
           </Link>
         )}
       </div>
@@ -141,7 +136,7 @@ function Header_varient_1() {
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="District" />
           </DropdownMenuTrigger>
 
@@ -174,7 +169,7 @@ function Header_varient_1() {
               "Trincomalee",
               "Vavuniya",
             ].map((district) => (
-              <DropdownMenuItem
+              <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                 key={district}
                 onClick={() =>
                   window.dispatchEvent(
@@ -193,13 +188,13 @@ function Header_varient_1() {
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Price" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -210,7 +205,7 @@ function Header_varient_1() {
             >
               All Prices
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -221,7 +216,7 @@ function Header_varient_1() {
             >
               Under Rs. 1M
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -232,7 +227,7 @@ function Header_varient_1() {
             >
               Rs. 1M - 5M
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -243,7 +238,7 @@ function Header_varient_1() {
             >
               Rs. 5M - 10M
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -254,7 +249,7 @@ function Header_varient_1() {
             >
               Rs. 10M - 20M
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -271,13 +266,13 @@ function Header_varient_1() {
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Beds and Baths" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -288,7 +283,7 @@ function Header_varient_1() {
             >
               All Bedrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -299,7 +294,7 @@ function Header_varient_1() {
             >
               1 Bedroom
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -310,7 +305,7 @@ function Header_varient_1() {
             >
               2 Bedrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -321,7 +316,7 @@ function Header_varient_1() {
             >
               3 Bedrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -332,7 +327,7 @@ function Header_varient_1() {
             >
               4 Bedrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -346,7 +341,7 @@ function Header_varient_1() {
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -357,7 +352,7 @@ function Header_varient_1() {
             >
               All Bathrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -368,7 +363,7 @@ function Header_varient_1() {
             >
               1 Bathroom
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -379,7 +374,7 @@ function Header_varient_1() {
             >
               2 Bathrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -390,7 +385,7 @@ function Header_varient_1() {
             >
               3 Bathrooms
             </DropdownMenuItem>
-            <DropdownMenuItem
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -407,16 +402,16 @@ function Header_varient_1() {
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="More" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Billing</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Team</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Subscription</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -444,20 +439,20 @@ function Header_varient_1() {
           <div className="hidden md:flex gap-8">
             <Link href={"/buy"}>
               {" "}
-              <NavItem label="Buy" />
+              <NavItem className="font-medium">Buy</NavItem>
             </Link>
             <Link href={"/rent"}>
-              <NavItem label="Rent" />
+              <NavItem className="font-medium">Rent</NavItem>
             </Link>
             <Link href={"/sell"}>
               {" "}
-              <NavItem label="List" />
+              <NavItem className="font-medium">List</NavItem>
             </Link>
           </div>
 
           {/* Logo */}
           <Link href={"/"} className="flex items-center gap-2">
-            <div className="text-white text-xl md:text-2xl font-bold">
+            <div className="text-white text-xl md:text-2xl font-extrabold tracking-tight">
               Urban Nest
             </div>
           </Link>
@@ -465,9 +460,9 @@ function Header_varient_1() {
           {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
             <Link href={"/"}>
-              <NavItem label="Home" />
+              <NavItem className="font-medium">Home</NavItem>
             </Link>
-            <NavItem label="Help" />
+            <NavItem className="font-medium">Help</NavItem>
             {currentUser ? (
               <Link href="/profile">
                 <Image
@@ -551,7 +546,7 @@ function Header_varient_1() {
           {/* Filter Buttons */}
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="District" />
               </DropdownMenuTrigger>
 
@@ -584,7 +579,7 @@ function Header_varient_1() {
                   "Trincomalee",
                   "Vavuniya",
                 ].map((district) => (
-                  <DropdownMenuItem
+                  <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                     key={district}
                     onClick={() =>
                       window.dispatchEvent(
@@ -602,13 +597,13 @@ function Header_varient_1() {
           </div>
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Price" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -619,7 +614,7 @@ function Header_varient_1() {
                 >
                   All Prices
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -630,7 +625,7 @@ function Header_varient_1() {
                 >
                   Under Rs. 1M
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -641,7 +636,7 @@ function Header_varient_1() {
                 >
                   Rs. 1M - 5M
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -652,7 +647,7 @@ function Header_varient_1() {
                 >
                   Rs. 5M - 10M
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -663,7 +658,7 @@ function Header_varient_1() {
                 >
                   Rs. 10M - 20M
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -679,13 +674,13 @@ function Header_varient_1() {
           </div>
           <div className="w-52">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Beds and Baths" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -696,7 +691,7 @@ function Header_varient_1() {
                 >
                   All Bedrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -707,7 +702,7 @@ function Header_varient_1() {
                 >
                   1 Bedroom
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -718,7 +713,7 @@ function Header_varient_1() {
                 >
                   2 Bedrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -729,7 +724,7 @@ function Header_varient_1() {
                 >
                   3 Bedrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -740,7 +735,7 @@ function Header_varient_1() {
                 >
                   4 Bedrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -754,7 +749,7 @@ function Header_varient_1() {
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -765,7 +760,7 @@ function Header_varient_1() {
                 >
                   All Bathrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -776,7 +771,7 @@ function Header_varient_1() {
                 >
                   1 Bathroom
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -787,7 +782,7 @@ function Header_varient_1() {
                 >
                   2 Bathrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -798,7 +793,7 @@ function Header_varient_1() {
                 >
                   3 Bathrooms
                 </DropdownMenuItem>
-                <DropdownMenuItem
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -814,16 +809,16 @@ function Header_varient_1() {
           </div>
           <div className="w-32">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="More" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Profile</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Billing</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Team</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">Subscription</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

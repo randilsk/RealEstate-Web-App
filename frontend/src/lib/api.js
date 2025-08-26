@@ -67,3 +67,39 @@ export const fetchSingleListing = async (id) => {
     throw error;
   }
 };
+
+export const fetchAllRentListings = async () => {
+  try {
+    console.log('Making API request to:', `${API_BASE_URL}/Rentroutes/getAllRentListing`);
+    const response = await axios.get(`${API_BASE_URL}/Rentroutes/getAllRentListing`);
+
+    if (!response.data) {
+      console.error('No rent data received from server');
+      throw new Error('No rent data received from server');
+    }
+
+    console.log('Rent listings count:', Array.isArray(response.data) ? response.data.length : 'Not an array');
+    console.log('First rent listing sample:', response.data[0]);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching rent listings:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      console.error("Response headers:", error.response.headers);
+      throw new Error(error.response.data.message || 'Failed to fetch rent listings');
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+      console.error("Request details:", {
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers
+      });
+      throw new Error('No response from server');
+    } else {
+      console.error("Request setup error:", error.message);
+      throw new Error(error.message || 'Error setting up request');
+    }
+  }
+};

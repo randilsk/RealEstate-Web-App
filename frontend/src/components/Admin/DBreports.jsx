@@ -273,15 +273,17 @@ const fetchListings = async () => {
           <thead className="bg-indigo-600 text-white"><tr>
             <th className="p-2 text-left">User</th>
             <th className="p-2 text-left">Email</th>
+            <th className="p-2 text-left">User Type</th>
             <th className="p-2 text-left">Last Login</th>
             <th className="p-2 text-left">Listings</th>
             <th className="p-2 text-left">Role</th>
+            
           </tr></thead>
           <tbody>{users
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
                 .slice(0, 5) // Display only the 5 most recent users
                 .map((user) => (
-                    <tr key={user._id} className="border-t"><td className="p-2">{user.username}</td><td className="p-2">{user.email}</td><td className="p-2">{new Date(user.createdAt).toLocaleDateString()}</td><td className="p-2">N/A</td><td className="p-2">N/A</td></tr>
+                    <tr key={user._id} className="border-t"><td className="p-2">{user.username}</td><td className="p-2">{user.email}</td><td className="p-2">{user.subscription}</td><td className="p-2">{new Date(user.createdAt).toLocaleDateString()}</td><td className="p-2">N/A</td><td className="p-2">N/A</td></tr>
                 ))}</tbody>
         </table>
       </div>

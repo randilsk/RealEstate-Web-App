@@ -45,7 +45,7 @@ function AdminNavbar() {
       <NavItem onClick={closeMenu}>
         <Link href={'/Admin/ApproveAdds'}>Approvals</Link>
       </NavItem>
-      <NavItem onClick={closeMenu}>Help</NavItem>
+      
       
       
       
@@ -94,7 +94,7 @@ function AdminNavbar() {
             <NavItem>
             <Link href={'/Admin/reports'}>Reports</Link>
           </NavItem>
-          <NavItem>Help</NavItem>
+         
           
            
           

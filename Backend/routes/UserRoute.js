@@ -1,5 +1,5 @@
 import express from "express";
-import { test, updateUserProfile, updateUser, deleteUser, getUsers, getUserTypeByEmail } from "../controllers/UserController.js";
+import { test, updateUserProfile, updateUser, deleteUser, getUsers, getUserTypeByEmail, updateSubscriptionStatus } from "../controllers/UserController.js";
 
 const router = express.Router();
 
@@ -14,6 +14,9 @@ router.put("/update/:userId", updateUserProfile);
 
 // Get user type by email
 router.get("/user-type", getUserTypeByEmail);
+
+// Update user subscription status
+router.put("/update-subscription", updateSubscriptionStatus);
 
 // Admin routes for user management
 router.put("/users/:userId", updateUser);

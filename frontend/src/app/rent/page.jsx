@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import Header_varient_1 from "../../components/Header_varient_1.jsx";
 import MapSectionRent from "@/components/RentPageComponent/MapSectionRent";
 import CardSectionRent from "@/components/RentPageComponent/CardSectionRent";
-import { fetchAllListings } from "@/lib/api";
-import { useSearchParams } from "next/navigation";
+import { fetchAllRentListings } from "@/lib/api";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 function page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
@@ -12,13 +12,22 @@ function page() {
   const [filteredListings, setFilteredListings] = useState([]);
   const [isFiltered, setIsFiltered] = useState(false);
   const [searchArea, setSearchArea] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({
+    district: null,
+    price: null,
+    bedroom: null,
+    bathroom: null,
+  });
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [hasAppliedFromQuery, setHasAppliedFromQuery] = useState(false);
 
   useEffect(() => {
     const getListings = async () => {
       try {
-        console.log('Fetching listings from API...');
-        const data = await fetchAllListings();
+        console.log('Fetching rent listings from API...');
+        const data = await fetchAllRentListings();
         console.log('API response:', data);
         console.log('Listings count:', data?.length || 0);
         setListings(data);
@@ -50,6 +59,125 @@ function page() {
     setIsFiltered(true);
   };
 
+  // Apply filters (district, price, bedroom, bathroom)
+  const applyFilters = (newFilters) => {
+    const updatedFilters = { ...activeFilters, ...newFilters };
+    setActiveFilters(updatedFilters);
+
+    let filtered = [...listings];
+
+    // District
+    if (updatedFilters.district && updatedFilters.district !== "All") {
+      const normalizedDistrictName = updatedFilters.district.toLowerCase().replace(/[-\s]/g, "");
+      filtered = filtered.filter((listing) => {
+        if (!listing.district) return false;
+        const normalizedListingDistrict = String(listing.district).toLowerCase().replace(/[-\s]/g, "");
+        return normalizedListingDistrict === normalizedDistrictName;
+      });
+    }
+
+    // Price
+    if (updatedFilters.price && updatedFilters.price !== "All") {
+      filtered = filtered.filter((listing) => {
+        if (listing.price == null) return false;
+        const price = Number(listing.price);
+        switch (updatedFilters.price) {
+          case "0-1000000":
+            return price <= 1000000;
+          case "1000000-5000000":
+            return price > 1000000 && price <= 5000000;
+          case "5000000-10000000":
+            return price > 5000000 && price <= 10000000;
+          case "10000000-20000000":
+            return price > 10000000 && price <= 20000000;
+          case "20000000+":
+            return price > 20000000;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Bedroom
+    if (updatedFilters.bedroom && updatedFilters.bedroom !== "All") {
+      filtered = filtered.filter((listing) => {
+        const bedrooms = Number(listing.bedrooms || 0);
+        switch (updatedFilters.bedroom) {
+          case "1":
+            return bedrooms === 1;
+          case "2":
+            return bedrooms === 2;
+          case "3":
+            return bedrooms === 3;
+          case "4":
+            return bedrooms === 4;
+          case "5+":
+            return bedrooms >= 5;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Bathroom (attached + detached)
+    if (updatedFilters.bathroom && updatedFilters.bathroom !== "All") {
+      filtered = filtered.filter((listing) => {
+        const totalBathrooms = Number(listing.attachedBathrooms || 0) + Number(listing.detachedBathrooms || 0);
+        switch (updatedFilters.bathroom) {
+          case "1":
+            return totalBathrooms === 1;
+          case "2":
+            return totalBathrooms === 2;
+          case "3":
+            return totalBathrooms === 3;
+          case "4+":
+            return totalBathrooms >= 4;
+          default:
+            return true;
+        }
+      });
+    }
+
+    setFilteredListings(filtered);
+    setIsFiltered(
+      updatedFilters.district !== null ||
+      updatedFilters.price !== null ||
+      updatedFilters.bedroom !== null ||
+      updatedFilters.bathroom !== null
+    );
+
+    // Persist filters to URL (rent-only)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const setOrDelete = (key, value) => {
+        if (value === null || value === undefined || value === "All") {
+          params.delete(key);
+        } else {
+          params.set(key, String(value));
+        }
+      };
+      setOrDelete("district", updatedFilters.district);
+      setOrDelete("price", updatedFilters.price);
+      setOrDelete("bedroom", updatedFilters.bedroom);
+      setOrDelete("bathroom", updatedFilters.bathroom);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    } catch {}
+  };
+
+  const clearAllFilters = () => {
+    setFilteredListings(listings);
+    setIsFiltered(false);
+    setActiveFilters({ district: null, price: null, bedroom: null, bathroom: null });
+    setSearchArea(null);
+
+    // Clear filter params from URL (rent-only)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      ["district", "price", "bedroom", "bathroom"].forEach((k) => params.delete(k));
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    } catch {}
+  };
+
   useEffect(() => {
     const handleLocationSelected = (event) => {
       const { lat, lng } = event.detail;
@@ -58,17 +186,37 @@ function page() {
     };
     const handleDistrictSelected = (event) => {
       const { districtName } = event.detail || {};
-      if (districtName === 'None') {
-        setFilteredListings(listings);
-        setIsFiltered(false);
+      if (districtName === 'None' || districtName === 'All') {
+        applyFilters({ district: null });
         setSearchArea(null);
+        return;
       }
+      applyFilters({ district: districtName });
+      setSearchArea(null);
+    };
+    const handlePriceSelected = (event) => {
+      const { priceRange } = event.detail || {};
+      applyFilters({ price: priceRange });
+    };
+    const handleBedroomSelected = (event) => {
+      const { bedroomCount } = event.detail || {};
+      applyFilters({ bedroom: bedroomCount });
+    };
+    const handleBathroomSelected = (event) => {
+      const { bathroomCount } = event.detail || {};
+      applyFilters({ bathroom: bathroomCount });
     };
     window.addEventListener("locationSelected", handleLocationSelected);
     window.addEventListener("districtSelected", handleDistrictSelected);
+    window.addEventListener("priceSelected", handlePriceSelected);
+    window.addEventListener("bedroomSelected", handleBedroomSelected);
+    window.addEventListener("bathroomSelected", handleBathroomSelected);
     return () => {
       window.removeEventListener("locationSelected", handleLocationSelected);
       window.removeEventListener("districtSelected", handleDistrictSelected);
+      window.removeEventListener("priceSelected", handlePriceSelected);
+      window.removeEventListener("bedroomSelected", handleBedroomSelected);
+      window.removeEventListener("bathroomSelected", handleBathroomSelected);
     };
   }, [listings]);
 
@@ -97,6 +245,25 @@ function page() {
     }
   }, [searchParams]);
 
+  // Apply filters from URL once when listings are available (rent-only)
+  useEffect(() => {
+    if (!hasAppliedFromQuery && listings) {
+      const district = searchParams.get("district");
+      const price = searchParams.get("price");
+      const bedroom = searchParams.get("bedroom");
+      const bathroom = searchParams.get("bathroom");
+      if (district || price || bedroom || bathroom) {
+        applyFilters({
+          district: district || null,
+          price: price || null,
+          bedroom: bedroom || null,
+          bathroom: bathroom || null,
+        });
+      }
+      setHasAppliedFromQuery(true);
+    }
+  }, [hasAppliedFromQuery, listings, searchParams]);
+
   return (
     <div className="fixed inset-0 flex flex-col">
       <div className="flex-none">
@@ -111,7 +278,7 @@ function page() {
               : 'translate-x-0 md:w-1/2'
           }`}
         >
-          <MapSectionRent listings={listings} searchArea={searchArea} onZoomChange={handleZoomChange} />
+          <MapSectionRent listings={filteredListings} searchArea={searchArea} onZoomChange={handleZoomChange} />
         </div>
 
         <div 
@@ -124,13 +291,10 @@ function page() {
           <CardSectionRent 
             listings={filteredListings}
             isFiltered={isFiltered}
-            onClearFilter={() => {
-              setFilteredListings(listings);
-              setIsFiltered(false);
-              setSearchArea(null);
-            }}
-            activeFilters={{}}
+            onClearFilter={clearAllFilters}
+            activeFilters={activeFilters}
             totalListings={listings.length}
+            originalListings={listings}
           />
         </div>
 

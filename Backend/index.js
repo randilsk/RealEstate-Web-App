@@ -30,15 +30,20 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"], // Allow both frontend ports
+    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"], // Allow frontend ports
     credentials: true, // Allow cookies to be sent with requests
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'stripe-signature']
   })
 );
+
+// Special handling for Stripe webhooks - must be before express.json()
+app.use('/api/stripe/webhook', express.raw({type: 'application/json'}));
 
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Middleware to parse cookiesS
+// Middleware to parse cookies
 app.use(cookieParser());
 
 app.listen(3000, () => {

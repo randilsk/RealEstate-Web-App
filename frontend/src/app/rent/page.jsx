@@ -17,10 +17,14 @@ function page() {
   useEffect(() => {
     const getListings = async () => {
       try {
+        console.log('Fetching listings from API...');
         const data = await fetchAllListings();
+        console.log('API response:', data);
+        console.log('Listings count:', data?.length || 0);
         setListings(data);
         setFilteredListings(data);
       } catch (err) {
+        console.error('Error fetching listings:', err);
         setListings([]);
         setFilteredListings([]);
       }
@@ -117,7 +121,17 @@ function page() {
               : 'translate-x-[100%] md:translate-x-[100%] md:w-1/2'
           }`}
         >
-          <CardSectionRent listings={filteredListings} />
+          <CardSectionRent 
+            listings={filteredListings}
+            isFiltered={isFiltered}
+            onClearFilter={() => {
+              setFilteredListings(listings);
+              setIsFiltered(false);
+              setSearchArea(null);
+            }}
+            activeFilters={{}}
+            totalListings={listings.length}
+          />
         </div>
 
         <button

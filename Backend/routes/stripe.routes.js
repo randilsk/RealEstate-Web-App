@@ -11,24 +11,26 @@ import {
   cancelSubscription,
   reactivateSubscription
 } from '../controllers/stripe.controller.js';
-import { verifyTokenForStripe } from '../middleware/auth.middleware.js';
+// Removed: import { verifyTokenForStripe } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Public routes
+// All routes are now public (no authentication required)
 router.get('/config', getStripeConfig);
 router.get('/checkout-session', getCheckoutSession);
-router.post('/webhook', express.raw({ type: 'application/json' }), handleWebhook);
 
-// Test authentication route
-router.get('/test-auth', verifyTokenForStripe, testAuth);
+// Webhook route (raw body parsing handled in main server)
+router.post('/webhook', handleWebhook);
 
-// Protected routes (require authentication)
-router.post('/create-checkout-session', verifyTokenForStripe, createCheckoutSession);
-router.get('/subscription', verifyTokenForStripe, getUserSubscription);
-router.get('/payments', verifyTokenForStripe, getUserPayments);
-router.post('/customer-portal', verifyTokenForStripe, createCustomerPortalSession);
-router.post('/cancel-subscription', verifyTokenForStripe, cancelSubscription);
-router.post('/reactivate-subscription', verifyTokenForStripe, reactivateSubscription);
+// Previously protected routes - now public
+router.post('/create-checkout-session', createCheckoutSession);
+router.get('/subscription', getUserSubscription);
+router.get('/payments', getUserPayments);
+router.post('/customer-portal', createCustomerPortalSession);
+router.post('/cancel-subscription', cancelSubscription);
+router.post('/reactivate-subscription', reactivateSubscription);
+
+// Test route (optional - you can remove this)
+router.get('/test-auth', testAuth);
 
 export default router;

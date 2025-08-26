@@ -101,7 +101,7 @@ export default function Profile() {
       dispatch(signOutUserStart());
 
       // Make the signout request to the backend
-      const response = await fetch('/api/auth/signout', {
+      const response = await fetch('http://localhost:3000/api/auth/signout', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -118,6 +118,7 @@ export default function Profile() {
       // If successful, update Redux state and redirect
       dispatch(signOutUserSuccess());
       toast.success('Signed out successfully');
+      router.push('/sign_in');
 
       // Clear local storage
       localStorage.removeItem('persist:root');

@@ -146,3 +146,38 @@ export const getUserTypeByEmail = async (req, res) => {
     });
   }
 };
+
+// Update user subscription status
+export const updateSubscriptionStatus = async (req, res) => {
+  try {
+    const { email, subscription } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    if (!subscription || !['free', 'premium'].includes(subscription)) {
+      return res.status(400).json({ message: "Valid subscription type is required (free or premium)" });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { subscription },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Subscription status updated successfully",
+      user: updatedUser
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error updating subscription status", 
+      error: error.message 
+    });
+  }
+};

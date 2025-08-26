@@ -18,13 +18,13 @@ const PaymentSuccess = () => {
     }
   }, [sessionId]);
 
-  // Auto-redirect to profile after 5 seconds
+  // Auto-redirect to home page after 5 seconds
   useEffect(() => {
     if (!loading && session) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            router.push('/profile');
+            router.push('/');
             return 0;
           }
           return prev - 1;
@@ -40,10 +40,39 @@ const PaymentSuccess = () => {
       const response = await fetch(`http://localhost:3000/api/stripe/checkout-session?sessionId=${sessionId}`);
       const data = await response.json();
       setSession(data);
+      
+      // Update user subscription to premium if payment was successful
+      if (data.payment_status === 'paid' && data.customer_details?.email) {
+        await updateUserSubscription(data.customer_details.email);
+      }
     } catch (error) {
       console.error('Error fetching session details:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateUserSubscription = async (email) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/user/update-subscription', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          subscription: 'premium'
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Subscription updated successfully:', result);
+      } else {
+        console.error('Failed to update subscription status');
+      }
+    } catch (error) {
+      console.error('Error updating subscription:', error);
     }
   };
 
@@ -89,7 +118,7 @@ const PaymentSuccess = () => {
           
           {!loading && session && (
             <p className="mt-4 text-sm text-blue-600 font-medium">
-              Redirecting to your profile in {countdown} seconds...
+              Redirecting to home page in {countdown} seconds...
             </p>
           )}
         </div>
@@ -130,10 +159,10 @@ const PaymentSuccess = () => {
 
         <div className="space-y-4">
           <Link
-            href="/profile"
+            href="/"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
-            Go to Profile Now
+            Go to Home Now
           </Link>
           
           <Link

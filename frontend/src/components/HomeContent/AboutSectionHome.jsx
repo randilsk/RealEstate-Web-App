@@ -42,11 +42,11 @@ function AboutSectionHome() {
 
       {/* Content Section */}
       <div className="relative z-10 pt-12 md:pt-24 w-full md:w-3/4">
-        <h1 className="font-bold text-2xl sm:text-3xl pb-4 md:pb-5 font-poppins">About Us</h1>
-        <div className="text-sm sm:text-base">
-          <p>
-            At <strong>Urban Nest</strong>, we believe that finding your dream
-            piece of land should be <em>simple, enjoyable,</em> and even
+        <h1 className="font-bold text-2xl sm:text-3xl pb-4 md:pb-5 font-poppins transition-all duration-300 hover:text-main-blue hover:scale-105 drop-shadow-sm">About Us</h1>
+        <div className="text-sm sm:text-base leading-relaxed">
+          <p className="transition-all duration-300 hover:text-gray-700 p-4 rounded-lg hover:bg-white/30 hover:backdrop-blur-sm hover:shadow-sm">
+            At <strong className="text-main-blue font-semibold">Urban Nest</strong>, we believe that finding your dream
+            piece of land should be <em className="text-main-blue font-medium">simple, enjoyable,</em> and even
             exciting. Our mission is to connect landowners and seekers through
             a powerful, interactive map-based platform designed exclusively
             for Sri Lanka. Whether you&apos;re exploring the serene countryside or
@@ -55,11 +55,11 @@ function AboutSectionHome() {
             list, and manage land properties with just a few clicks.
           </p>
           <br />
-          <p>
+          <p className="transition-all duration-300 hover:text-gray-700 p-4 rounded-lg hover:bg-white/30 hover:backdrop-blur-sm hover:shadow-sm">
             Whether you&apos;re a buyer hunting for your ideal location or a seller
-            ready to showcase your property, <strong>Urban Nest</strong> is
+            ready to showcase your property, <strong className="text-main-blue font-semibold">Urban Nest</strong> is
             your trusted partner. Our platform delivers{" "}
-            <em>
+            <em className="text-main-blue font-medium">
               reliable listings, intuitive navigation, and a seamless user
               experience
             </em>{" "}
@@ -70,7 +70,7 @@ function AboutSectionHome() {
         </div>
 
         <div className="py-6 md:py-10">
-          <hr className="border-main-blue opacity-50" />
+          <hr className="border-main-blue opacity-50 transition-all duration-300 hover:opacity-80 hover:shadow-sm" />
         </div>
 
         {/* Navigation Links */}
@@ -80,7 +80,7 @@ function AboutSectionHome() {
               <Link
                 key={index}
                 href={item.href}
-                className="text-black text-sm sm:text-base font-normal font-poppins leading-snug hover:underline hover:text-blue-600 transition"
+                className="text-black text-sm sm:text-base font-normal font-poppins leading-snug hover:underline hover:text-main-blue transition-all duration-300 hover:scale-105 hover:font-medium p-2 rounded-lg hover:bg-white/20 hover:backdrop-blur-sm"
               >
                 {item.label}
               </Link>
@@ -88,8 +88,8 @@ function AboutSectionHome() {
           </div>
 
           {/* Trademark Text */}
-          <div className="px-2 sm:px-5 pt-5 text-center text-black text-sm sm:text-base font-poppins opacity-80">
-            The terms Urban Nest and the associated logos are trademarks owned
+          <div className="px-2 sm:px-5 pt-5 text-center text-black text-sm sm:text-base font-poppins opacity-80 transition-all duration-300 hover:opacity-100 p-4 rounded-lg hover:bg-white/20 hover:backdrop-blur-sm">
+            The terms <span className="font-semibold text-main-blue">Urban Nest</span> and the associated logos are trademarks owned
             by Urban Nest. They identify real estate professionals who are
             members of our platform. All listings are provided by registered
             users and reflect the quality of services offered by our
@@ -98,18 +98,18 @@ function AboutSectionHome() {
 
           {/* App Store Links */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 pt-5 items-center">
-            <Link href="/mobile-app">
+            <Link href="/mobile-app" className="group">
               <Image
-                className="w-[100px] sm:w-[120px] h-[30px] sm:h-[35px] opacity-70"
+                className="w-[100px] sm:w-[120px] h-[30px] sm:h-[35px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110 group-hover:drop-shadow-lg"
                 src="/images/home-image/googleplay.png"
                 width={325}
                 height={568}
                 alt="Google Play Store"
               />
             </Link>
-            <Link href="/mobile-app">
+            <Link href="/mobile-app" className="group">
               <Image
-                className="w-[100px] sm:w-[120px] h-[30px] sm:h-[35px] opacity-70"
+                className="w-[100px] sm:w-[120px] h-[30px] sm:h-[35px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110 group-hover:drop-shadow-lg"
                 src="/images/home-image/appstore.png"
                 width={325}
                 height={568}
@@ -120,41 +120,41 @@ function AboutSectionHome() {
 
           {/* Social Links */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 pt-5 items-center">
-            <div className="text-black text-lg sm:text-xl font-semibold font-poppins">
+            <div className="text-black text-lg sm:text-xl font-semibold font-poppins transition-all duration-300 hover:text-main-blue hover:scale-105 cursor-default">
               Urban Nest
             </div>
-            <p className="text-sm sm:text-base">Follow us on: </p>
+            <p className="text-sm sm:text-base transition-all duration-300 hover:text-main-blue">Follow us on: </p>
             <div className="flex gap-3 sm:gap-5">
-              <Link href="https://www.facebook.com/UrbanNestLK" target="_blank">
+              <Link href="https://www.facebook.com/UrbanNestLK" target="_blank" className="group">
                 <Image
-                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70"
+                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-125 group-hover:drop-shadow-lg p-1 rounded-lg group-hover:bg-white/20 group-hover:backdrop-blur-sm"
                   src="/images/home-image/facebook-icon.svg"
                   width={30}
                   height={30}
                   alt="Facebook"
                 />
               </Link>
-              <Link href="https://www.instagram.com/UrbanNestLK" target="_blank">
+              <Link href="https://www.instagram.com/UrbanNestLK" target="_blank" className="group">
                 <Image
-                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70"
+                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-125 group-hover:drop-shadow-lg p-1 rounded-lg group-hover:bg-white/20 group-hover:backdrop-blur-sm"
                   src="/images/home-image/insta-icon.png"
                   width={30}
                   height={30}
                   alt="Instagram"
                 />
               </Link>
-              <Link href="https://twitter.com/UrbanNestLK" target="_blank">
+              <Link href="https://twitter.com/UrbanNestLK" target="_blank" className="group">
                 <Image
-                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70"
+                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-125 group-hover:drop-shadow-lg p-1 rounded-lg group-hover:bg-white/20 group-hover:backdrop-blur-sm"
                   src="/images/home-image/x-icon.svg"
                   width={30}
                   height={30}
                   alt="Twitter"
                 />
               </Link>
-              <Link href="https://www.linkedin.com/company/urban-nest-lk" target="_blank">
+              <Link href="https://www.linkedin.com/company/urban-nest-lk" target="_blank" className="group">
                 <Image
-                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70"
+                  className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-125 group-hover:drop-shadow-lg p-1 rounded-lg group-hover:bg-white/20 group-hover:backdrop-blur-sm"
                   src="/images/home-image/linkedin-icon.svg"
                   width={30}
                   height={30}
@@ -166,8 +166,8 @@ function AboutSectionHome() {
         </div>
 
         {/* Copyright */}
-        <p className="text-xs sm:text-sm text-center text-black font-poppins opacity-50 pt-5 pb-8">
-          © 2025 Urban Nest. All rights reserved
+        <p className="text-xs sm:text-sm text-center text-black font-poppins opacity-50 pt-5 pb-8 transition-all duration-300 hover:opacity-80 hover:scale-105">
+          © 2025 <span className="font-semibold">Urban Nest</span>. All rights reserved
         </p>
       </div>
     </div>

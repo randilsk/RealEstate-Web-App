@@ -27,22 +27,32 @@ export const addRentListing = async (req, res) => {
     // Get image URLs from the uploaded files
     const imageUrls = req.files ? req.files.map((file) => file.path) : [];
 
-    // Create new listing with image URLs
+    // Normalize monthlyRent field (handle both MonthlyRent & monthlyRent from frontend)
+    let rentValue = null;
+    if (req.body.monthlyRent) {
+      rentValue = req.body.monthlyRent;
+    } else if (req.body.MonthlyRent) {
+      rentValue = req.body.MonthlyRent;
+    }
+
+    // Create new listing with normalized fields
     const newRentListing = new RentListing({
       ...req.body,
+      monthlyRent: rentValue, // Always save as "monthlyRent"
       images: imageUrls,
     });
 
     const savedRentListing = await newRentListing.save();
     res.status(201).json(savedRentListing);
   } catch (error) {
-    console.error("Error in addListing:", error);
+    console.error("Error in addRentListing:", error);
     res.status(500).json({
       message: "Failed to add listing",
       error: error.message,
     });
   }
 };
+
 
 export const getSingleRentListing = async (req, res) => {
   try {
@@ -58,19 +68,29 @@ export const getSingleRentListing = async (req, res) => {
 
 export const updateRentListing = async (req, res) => {
   try {
+    // Normalize monthlyRent field (handle both MonthlyRent & monthlyRent from frontend)
+    if (req.body.MonthlyRent && !req.body.monthlyRent) {
+      req.body.monthlyRent = req.body.MonthlyRent;
+      delete req.body.MonthlyRent; // remove old key to avoid duplication
+    }
+
     const updatedRentListing = await RentListing.findByIdAndUpdate(
-      req.params.id, // Find listing by ID
-      req.body, // Update with request body
-      { new: true } // Return the updated document
+      req.params.id,       // Find listing by ID
+      req.body,            // Update with normalized request body
+      { new: true }        // Return the updated document
     );
+
     if (!updatedRentListing) {
       return res.status(404).json({ message: "Listing not found" });
     }
+
     res.status(200).json(updatedRentListing);
   } catch (error) {
+    console.error("Error in updateRentListing:", error);
     res.status(500).json({ message: "Failed to update listing", error });
   }
 };
+
 
 export const deleteRentListing = async (req, res) => {
   try {

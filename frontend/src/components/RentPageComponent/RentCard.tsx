@@ -14,7 +14,7 @@ type Listing = {
   images?: string[];
   district?: string;
   price?: number;
-  MonthlyRent?: number; // Add this field from your schema
+  monthlyRent?: number; // Add this field from your schema
   homeType?: string;
   city?: string;
   landArea?: number;
@@ -40,7 +40,7 @@ export default function RentCard({ listing }: { listing: Listing }) {
       console.log('First image URL:', listing.images[0]);
     }
     console.log('Price field:', listing.price);
-    console.log('MonthlyRent field:', listing.MonthlyRent);
+    console.log('MonthlyRent field:', listing.monthlyRent);
     console.log('=== END DEBUG ===');
   }, [listing]);
 
@@ -115,7 +115,7 @@ export default function RentCard({ listing }: { listing: Listing }) {
   };
 
   // Use MonthlyRent if price is not available (matching your schema)
-  const displayPrice = listing.price || listing.MonthlyRent || 0;
+  const displayPrice = listing.price || listing.monthlyRent || 0;
 
   return (
     <div

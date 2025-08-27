@@ -14,7 +14,7 @@ export default function UserListings({ onBack }) {
     const fetchUserListings = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/listing/user/${currentUser.email}`);
+        const res = await fetch(`http://localhost:3000/api/listing/user/${currentUser.email}`);
         const data = await res.json();
         if (data.error) {
           setError(data.error);

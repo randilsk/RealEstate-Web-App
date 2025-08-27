@@ -23,6 +23,7 @@ import {
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
+import Link from "next/link";
 import MoreOptions from "../../components/Profile/editProfile";
 import EditProfile from "../../components/Profile/changeProfile";
 import UserListings from "../../components/Profile/UserListings";
@@ -237,11 +238,19 @@ export default function Profile() {
   // Default profile view
   return (
     <div
-      className="w-full h-screen bg-cover bg-center flex items-center justify-center"
+      className="w-full h-screen bg-cover bg-center flex items-center justify-center relative"
       style={{
         backgroundImage: `url(${signInImage.src})`,
       }}
     >
+      {/* Back Button */}
+      <div className="absolute top-4 left-4 z-20">
+        <Link href="/" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/70 backdrop-blur shadow border border-indigo-100 hover:bg-indigo-100 transition-all duration-200 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-indigo-700">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </Link>
+      </div>
       <Toaster position="top-center" />
       <div
         className="w-[425px] rounded-[48px] p-5 max-w-lg mx-auto shadow-lg border"

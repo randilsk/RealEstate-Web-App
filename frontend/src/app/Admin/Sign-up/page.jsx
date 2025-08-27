@@ -33,19 +33,19 @@ export default function AdminSignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-    
+
     // Validate email domain
-    if (!formData.email.endsWith('@urbannest.com')) {
+    if (!formData.email.endsWith("@urbannest.com")) {
       setError("Only @urbannest.com email addresses are allowed");
       return;
     }
-    
+
     setLoading(true);
     try {
       const res = await fetch("http://localhost:3000/api/admin/signup", {
@@ -57,17 +57,17 @@ export default function AdminSignUp() {
           username: formData.name,
           email: formData.email,
           password: formData.password,
-          companyId: formData.companyId,  // Added companyId
+          companyId: formData.companyId, // Added companyId
         }),
       });
-      
+
       const data = await res.json();
-      
+
       if (!res.ok) {
         setError(data.message || "Failed to sign up");
         return;
       }
-      
+
       // Automatically sign in after successful sign up
       dispatch(adminsignInStart());
       const signInRes = await fetch("http://localhost:3000/api/admin/signin", {
@@ -82,17 +82,26 @@ export default function AdminSignUp() {
       });
       const signInData = await signInRes.json();
       if (!signInRes.ok) {
-        dispatch(adminsignInFailure(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually."));
-        setError(signInData.message || "Sign up succeeded, but failed to sign in. Please try signing in manually.");
+        dispatch(
+          adminsignInFailure(
+            signInData.message ||
+              "Sign up succeeded, but failed to sign in. Please try signing in manually."
+          )
+        );
+        setError(
+          signInData.message ||
+            "Sign up succeeded, but failed to sign in. Please try signing in manually."
+        );
         return;
       }
       dispatch(adminsignInSuccess(signInData.admin));
+
       router.replace("/Admin/");
     } catch (err) {
-      console.error("Signup error:", err);  // Added logging
+      console.error("Signup error:", err); // Added logging
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setLoading(false);  // Always reset loading state
+      setLoading(false); // Always reset loading state
     }
   };
 
@@ -103,13 +112,13 @@ export default function AdminSignUp() {
         backgroundImage: `url(/images/sign_in-images/signIn_Image.png)`,
       }}
     >
-      <div
-        className="w-full max-w-[400px] box-border rounded-2xl sm:rounded-[36px] p-4 py-6 sm:p-5 sm:py-5 mx-auto shadow-lg border bg-[#d9d9d9] border-t-4 flex flex-col justify-center"
-      >
+      <div className="w-full max-w-[400px] box-border rounded-2xl sm:rounded-[36px] p-4 py-6 sm:p-5 sm:py-5 mx-auto shadow-lg border bg-[#d9d9d9] border-t-4 flex flex-col justify-center">
         <h1 className="text-lg sm:text-2xl text-center font-semibold my-2 sm:my-4">
           Welcome to UrbanNest Admin
         </h1>
-        <h2 className="text-base sm:text-lg font-semibold my-2 sm:my-3 text-center">Admin Sign Up</h2>
+        <h2 className="text-base sm:text-lg font-semibold my-2 sm:my-3 text-center">
+          Admin Sign Up
+        </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
           <input
             type="text"
@@ -167,10 +176,19 @@ export default function AdminSignUp() {
             {loading ? "Loading..." : "Sign Up"}
           </button>
         </form>
-        {error && <p className="text-red-500 mt-4 text-center text-xs sm:text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-500 mt-4 text-center text-xs sm:text-sm">
+            {error}
+          </p>
+        )}
         <p className="text-center mt-3 text-xs sm:text-sm">
-          Already have an account?{' '}
-          <Link href="/Admin/Sign-in" className="text-blue-600 hover:underline font-semibold">Sign In</Link>
+          Already have an account?{" "}
+          <Link
+            href="/Admin/Sign-in"
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            Sign In
+          </Link>
         </p>
       </div>
     </div>

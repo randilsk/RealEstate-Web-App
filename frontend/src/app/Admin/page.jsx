@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import DBSideBar from '../../components/Admin/DBSideBar';
+
 import DBMainContent from '../../components/Admin/DBMainContent';
 import Link from 'next/link';
 import signInImage from '../../../public/images/sign_in-images/signIn_Image.png';
@@ -20,7 +20,7 @@ import slide_image_2 from '../../../public/images/home/home1.jpg';
 import slide_image_3 from '../../../public/images/home/home2.jpg';
 import slide_image_4 from '../../../public/images/home/home3.jpg';
 import slide_image_5 from '../../../public/images/home/home4.jpg';
-import { div } from 'framer-motion/client';
+
 
 function Dashboard() {
     const { currentUser } = useSelector((state) => state.admin);

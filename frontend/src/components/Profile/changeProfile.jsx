@@ -121,7 +121,7 @@ export default function EditProfile({ onBack }) {
 
   const updateUserProfile = async (userId, data) => {
     try {
-      const response = await fetch(`/api/user/update/${userId}`, {
+      const response = await fetch(`http://localhost:3000/api/user/update/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

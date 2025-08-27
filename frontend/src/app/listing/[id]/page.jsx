@@ -24,7 +24,7 @@ export default function ListingDetailsPage() {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-[#3b50df] flex justify-center items-start px-1 md:px-0">
+    <div className="min-h-screen bg-[#e3e9fd] flex justify-center items-start px-1 md:px-0">
       <ListingDetail
         listing={listing}
         allListings={allListings}

@@ -14,28 +14,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-const NavItem = ({ label, bold, className = "" }) => (
+const NavItem = ({ children, className = "" }) => (
   <div
-    className={`text-white text-base md:text-lg font-poppins ${
-      bold ? "font-bold" : ""
-    } ${className}`}
+    className={`text-white text-base md:text-lg font-poppins transition-colors hover:text-gray-200 ${className}`}
   >
-    {label}
+    {children}
   </div>
 );
 
 const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins">
+  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins transition-transform duration-300 ease-in-out group-hover:scale-105">
     <span className="text-black text-sm md:text-base font-normal">{label}</span>
-    <div>
-      <Image
-        src="/icons/dropdown-icon.png"
-        alt="Search Icon"
-        width={14}
-        height={14}
-        className="w-3.5 h-3.5 ml-2"
-      />
-    </div>
+    <Image
+      src="/icons/dropdown-icon.png"
+      alt="Dropdown Icon"
+      width={14}
+      height={14}
+      className="w-3.5 h-3.5 ml-2 transition-transform duration-300 ease-in-out group-hover:rotate-180"
+    />
   </div>
 );
 
@@ -43,11 +39,12 @@ function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedDistricts, setSelectedDistricts] = useState(new Set());
 
   const handleLocationSearch = async (e) => {
     const value = e.target.value;
     setSearchLocation(value);
-    
+
     if (value.length > 2) {
       try {
         const response = await fetch(
@@ -104,19 +101,19 @@ function Header_varient_1() {
   const MobileNavContent = () => (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-col gap-3">
-      <NavItem>
-            <Link href={"/buy"}>Buy</Link>
-          </NavItem>
-          <NavItem>
-           <Link href={"/rent"}> Rent</Link>
-            </NavItem>
-          <NavItem>
-            <Link href={"/sell"}>List</Link>
-          </NavItem>
+        <NavItem className="font-medium">
+          <Link href={"/buy"}>Buy</Link>
+        </NavItem>
+        <NavItem className="font-medium">
+          <Link href={"/rent"}>Rent</Link>
+        </NavItem>
+        <NavItem className="font-medium">
+          <Link href={"/sell"}>List</Link>
+        </NavItem>
         <Link href={"/"}>
-          <NavItem label="Home" />
+          <NavItem className="font-medium">Home</NavItem>
         </Link>
-        <NavItem label="Help" />
+        <NavItem className="font-medium">Help</NavItem>
         {currentUser ? (
           <Link href="/profile" className="flex items-center gap-2">
             <Image
@@ -130,7 +127,7 @@ function Header_varient_1() {
           </Link>
         ) : (
           <Link href="/sign_in">
-            <NavItem>Sign In</NavItem>
+            <NavItem className="font-medium">Sign In</NavItem>
           </Link>
         )}
       </div>
@@ -140,81 +137,303 @@ function Header_varient_1() {
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
-      <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
+            <FilterButton label="District" />
+          </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
-
+          <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+            {[
+              "All",
+              "Ampara",
+              "Anuradhapura",
+              "Badulla",
+              "Batticaloa",
+              "Colombo",
+              "Galle",
+              "Gampaha",
+              "Hambantota",
+              "Jaffna",
+              "Kalutara",
+              "Kandy",
+              "Kegalle",
+              "Kilinochchi",
+              "Kurunegala",
+              "Mannar",
+              "Matale",
+              "Matara",
+              "Monaragala",
+              "Mullaitivu",
+              "Nuwara Eliya",
+              "Polonnaruwa",
+              "Puttalam",
+              "Ratnapura",
+              "Trincomalee",
+              "Vavuniya",
+            ].map((district) => (
+              <DropdownMenuItem
+                className="cursor-pointer data-[highlighted]:bg-gray-100"
+                key={district}
+                onClick={() => handleDistrictSelection(district)}
+              >
+                {district}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Price" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "All" },
+                  })
+                )
+              }
+            >
+              All Prices
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "0-1000000" },
+                  })
+                )
+              }
+            >
+              Under Rs. 1M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "1000000-5000000" },
+                  })
+                )
+              }
+            >
+              Rs. 1M - 5M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "5000000-10000000" },
+                  })
+                )
+              }
+            >
+              Rs. 5M - 10M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "10000000-20000000" },
+                  })
+                )
+              }
+            >
+              Rs. 10M - 20M
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("priceSelected", {
+                    detail: { priceRange: "20000000+" },
+                  })
+                )
+              }
+            >
+              Above Rs. 20M
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Beds and Baths" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuLabel>Number of bathrooms</DropdownMenuLabel>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "All" },
+                  })
+                )
+              }
+            >
+              All Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "1" },
+                  })
+                )
+              }
+            >
+              1 Bedroom
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "2" },
+                  })
+                )
+              }
+            >
+              2 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "3" },
+                  })
+                )
+              }
+            >
+              3 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "4" },
+                  })
+                )
+              }
+            >
+              4 Bedrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bedroomSelected", {
+                    detail: { bedroomCount: "5+" },
+                  })
+                )
+              }
+            >
+              5+ Bedrooms
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "All" },
+                  })
+                )
+              }
+            >
+              All Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "1" },
+                  })
+                )
+              }
+            >
+              1 Bathroom
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "2" },
+                  })
+                )
+              }
+            >
+              2 Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "3" },
+                  })
+                )
+              }
+            >
+              3 Bathrooms
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bathroomSelected", {
+                    detail: { bathroomCount: "4+" },
+                  })
+                )
+              }
+            >
+              4+ Bathrooms
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="More" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Billing
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Team
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Subscription
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -240,25 +459,32 @@ function Header_varient_1() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex gap-8">
-           <Link href={"/buy"}> <NavItem label="Buy"/></Link>
-            <Link href={"/rent"}>
-              <NavItem label="Rent" />
+            <Link href={"/buy"}>
+              {" "}
+              <NavItem className="font-medium">Buy</NavItem>
             </Link>
-           <Link href={"/sell"}> <NavItem label="Sell" /></Link>
+            <Link href={"/rent"}>
+              <NavItem className="font-medium">Rent</NavItem>
+            </Link>
+            <Link href={"/sell"}>
+              {" "}
+              <NavItem className="font-medium">List</NavItem>
+            </Link>
           </div>
 
           {/* Logo */}
           <Link href={"/"} className="flex items-center gap-2">
-            <div className="text-white text-xl md:text-2xl font-bold">Urban Nest</div>
+            <div className="text-white text-xl md:text-2xl font-extrabold tracking-tight">
+              Urban Nest
+            </div>
           </Link>
-          
 
           {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
             <Link href={"/"}>
-              <NavItem label="Home" />
+              <NavItem className="font-medium">Home</NavItem>
             </Link>
-            <NavItem label="Help" />
+            <NavItem className="font-medium">Help</NavItem>
             {currentUser ? (
               <Link href="/profile">
                 <Image
@@ -304,15 +530,18 @@ function Header_varient_1() {
               type="text"
               value={searchLocation}
               onChange={handleLocationSearch}
-              onKeyDown={(e)=> {
-                if(e.key === "Enter"){
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   handleSearchIconClick();
                 }
               }}
               placeholder="Enter an address, city, district, province"
               className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -338,78 +567,306 @@ function Header_varient_1() {
 
           {/* Filter Buttons */}
           <div className="w-36">
-           <DropdownMenu>
-  <DropdownMenuTrigger className="flex items-center justify-between w-full">
-    <FilterButton label="District" />
-  </DropdownMenuTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
+                <FilterButton label="District" />
+              </DropdownMenuTrigger>
 
-  <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
-    {[
-      "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-      "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-      "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-      "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-      "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-    ].map((district) => (
-      <DropdownMenuItem
-        key={district}
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent("districtSelected", {
-              detail: { districtName: district },
-            })
-          )
-        }
-      >
-        {district}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
-
+              <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
+                {[
+                  "All",
+                  "Ampara",
+                  "Anuradhapura",
+                  "Badulla",
+                  "Batticaloa",
+                  "Colombo",
+                  "Galle",
+                  "Gampaha",
+                  "Hambantota",
+                  "Jaffna",
+                  "Kalutara",
+                  "Kandy",
+                  "Kegalle",
+                  "Kilinochchi",
+                  "Kurunegala",
+                  "Mannar",
+                  "Matale",
+                  "Matara",
+                  "Monaragala",
+                  "Mullaitivu",
+                  "Nuwara Eliya",
+                  "Polonnaruwa",
+                  "Puttalam",
+                  "Ratnapura",
+                  "Trincomalee",
+                  "Vavuniya",
+                ].map((district) => (
+                  <DropdownMenuItem
+                    className="cursor-pointer data-[highlighted]:bg-gray-100"
+                    key={district}
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent("districtSelected", {
+                          detail: { districtName: district },
+                        })
+                      )
+                    }
+                  >
+                    {district}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Price" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Prices
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "0-1000000" },
+                      })
+                    )
+                  }
+                >
+                  Under Rs. 1M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "1000000-5000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 1M - 5M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "5000000-10000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 5M - 10M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "10000000-20000000" },
+                      })
+                    )
+                  }
+                >
+                  Rs. 10M - 20M
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("priceSelected", {
+                        detail: { priceRange: "20000000+" },
+                      })
+                    )
+                  }
+                >
+                  Above Rs. 20M
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
           <div className="w-52">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Beds and Baths" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuLabel>Number of bathrooms</DropdownMenuLabel>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "1" },
+                      })
+                    )
+                  }
+                >
+                  1 Bedroom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "2" },
+                      })
+                    )
+                  }
+                >
+                  2 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "3" },
+                      })
+                    )
+                  }
+                >
+                  3 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "4" },
+                      })
+                    )
+                  }
+                >
+                  4 Bedrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bedroomSelected", {
+                        detail: { bedroomCount: "5+" },
+                      })
+                    )
+                  }
+                >
+                  5+ Bedrooms
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "All" },
+                      })
+                    )
+                  }
+                >
+                  All Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "1" },
+                      })
+                    )
+                  }
+                >
+                  1 Bathroom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "2" },
+                      })
+                    )
+                  }
+                >
+                  2 Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "3" },
+                      })
+                    )
+                  }
+                >
+                  3 Bathrooms
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bathroomSelected", {
+                        detail: { bathroomCount: "4+" },
+                      })
+                    )
+                  }
+                >
+                  4+ Bathrooms
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
           <div className="w-32">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="More" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Team
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Subscription
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -426,7 +883,10 @@ function Header_varient_1() {
               placeholder="Enter an address, city..."
               className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
             />
-            <div className="absolute right-0 pr-4 cursor-pointer" onClick={handleSearchIconClick}>
+            <div
+              className="absolute right-0 pr-4 cursor-pointer"
+              onClick={handleSearchIconClick}
+            >
               <Image
                 src="/icons/search-icon.svg"
                 alt="Search Icon"
@@ -458,7 +918,10 @@ function Header_varient_1() {
                 <span className="text-black text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-main-blue h-[80vh] rounded-t-2xl">
+            <SheetContent
+              side="bottom"
+              className="bg-main-blue h-[80vh] rounded-t-2xl"
+            >
               <MobileFiltersContent />
             </SheetContent>
           </Sheet>

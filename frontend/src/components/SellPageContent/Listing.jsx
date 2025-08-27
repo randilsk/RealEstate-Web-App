@@ -80,7 +80,6 @@ function Listing() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   // Handle select changes with transition
   const handleSelectChange = (name, value) => {
     if (name === "homeType") {
@@ -107,15 +106,30 @@ function Listing() {
       return;
     }
 
+    // Validate landType and slope if homeType is 'Land'
+    if (formData.homeType === "Land") {
+      if (!formData.landType) {
+        alert("Please select a valid Land Type.");
+        return;
+      }
+      if (!formData.slope) {
+        alert("Please select a valid Slope.");
+        return;
+      }
+    }
+
     console.log("Form data being sent:", formData);
     try {
       const formDataToSend = new FormData();
 
-      // Append all form fields
+      // Append all form fields, but only include landType and slope if homeType is 'Land'
       Object.keys(formData).forEach((key) => {
+        if ((key === "landType" || key === "slope") && formData.homeType !== "Land") {
+          // Don't append landType or slope if not Land
+          return;
+        }
         if (key === "images") {
-          // Append each image file
-          formData.images.forEach((file, index) => {
+          formData.images.forEach((file) => {
             formDataToSend.append("images", file);
           });
         } else {
@@ -127,7 +141,6 @@ function Listing() {
       formDataToSend.set("user", currentUser._id);
       const response = await axios.post(
         "http://localhost:3000/api/listing",
-
         formDataToSend,
         {
           headers: {
@@ -380,6 +393,7 @@ function Listing() {
                 <div className="pt-4">
                   <p className="py-2 text-sm sm:text-base">Land Type</p>
                   <Select
+                    required
                     onValueChange={(value) =>
                       handleSelectChange("landType", value)
                     }
@@ -391,9 +405,7 @@ function Listing() {
                       <SelectGroup>
                         <SelectItem value="Residential">Residential</SelectItem>
                         <SelectItem value="Commercial">Commercial</SelectItem>
-                        <SelectItem value="Agricultural">
-                          Agricultural
-                        </SelectItem>
+                        <SelectItem value="Agricultural">Agricultural</SelectItem>
                         <SelectItem value="Industrial">Industrial</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectGroup>
@@ -403,6 +415,7 @@ function Listing() {
                 <div className="pt-4">
                   <p className="py-2 text-sm sm:text-base">Slope</p>
                   <Select
+                    required
                     onValueChange={(value) =>
                       handleSelectChange("slope", value)
                     }
@@ -413,9 +426,7 @@ function Listing() {
                     <SelectContent className="bg-[#d9d9d9]">
                       <SelectGroup>
                         <SelectItem value="Flat">Flat</SelectItem>
-                        <SelectItem value="Slight Slope">
-                          Slight Slope
-                        </SelectItem>
+                        <SelectItem value="Slight Slope">Slight Slope</SelectItem>
                         <SelectItem value="Steep">Steep</SelectItem>
                       </SelectGroup>
                     </SelectContent>

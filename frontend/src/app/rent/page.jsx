@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Header_varient_1 from "../../components/Header_varient_1.jsx";
+import Header_varient_rent from "../../components/Header_varient_rent.jsx"; // New dedicated header
 import MapSectionRent from "@/components/RentPageComponent/MapSectionRent";
 import CardSectionRent from "@/components/RentPageComponent/CardSectionRent";
 import { fetchAllRentListings } from "@/lib/api";
@@ -59,7 +59,7 @@ function page() {
     setIsFiltered(true);
   };
 
-  // Apply filters (district, price, bedroom, bathroom)
+  // Apply filters with rent-specific price ranges
   const applyFilters = (newFilters) => {
     const updatedFilters = { ...activeFilters, ...newFilters };
     setActiveFilters(updatedFilters);
@@ -76,22 +76,23 @@ function page() {
       });
     }
 
-    // Price
+    // Price (Monthly Rent) - Updated ranges for rent
     if (updatedFilters.price && updatedFilters.price !== "All") {
       filtered = filtered.filter((listing) => {
-        if (listing.price == null) return false;
-        const price = Number(listing.price);
+        // Check both price and MonthlyRent fields
+        const rentAmount = listing.MonthlyRent || listing.price || 0;
+        const price = Number(rentAmount);
         switch (updatedFilters.price) {
-          case "0-1000000":
-            return price <= 1000000;
-          case "1000000-5000000":
-            return price > 1000000 && price <= 5000000;
-          case "5000000-10000000":
-            return price > 5000000 && price <= 10000000;
-          case "10000000-20000000":
-            return price > 10000000 && price <= 20000000;
-          case "20000000+":
-            return price > 20000000;
+          case "0-50000":
+            return price <= 50000;
+          case "50000-100000":
+            return price > 50000 && price <= 100000;
+          case "100000-200000":
+            return price > 100000 && price <= 200000;
+          case "200000-500000":
+            return price > 200000 && price <= 500000;
+          case "500000+":
+            return price > 500000;
           default:
             return true;
         }
@@ -146,7 +147,7 @@ function page() {
       updatedFilters.bathroom !== null
     );
 
-    // Persist filters to URL (rent-only)
+    // Persist filters to URL
     try {
       const params = new URLSearchParams(window.location.search);
       const setOrDelete = (key, value) => {
@@ -161,7 +162,11 @@ function page() {
       setOrDelete("bedroom", updatedFilters.bedroom);
       setOrDelete("bathroom", updatedFilters.bathroom);
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-    } catch {}
+    } catch (error) {
+      console.error("Error updating URL:", error);
+    }
+
+    console.log('Applied filters:', updatedFilters, 'Filtered count:', filtered.length);
   };
 
   const clearAllFilters = () => {
@@ -170,12 +175,21 @@ function page() {
     setActiveFilters({ district: null, price: null, bedroom: null, bathroom: null });
     setSearchArea(null);
 
-    // Clear filter params from URL (rent-only)
+    // Clear filter params from URL
     try {
       const params = new URLSearchParams(window.location.search);
       ["district", "price", "bedroom", "bathroom"].forEach((k) => params.delete(k));
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-    } catch {}
+    } catch (error) {
+      console.error("Error clearing URL params:", error);
+    }
+
+    // Dispatch event to clear district polygons on map
+    window.dispatchEvent(
+      new CustomEvent("districtSelected", {
+        detail: { districtName: "All" },
+      })
+    );
   };
 
   useEffect(() => {
@@ -183,17 +197,50 @@ function page() {
       const { lat, lng } = event.detail;
       filterListingsByLocation(lat, lng, 5);
       setSearchArea({ center: { lat, lng }, radius: 5000 });
+      // Clear other filters when location search is used
+      setActiveFilters({
+        district: null,
+        price: null,
+        bedroom: null,
+        bathroom: null,
+      });
     };
+    
     const handleDistrictSelected = (event) => {
       const { districtName } = event.detail || {};
-      if (districtName === 'None' || districtName === 'All') {
-        applyFilters({ district: null });
+      
+      // Handle "All" selection - reset to show all properties and clear search area
+      if (districtName === 'All') {
+        // Reset filtered listings to show all properties
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        // Clear the search area to reset map to initial state
         setSearchArea(null);
+        // Reset active filters
+        setActiveFilters({
+          district: null,
+          price: null,
+          bedroom: null,
+          bathroom: null,
+        });
+        // Clear URL params
+        try {
+          const params = new URLSearchParams(window.location.search);
+          ["district", "price", "bedroom", "bathroom"].forEach((k) => params.delete(k));
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        } catch (error) {
+          console.error("Error clearing URL params:", error);
+        }
         return;
       }
-      applyFilters({ district: districtName });
-      setSearchArea(null);
+      
+      // Handle specific district selection
+      if (districtName && districtName !== 'None') {
+        applyFilters({ district: districtName });
+        setSearchArea(null); // Clear any previous location search area
+      }
     };
+    
     const handlePriceSelected = (event) => {
       const { priceRange } = event.detail || {};
       applyFilters({ price: priceRange });
@@ -206,11 +253,13 @@ function page() {
       const { bathroomCount } = event.detail || {};
       applyFilters({ bathroom: bathroomCount });
     };
+
     window.addEventListener("locationSelected", handleLocationSelected);
     window.addEventListener("districtSelected", handleDistrictSelected);
     window.addEventListener("priceSelected", handlePriceSelected);
     window.addEventListener("bedroomSelected", handleBedroomSelected);
     window.addEventListener("bathroomSelected", handleBathroomSelected);
+
     return () => {
       window.removeEventListener("locationSelected", handleLocationSelected);
       window.removeEventListener("districtSelected", handleDistrictSelected);
@@ -222,9 +271,16 @@ function page() {
 
   const handleZoomChange = (zoom) => {
     if (zoom <= 11 && isFiltered) {
-      setFilteredListings(listings);
-      setIsFiltered(false);
-      setSearchArea(null);
+      if (
+        !activeFilters.district &&
+        !activeFilters.price &&
+        !activeFilters.bedroom &&
+        !activeFilters.bathroom
+      ) {
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        setSearchArea(null);
+      }
     }
   };
 
@@ -245,9 +301,9 @@ function page() {
     }
   }, [searchParams]);
 
-  // Apply filters from URL once when listings are available (rent-only)
+  // Apply filters from URL once when listings are available
   useEffect(() => {
-    if (!hasAppliedFromQuery && listings) {
+    if (!hasAppliedFromQuery && listings.length > 0) {
       const district = searchParams.get("district");
       const price = searchParams.get("price");
       const bedroom = searchParams.get("bedroom");
@@ -264,10 +320,17 @@ function page() {
     }
   }, [hasAppliedFromQuery, listings, searchParams]);
 
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      setSearchArea(null);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 flex flex-col">
       <div className="flex-none">
-        <Header_varient_1 showFilters={true} districtHasNone={true} />
+        <Header_varient_rent />
       </div>
 
       <div className="flex-1 flex relative overflow-hidden">
@@ -326,5 +389,3 @@ function page() {
 }
 
 export default page;
-
-

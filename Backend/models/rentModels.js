@@ -19,7 +19,7 @@ const RentListingSchema = new mongoose.Schema({
   district: String,
   lat: Number,
   lng: Number,
-  MonthlyRent: Number,
+  monthlyRent: Number,
   images: [String],
   homeType: String,
   bedrooms: Number,

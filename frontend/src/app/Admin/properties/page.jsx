@@ -1,5 +1,7 @@
 "use client";
+
 import React from "react";
+
 import DBProperty from "../../../components/Admin/DBProperty";
 import AdminNavbar from "../AdminNavbar";
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+
 import { Menu, X } from "lucide-react";
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
@@ -21,7 +21,6 @@ const NavItem = ({ children, isBold, onClick = () => {} }) => (
 );
 
 function AdminNavbar() {
-  const currentAdminUser = useSelector((state) => state.admin.currentAdminUser);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -46,7 +45,6 @@ function AdminNavbar() {
       <NavItem onClick={closeMenu}>
         <Link href={"/Admin/ApproveAdds"}>Approvals</Link>
       </NavItem>
-      <NavItem onClick={closeMenu}>Help</NavItem>
     </>
   );
 
@@ -91,7 +89,6 @@ function AdminNavbar() {
           <NavItem>
             <Link href={"/Admin/reports"}>Reports</Link>
           </NavItem>
-          <NavItem>Help</NavItem>
         </div>
       </div>
 

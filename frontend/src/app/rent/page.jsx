@@ -40,6 +40,27 @@ function Page() {
     };
     getListings();
   }, []);
+useEffect(() => {
+  const getListings = async () => {
+    try {
+      console.log('Fetching rent listings from API...');
+      let data = await fetchAllRentListings();
+
+      // ✅ Sort by createdAt descending (latest first)
+      data = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      console.log('Sorted listings count:', data?.length || 0);
+      setListings(data);
+      setFilteredListings(data);
+    } catch (err) {
+      console.error('Error fetching listings:', err);
+      setListings([]);
+      setFilteredListings([]);
+    }
+  };
+  getListings();
+}, []);
+
 
   const filterListingsByLocation = (lat, lng, radius = 5) => {
     const R = 6371;
@@ -426,7 +447,8 @@ function Page() {
               Show Listings
             </>
           )}
-        </button>
+</button>
+
       </div>
     </div>
   );

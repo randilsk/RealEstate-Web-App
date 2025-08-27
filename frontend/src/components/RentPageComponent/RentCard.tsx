@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import { HiOutlineHeart } from "react-icons/hi";
+import { FiEye } from "react-icons/fi";
 
 type Listing = {
   _id: string;
@@ -90,25 +91,15 @@ export default function RentCard({ listing }: { listing: Listing }) {
     }
   }, [listing.images]);
 
-  const handleImgError = (index: number) => {
-    const failedUrl = imageSources[index];
-    console.error(`Image failed to load at index ${index}:`, failedUrl);
-    
-    // Check if it's a Cloudinary URL
-    if (failedUrl && failedUrl.includes('cloudinary.com')) {
-      console.error('Cloudinary image failed to load. Possible causes:');
-      console.error('1. Image was deleted from Cloudinary');
-      console.error('2. Cloudinary URL is malformed');
-      console.error('3. Cloudinary account issues');
-      console.error('4. Network connectivity issues');
-    }
-    
-    setImageSources((prev) => {
-      const newSources = prev.filter((_, i) => i !== index);
-      console.log('Remaining images after error:', newSources);
-      return newSources;
-    });
-  };
+ const handleImgError = (index: number) => {
+  const failedUrl = imageSources[index];
+  console.warn(`Image failed to load at index ${index}:`, failedUrl);
+  
+  setImageSources((prev) => {
+    const newSources = prev.filter((_, i) => i !== index);
+    return newSources;
+  });
+};
 
   const handleImgLoad = (index: number) => {
     console.log(`Image successfully loaded at index ${index}:`, imageSources[index]);
@@ -122,48 +113,46 @@ export default function RentCard({ listing }: { listing: Listing }) {
       key={listing._id}
       className="w-full sm:w-[47%] bg-white border border-gray-200 rounded-xl shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-300"
     >
-      <Link href={`/listing/${listing._id}`}>
-        <div className="relative h-40">
-          {imageSources && imageSources.length > 0 ? (
-            <Swiper
-              modules={[Pagination, Navigation]}
-              spaceBetween={0}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              className="mySwiper h-full"
-            >
-              {imageSources.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <Image
-                    src={image}
-                    alt={`${listing.district || "property"} ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    onError={() => handleImgError(index)}
-                    onLoad={() => handleImgLoad(index)}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    // Add placeholder for Cloudinary images
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bsW18qeCYmjiutKbgMh8gLKBILZqIrDHnmmQiNzjQiozJemY0+4F8qpKMr/AOD3VkFY4qZ2iyOBJIoSy/TrCIbZmrEH8eQi1TjdbfSMDWl1DyQnWRmWHxGjTdMGPUyYqU/MJH8aeTm5zdvfERbVlLAfKOYT3m+vhKsO0LNSYZuJQcG1+yX2Ry3i4V+7mMOAzrBUY6aeSuoNlgIB5FWm3FYbfsQFkjZdVNM8UgTHFIFY1l3R6fOzCoCpyUJKngrBhRrF2Pm7JdKVZ7HsUdnKVB2CzfGTpKv3OGaKW1yHIKNYwV3k2RYm1N7aEUlLuI05lYYnfqr4bgrw3Ol2/+/o"
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          ) : (
-            <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500 text-sm flex-col gap-1">
-              <div>No images available</div>
-              <div className="text-xs text-red-400">
-                Check console for debug info
-              </div>
+      <div className="relative h-40">
+        {imageSources && imageSources.length > 0 ? (
+          <Swiper
+            modules={[Pagination, Navigation]}
+            spaceBetween={0}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            className="mySwiper h-full"
+          >
+            {imageSources.map((image, index) => (
+              <SwiperSlide key={index}>
+                <Image
+                  src={image}
+                  alt={`${listing.district || "property"} ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  onError={() => handleImgError(index)}
+                  onLoad={() => handleImgLoad(index)}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  // Add placeholder for Cloudinary images
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bsW18qeCYmjiutKbgMh8gLKBILZqIrDHnmmQiNzjQiozJemY0+4F8qpKMr/AOD3VkFY4qZ2iyOBJIoSy/TrCIbZmrEH8eQi1TjdbfSMDWl1DyQnWRmWHxGjTdMGPUyYqU/MJH8aeTm5zdvfERbVlLAfKOYT3m+vhKsO0LNSYZuJQcG1+yX2Ry3i4V+7mMOAzrBUY6aeSuoNlgIB5FWm3FYbfsQFkjZdVNM8UgTHFIFY1l3R6fOzCoCpyUJKngrBhRrF2Pm7JdKVZ7HsUdnKVB2CzfGTpKv3OGaKW1yHIKNYwV3k2RYm1N7aEUlLuI05lYYnfqr4bgrw3Ol2/+/o"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500 text-sm flex-col gap-1">
+            <div>No images available</div>
+            <div className="text-xs text-red-400">
+              Check console for debug info
             </div>
-          )}
-
-          <div className="absolute top-3 right-3 z-10">
-            <HiOutlineHeart className="text-white text-2xl" />
           </div>
+        )}
+
+        <div className="absolute top-3 right-3 z-10">
+          <HiOutlineHeart className="text-white text-2xl" />
         </div>
-      </Link>
+      </div>
 
       <div className="px-4 py-1.5">
         <div className="flex items-center justify-between mb-1">
@@ -217,8 +206,18 @@ export default function RentCard({ listing }: { listing: Listing }) {
           {listing.homeType ? `${listing.homeType} for rent` : "for rent"}
         </div>
 
-        <div className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
           {listing.address || "Address not provided"}
+        </div>
+
+        {/* View Details Button */}
+        <div className="mt-3">
+          <Link href={`/rentdetail_list/${listing._id}`}>
+            <button className="w-full bg-[#10B981] hover:bg-[#0F9572] text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 text-sm">
+              <FiEye className="text-base" />
+              View Details
+            </button>
+          </Link>
         </div>
       </div>
     </div>

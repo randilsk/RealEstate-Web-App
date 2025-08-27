@@ -98,7 +98,7 @@ export const fetchAllRentListings = async () => {
       // Check price fields
       console.log('--- PRICE FIELDS CHECK ---');
       console.log('price field:', firstListing.price);
-      console.log('MonthlyRent field:', firstListing.MonthlyRent);
+      console.log('monthlyRent field:', firstListing.monthlyRent);
       
       // Check other important fields
       console.log('--- OTHER FIELDS CHECK ---');

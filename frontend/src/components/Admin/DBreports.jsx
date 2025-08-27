@@ -5,7 +5,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   ResponsiveContainer, Cell
 } from "recharts"; //graphs
-import { FaBell, FaUserCircle, FaCog, FaDollarSign } from "react-icons/fa";
+
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 

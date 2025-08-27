@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+
 import { Menu, X } from "lucide-react";
-import Image from "next/image";
+
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
   <div 
@@ -20,7 +20,7 @@ const NavItem = ({ children, isBold, onClick = () => {} }) => (
 );
 
 function AdminNavbar() {
-  const currentAdminUser = useSelector((state) => state.admin.currentAdminUser);
+ 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {

@@ -13,6 +13,23 @@ const PaymentSuccess = () => {
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
+    const fetchSessionDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/stripe/checkout-session?sessionId=${sessionId}`);
+        const data = await response.json();
+        setSession(data);
+        
+        // Update user subscription to premium if payment was successful
+        if (data.payment_status === 'paid' && data.customer_details?.email) {
+          await updateUserSubscription(data.customer_details.email);
+        }
+      } catch (error) {
+        console.error('Error fetching session details:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (sessionId) {
       fetchSessionDetails();
     }
@@ -34,23 +51,6 @@ const PaymentSuccess = () => {
       return () => clearInterval(timer);
     }
   }, [loading, session, router]);
-
-  const fetchSessionDetails = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/stripe/checkout-session?sessionId=${sessionId}`);
-      const data = await response.json();
-      setSession(data);
-      
-      // Update user subscription to premium if payment was successful
-      if (data.payment_status === 'paid' && data.customer_details?.email) {
-        await updateUserSubscription(data.customer_details.email);
-      }
-    } catch (error) {
-      console.error('Error fetching session details:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const updateUserSubscription = async (email) => {
     try {

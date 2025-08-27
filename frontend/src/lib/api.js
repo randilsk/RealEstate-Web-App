@@ -127,6 +127,19 @@ export const fetchAllRentListings = async () => {
     
     console.log('=== END RENT LISTINGS DEBUG ===');
 
+    // --- NEW FETCH-BASED REQUEST FOR VIEW DETAIL BUTTON ---
+    try {
+      const fetchResponse = await fetch('/api/rent-listings'); // Adjust endpoint if needed
+      if (!fetchResponse.ok) {
+        throw new Error('Failed to fetch rent listings via fetch API');
+      }
+      const fetchData = await fetchResponse.json();
+      console.log('Fetch API rent listings count:', Array.isArray(fetchData) ? fetchData.length : 'Not an array');
+      // You can merge or use fetchData as needed
+    } catch (fetchError) {
+      console.error('Error fetching rent listings via fetch API:', fetchError);
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error fetching rent listings:", error);

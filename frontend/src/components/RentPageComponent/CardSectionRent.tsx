@@ -5,7 +5,7 @@ import RentCard from '@/components/RentPageComponent/RentCard';
 type Listing = {
   _id: string;
   district?: string;
-  price?: number;
+  monthlyRent?: number;
   bedrooms?: number;
   attachedBathrooms?: number;
   detachedBathrooms?: number;
@@ -42,11 +42,11 @@ function CardSectionRent({
       const norm = district.toLowerCase().replace(/[-\s]/g, "");
       return source.filter(l => String(l.district || "").toLowerCase().replace(/[-\s]/g, "") === norm).length;
     };
-    const countForPrice = (price?: string | null) => {
-      if (!price) return 0;
+    const countForPrice = (monthlyRent?: string | null) => {
+      if (!monthlyRent) return 0;
       return source.filter(l => {
-        const p = Number(l.price || 0);
-        switch (price) {
+        const p = Number(l.monthlyRent || 0);
+        switch (monthlyRent) {
           case '0-1000000': return p <= 1000000;
           case '1000000-5000000': return p > 1000000 && p <= 5000000;
           case '5000000-10000000': return p > 5000000 && p <= 10000000;

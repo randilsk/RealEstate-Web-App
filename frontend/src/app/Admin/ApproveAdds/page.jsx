@@ -1,5 +1,5 @@
 import React from 'react';
-import DBSideBar from '../../../components/Admin/DBSideBar';
+
 import DBMainContentApproveAdds from '../../../components/Admin/DBMainContentApproveAdds';
 import AdminNavbar from '../AdminNavbar';
 

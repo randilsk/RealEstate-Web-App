@@ -19,42 +19,23 @@ import {
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { FaBell, FaUserCircle } from "react-icons/fa";
 
 export default function DBreports() {
   const [totalListings, setTotalListings] = useState(0);
   const [approvedListings, setApprovedListings] = useState(0);
-  const [pendingListings, setPendingListings] = useState(0);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalTransactions, setTotalTransactions] = useState(0);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [saleListings, setSaleListings] = useState([]);
+  const [rentListings, setRentListings] = useState([]);
 
   const [lineChartDynamicData, setLineChartDynamicData] = useState([]);
   const [barChartDynamicData, setBarChartDynamicData] = useState([]);
   const [pieChartDynamicData, setPieChartDynamicData] = useState([]);
+  const [propertyTypeData, setPropertyTypeData] = useState([]);
 
   const [filterType, setFilterType] = useState("Monthly");
-
-  // Mock data for charts
-  // const lineChartData = [
-  //   { month: "Jan", listings: 100 },
-  //   { month: "Feb", listings: 250 },
-  //   { month: "Mar", listings: 300 },
-  //   { month: "Apr", listings: 400 }
-  // ];
-
-  // const barChartData = [
-  //   { month: "Jan", revenue: 500000 },
-  //   { month: "Feb", revenue: 800000 },
-  //   { month: "Mar", revenue: 900000 },
-  //   { month: "Apr", revenue: 1200000 }
-  // ];
-
-  // const pieChartData = [
-  //   { name: "Rentals", value: 60 },
-  //   { name: "Sales", value: 40 }
-  // ];
 
   const COLORS = [
     "#3B82F6",
@@ -69,185 +50,141 @@ export default function DBreports() {
     "#F87171",
     "#A78BFA",
     "#FBBF24",
-    "#6EE7B7",
-    "#FCA5A5",
-    "#818CF8",
-    "#FDE68A",
-    "#4ADE80",
-    "#F9A8D4",
-    "#FACC15",
-    "#5EEAD4",
-    "#FCA5A5",
-    "#C4B5FD",
-    "#FDE68A",
-    "#6EE7B7",
-    "#FBBF24",
-    "#A7F3D0",
-    "#F472B6",
-    "#FCD34D",
-    "#60A5FA",
-    "#34D399",
-    "#F87171",
-    "#A78BFA",
-    "#FBBF24",
-    "#6EE7B7",
-    "#FCA5A5",
-    "#818CF8",
-    "#FDE68A",
-    "#4ADE80",
-    "#F9A8D4",
-    "#FACC15",
-    "#5EEAD4",
-    "#FCA5A5",
-    "#C4B5FD",
-    "#FDE68A",
-    "#6EE7B7",
-    "#FBBF24",
-    "#A7F3D0",
-    "#F472B6",
-    "#FCD34D",
-    "#60A5FA",
   ];
 
+  // Fetch users data
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/auth/users");
-      setTotalUsers(response.data.length);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
-    } finally {
-      // setLoading(false); // Only set to false after all fetches are done
     }
   };
 
+  // Fetch both sale and rent listings
   const fetchListings = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/listing/getallListing"
-      );
-      const allListings = response.data;
+      const [saleResponse, rentResponse] = await Promise.all([
+        axios.get("http://localhost:3000/api/listing/getallListing"),
+        axios.get("http://localhost:3000/api/Rentroutes/getAllRentListing"),
+      ]);
+
+      const saleData = saleResponse.data.map((listing) => ({
+        ...listing,
+        type: "sale",
+      }));
+      const rentData = rentResponse.data.map((listing) => ({
+        ...listing,
+        type: "rent",
+      }));
+
+      setSaleListings(saleData);
+      setRentListings(rentData);
+
+      const allListings = [...saleData, ...rentData];
       setTotalListings(allListings.length);
       setApprovedListings(
         allListings.filter((listing) => listing.status === "approved").length
       );
-      setPendingListings(
-        allListings.filter((listing) => listing.status === "pending").length
-      );
 
       // Process data for charts
-      const monthlyListings = {};
-      const districtCounts = {};
-
-      allListings.forEach((listing) => {
-        const month = new Date(listing.createdAt).toLocaleString("en-us", {
-          month: "short",
-        });
-        monthlyListings[month] = (monthlyListings[month] || 0) + 1;
-
-        if (listing.district) {
-          const district = listing.district.trim();
-          districtCounts[district] = (districtCounts[district] || 0) + 1;
-        }
-      });
-
-      const sortedMonths = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-      const processedLineChartData = sortedMonths.map((month) => ({
-        month,
-        listings: monthlyListings[month] || 0,
-      }));
-
-      const processedPieChartData = Object.entries(districtCounts)
-        .map(([name, value]) => ({ name, value }))
-        .filter((d) => d.value > 0);
-
-      setLineChartDynamicData(processedLineChartData);
-      setPieChartDynamicData(processedPieChartData);
+      processChartData(allListings);
     } catch (error) {
       console.error("Error fetching listings:", error);
-    } finally {
-      // setLoading(false);
     }
   };
 
+  // Process data for all charts
+  const processChartData = (allListings) => {
+    const monthlyListings = {};
+    const districtCounts = {};
+    const propertyTypeCounts = { Sale: 0, Rent: 0 };
+    const monthlyRevenue = {};
+
+    allListings.forEach((listing) => {
+      const month = new Date(listing.createdAt).toLocaleString("en-us", {
+        month: "short",
+      });
+      monthlyListings[month] = (monthlyListings[month] || 0) + 1;
+
+      if (listing.district) {
+        const district = listing.district.trim();
+        districtCounts[district] = (districtCounts[district] || 0) + 1;
+      }
+
+      // Count property types
+      propertyTypeCounts[listing.type === "sale" ? "Sale" : "Rent"]++;
+
+      // Calculate revenue (for sale listings) and rent (for rent listings)
+      const amount =
+        listing.type === "sale" ? listing.price || 0 : listing.monthlyRent || 0;
+      if (amount > 0) {
+        monthlyRevenue[month] = (monthlyRevenue[month] || 0) + amount;
+      }
+    });
+
+    // Process line chart data (listings growth)
+    const sortedMonths = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const processedLineChartData = sortedMonths.map((month) => ({
+      month,
+      listings: monthlyListings[month] || 0,
+    }));
+
+    // Process pie chart data (district distribution)
+    const processedPieChartData = Object.entries(districtCounts)
+      .map(([name, value]) => ({ name, value }))
+      .filter((d) => d.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 8); // Show top 8 districts
+
+    // Process property type data
+    const processedPropertyTypeData = Object.entries(propertyTypeCounts)
+      .map(([name, value]) => ({ name, value }))
+      .filter((d) => d.value > 0);
+
+    // Process bar chart data (monthly revenue/rent)
+    const processedBarChartData = sortedMonths
+      .filter(
+        (month) =>
+          monthlyRevenue[month] !== undefined && monthlyRevenue[month] > 0
+      )
+      .map((month) => ({ month, revenue: monthlyRevenue[month] }));
+
+    setLineChartDynamicData(processedLineChartData);
+    setPieChartDynamicData(processedPieChartData);
+    setPropertyTypeData(processedPropertyTypeData);
+    setBarChartDynamicData(processedBarChartData);
+  };
+
+  // Fetch transactions data
   const fetchTransactions = async () => {
     try {
       const response = await axios.get(
         "http://localhost:3000/api/transactions"
-      ); // Placeholder endpoint for transactions
+      );
       const transactionsData = response.data;
       setTransactions(transactionsData);
-      const totalAmount = transactionsData.reduce(
-        (sum, transaction) => sum + (transaction.amount || 0),
-        0
-      );
-      setTotalTransactions(totalAmount);
-
-      const monthlyRevenue = {};
-      transactionsData.forEach((transaction) => {
-        const month = new Date(transaction.date).toLocaleString("en-us", {
-          month: "short",
-        }); // Assuming 'date' field exists
-        monthlyRevenue[month] =
-          (monthlyRevenue[month] || 0) + (transaction.amount || 0);
-      });
-
-      const sortedMonths = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-      const processedBarChartData = sortedMonths
-        .filter((month) => monthlyRevenue[month] !== undefined)
-        .map((month) => ({ month, revenue: monthlyRevenue[month] }));
-
-      setBarChartDynamicData(processedBarChartData);
     } catch (error) {
       console.error("Error fetching transactions:", error);
-      setTotalTransactions(0);
-      setBarChartDynamicData([]); // Set to empty on error
-      setTransactions([]); // Set to empty on error
-    } finally {
-      // setLoading(false);
+      setTransactions([]);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await Promise.all([fetchUsers(), fetchListings(), fetchTransactions()]);
-      setLoading(false);
-    };
-    fetchData();
-
-    // Refresh data every 30 seconds, adjust as needed
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Filtering logic
+  // Filter data based on selected time period
   const filterByType = (arr, dateField = "createdAt") => {
     const now = dayjs();
     return arr.filter((item) => {
@@ -262,96 +199,70 @@ export default function DBreports() {
       return true;
     });
   };
+
+  // Get filtered data
   const filteredUsers = filterByType(users);
+  const filteredSaleListings = filterByType(saleListings);
+  const filteredRentListings = filterByType(rentListings);
   const filteredTransactions = filterByType(transactions, "date");
-  // For listings, we need to fetch them again, so let's keep a local state for allListings
-  const [allListings, setAllListings] = useState([]);
-  useEffect(() => {
-    // Patch fetchListings to also set allListings
-    const fetchListingsPatched = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/listing/getallListing"
-        );
-        setAllListings(response.data);
-        setTotalListings(response.data.length);
-        setApprovedListings(
-          response.data.filter((listing) => listing.status === "approved")
-            .length
-        );
-        setPendingListings(
-          response.data.filter((listing) => listing.status === "pending").length
-        );
-        // ... existing chart logic ...
-        const monthlyListings = {};
-        const districtCounts = {};
-        response.data.forEach((listing) => {
-          const month = new Date(listing.createdAt).toLocaleString("en-us", {
-            month: "short",
-          });
-          monthlyListings[month] = (monthlyListings[month] || 0) + 1;
-          if (listing.district) {
-            const district = listing.district.trim();
-            districtCounts[district] = (districtCounts[district] || 0) + 1;
-          }
-        });
-        const sortedMonths = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        const processedLineChartData = sortedMonths.map((month) => ({
-          month,
-          listings: monthlyListings[month] || 0,
-        }));
-        const processedPieChartData = Object.entries(districtCounts)
-          .map(([name, value]) => ({ name, value }))
-          .filter((d) => d.value > 0);
-        setLineChartDynamicData(processedLineChartData);
-        setPieChartDynamicData(processedPieChartData);
-      } catch (error) {
-        console.error("Error fetching listings:", error);
-      }
-    };
-    fetchListingsPatched();
-  }, []);
-  const filteredListings = filterByType(allListings);
-  // Filtered summary values
-  const filteredApprovedListings = filteredListings.filter(
-    (l) => l.status === "approved"
-  ).length;
-  const filteredPendingListings = filteredListings.filter(
-    (l) => l.status === "pending"
-  ).length;
+
+  // Calculate filtered summary values
+  const filteredTotalListings =
+    filteredSaleListings.length + filteredRentListings.length;
+  const filteredApprovedListings = [
+    ...filteredSaleListings,
+    ...filteredRentListings,
+  ].filter((listing) => listing.status === "approved").length;
+  const filteredPendingListings = [
+    ...filteredSaleListings,
+    ...filteredRentListings,
+  ].filter((listing) => listing.status === "pending").length;
   const filteredTotalTransactions = filteredTransactions.reduce(
     (sum, t) => sum + (t.amount || 0),
     0
   );
 
+  // Calculate total revenue from listings
+  const totalRevenue = [...saleListings, ...rentListings].reduce(
+    (sum, listing) => {
+      if (listing.status === "approved") {
+        return (
+          sum +
+          (listing.type === "sale"
+            ? listing.price || 0
+            : listing.monthlyRent || 0)
+        );
+      }
+      return sum;
+    },
+    0
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchUsers(), fetchListings(), fetchTransactions()]);
+      setLoading(false);
+    };
+
+    fetchData();
+
+    // Refresh data every 30 seconds
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="space-y-6 w-full">
       {/* Navbar */}
       <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-end text-white">
-        {/* <input
-                type="text"
-                placeholder="Enter an address, city, district, province"
-                className="p-2 border rounded-md w-1/3 text-black"
-            /> */}
         <div className="w-1/3 flex justify-end gap-4 text-xl">
           <FaBell className="cursor-pointer hover:text-indigo-200" />
           <FaUserCircle className="cursor-pointer hover:text-indigo-200" />
         </div>
       </div>
-      {/* Filter Buttons - right upper corner under bluebar */}
+
+      {/* Filter Buttons */}
       <div className="flex justify-end mt-4 mr-6">
         <div className="flex gap-2">
           <button
@@ -372,7 +283,7 @@ export default function DBreports() {
                 : "bg-white text-gray-600 border border-gray-200"
             } rounded-md hover:bg-gray-50 transition-colors`}
           >
-            Monthly
+            Yearly
           </button>
           <button
             onClick={() => setFilterType("Yearly")}
@@ -386,18 +297,36 @@ export default function DBreports() {
           </button>
         </div>
       </div>
+
       <h1 className="text-3xl font-bold text-center">Admin Report Page</h1>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {[
-          { label: "Total Listings", value: filteredListings.length },
-          { label: "Approved Listings", value: filteredApprovedListings },
-          { label: "Pending Listings", value: filteredPendingListings },
-          { label: "Total Users", value: filteredUsers.length },
           {
-            label: "Total Transactions",
-            value: `Rs. ${filteredTotalTransactions.toLocaleString()}`,
+            label: "Total Listings",
+            value: loading ? "Loading..." : filteredTotalListings,
+            color: "text-blue-600",
+          },
+          {
+            label: "Sale Listings",
+            value: loading ? "Loading..." : filteredSaleListings.length,
+            color: "text-green-600",
+          },
+          {
+            label: "Rent Listings",
+            value: loading ? "Loading..." : filteredRentListings.length,
+            color: "text-purple-600",
+          },
+          {
+            label: "Pending Listings",
+            value: loading ? "Loading..." : filteredPendingListings,
+            color: "text-yellow-600",
+          },
+          {
+            label: "Total Users",
+            value: loading ? "Loading..." : filteredUsers.length,
+            color: "text-indigo-600",
           },
         ].map((card, idx) => (
           <div
@@ -405,18 +334,64 @@ export default function DBreports() {
             className="bg-white shadow-md rounded-xl p-3 text-center"
           >
             <h2 className="text-gray-500 text-sm font-medium">{card.label}</h2>
-            <p className="text-xl font-bold text-indigo-600 mt-1">
+            <p className={`text-xl font-bold ${card.color} mt-1`}>
               {card.value}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Charts Section - Row on desktop, column on mobile */}
+      {/* Additional Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          {
+            label: "Approved Listings",
+            value: loading ? "Loading..." : filteredApprovedListings,
+            color: "text-green-600",
+          },
+          {
+            label: "Total Revenue",
+            value: loading
+              ? "Loading..."
+              : `Rs. ${totalRevenue.toLocaleString()}`,
+            color: "text-green-600",
+          },
+          {
+            label: "Total Transactions",
+            value: loading
+              ? "Loading..."
+              : `Rs. ${filteredTotalTransactions.toLocaleString()}`,
+            color: "text-indigo-600",
+          },
+          {
+            label: "Approval Rate",
+            value: loading
+              ? "Loading..."
+              : totalListings > 0
+              ? `${((approvedListings / totalListings) * 100).toFixed(1)}%`
+              : "0%",
+            color: "text-blue-600",
+          },
+        ].map((card, idx) => (
+          <div
+            key={idx}
+            className="bg-white shadow-md rounded-xl p-3 text-center"
+          >
+            <h2 className="text-gray-500 text-sm font-medium">{card.label}</h2>
+            <p className={`text-lg font-bold ${card.color} mt-1`}>
+              {card.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts Section */}
       <div className="flex flex-col lg:flex-row gap-4">
-        {/* Line Chart */}
+        {/* Line Chart - Listings Growth */}
         <div className="bg-white p-3 rounded-xl shadow-md flex-1">
-          <h2 className="text-sm font-semibold mb-2">Listings Growth</h2>
+          <h2 className="text-sm font-semibold mb-2">
+            Listings Growth ({filterType})
+          </h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
@@ -440,9 +415,11 @@ export default function DBreports() {
           </div>
         </div>
 
-        {/* Bar Chart */}
+        {/* Bar Chart - Monthly Revenue */}
         <div className="bg-white p-3 rounded-xl shadow-md flex-1">
-          <h2 className="text-sm font-semibold mb-2">Monthly Revenue</h2>
+          <h2 className="text-sm font-semibold mb-2">
+            Monthly Revenue/Rent ({filterType})
+          </h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -461,9 +438,11 @@ export default function DBreports() {
           </div>
         </div>
 
-        {/* Pie Chart */}
+        {/* Pie Chart - Property Distribution by District */}
         <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto">
-          <h2 className="text-sm font-semibold mb-2">Property Distribution</h2>
+          <h2 className="text-sm font-semibold mb-2">
+            Property Distribution by District
+          </h2>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
@@ -509,32 +488,116 @@ export default function DBreports() {
         </div>
       </div>
 
-      {/* User Activity Table */}
+      {/* Property Type Distribution */}
+      <div className="bg-white p-3 rounded-xl shadow-md">
+        <h2 className="text-sm font-semibold mb-2">
+          Property Type Distribution
+        </h2>
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={propertyTypeData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {propertyTypeData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={index === 0 ? "#3B82F6" : "#F59E0B"}
+                  />
+                ))}
+              </Pie>
+              <Legend
+                layout="horizontal"
+                verticalAlign="bottom"
+                align="center"
+                formatter={(value, entry, index) => {
+                  const total = propertyTypeData.reduce(
+                    (sum, d) => sum + d.value,
+                    0
+                  );
+                  const percent =
+                    total > 0
+                      ? ((propertyTypeData[index].value / total) * 100).toFixed(
+                          1
+                        )
+                      : 0;
+                  return `${value}: ${percent}%`;
+                }}
+              />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Recent Listings Table */}
       <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
-        <h2 className="text-lg font-semibold mb-3">User Activity</h2>
+        <h2 className="text-lg font-semibold mb-3">
+          Recent Listings ({filterType})
+        </h2>
         <table className="min-w-full border">
           <thead className="bg-indigo-600 text-white">
             <tr>
-              <th className="p-2 text-left">User</th>
-              <th className="p-2 text-left">Email</th>
-              <th className="p-2 text-left">Last Login</th>
-              <th className="p-2 text-left">Listings</th>
-              <th className="p-2 text-left">Role</th>
+              <th className="p-2 text-left">Type</th>
+              <th className="p-2 text-left">Address</th>
+              <th className="p-2 text-left">District</th>
+              <th className="p-2 text-left">Price/Rent</th>
+              <th className="p-2 text-left">Status</th>
+              <th className="p-2 text-left">Created</th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-              .slice(0, 5) // Display only the 5 most recent users
-              .map((user) => (
-                <tr key={user._id} className="border-t">
-                  <td className="p-2">{user.username}</td>
-                  <td className="p-2">{user.email}</td>
+            {[...filteredSaleListings, ...filteredRentListings]
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .slice(0, 10)
+              .map((listing) => (
+                <tr key={listing._id} className="border-t">
                   <td className="p-2">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        listing.type === "rent"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {listing.type === "rent" ? "Rent" : "Sale"}
+                    </span>
                   </td>
-                  <td className="p-2">N/A</td>
-                  <td className="p-2">N/A</td>
+                  <td className="p-2">{listing.address || "N/A"}</td>
+                  <td className="p-2">{listing.district || "N/A"}</td>
+                  <td className="p-2">
+                    {listing.type === "rent"
+                      ? `Rs. ${
+                          listing.monthlyRent
+                            ? listing.monthlyRent.toLocaleString()
+                            : "N/A"
+                        }/month`
+                      : `Rs. ${
+                          listing.price ? listing.price.toLocaleString() : "N/A"
+                        }`}
+                  </td>
+                  <td className="p-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        listing.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : listing.status === "approved"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {listing.status || "Pending"}
+                    </span>
+                  </td>
+                  <td className="p-2">
+                    {new Date(listing.createdAt).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
           </tbody>
@@ -543,41 +606,53 @@ export default function DBreports() {
 
       {/* User Activity Table */}
       <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
-        <h2 className="text-lg font-semibold mb-3">User Activity</h2>
+        <h2 className="text-lg font-semibold mb-3">
+          Recent Users ({filterType})
+        </h2>
         <table className="min-w-full border">
           <thead className="bg-indigo-600 text-white">
             <tr>
-              <th className="p-2 text-left">User</th>
+              <th className="p-2 text-left">Username</th>
               <th className="p-2 text-left">Email</th>
               <th className="p-2 text-left">User Type</th>
-              <th className="p-2 text-left">Last Login</th>
+              <th className="p-2 text-left">Created</th>
               <th className="p-2 text-left">Listings</th>
-              <th className="p-2 text-left">Role</th>
             </tr>
           </thead>
           <tbody>
-            {users
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-              .slice(0, 5) // Display only the 5 most recent users
-              .map((user) => (
-                <tr key={user._id} className="border-t">
-                  <td className="p-2">{user.username}</td>
-                  <td className="p-2">{user.email}</td>
-                  <td className="p-2">{user.subscription}</td>
-                  <td className="p-2">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="p-2">N/A</td>
-                  <td className="p-2">N/A</td>
-                </tr>
-              ))}
+            {filteredUsers
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .slice(0, 8)
+              .map((user) => {
+                const userListings = [...saleListings, ...rentListings].filter(
+                  (listing) => listing.username === user.username
+                );
+
+                return (
+                  <tr key={user._id} className="border-t">
+                    <td className="p-2">{user.username}</td>
+                    <td className="p-2">{user.email}</td>
+                    <td className="p-2">{user.subscription || "Regular"}</td>
+                    <td className="p-2">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-2">
+                      <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                        {userListings.length} listings
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
 
       {/* Transactions Table */}
       <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
-        <h2 className="text-lg font-semibold mb-3">Recent Transactions</h2>
+        <h2 className="text-lg font-semibold mb-3">
+          Recent Transactions ({filterType})
+        </h2>
         <table className="min-w-full border">
           <thead className="bg-indigo-600 text-white">
             <tr>
@@ -590,9 +665,9 @@ export default function DBreports() {
             </tr>
           </thead>
           <tbody>
-            {transactions
-              .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date (most recent first)
-              .slice(0, 5) // Display only the 5 most recent transactions
+            {filteredTransactions
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .slice(0, 8)
               .map((transaction) => (
                 <tr
                   key={transaction._id || transaction.id}
@@ -604,7 +679,7 @@ export default function DBreports() {
                   <td className="p-2">{transaction.user || "N/A"}</td>
                   <td className="p-2">
                     {transaction.amount
-                      ? transaction.amount.toLocaleString()
+                      ? `Rs. ${transaction.amount.toLocaleString()}`
                       : "N/A"}
                   </td>
                   <td className="p-2">{transaction.plan || "N/A"}</td>
@@ -613,7 +688,19 @@ export default function DBreports() {
                       ? new Date(transaction.date).toLocaleDateString()
                       : "N/A"}
                   </td>
-                  <td className="p-2">{transaction.status || "N/A"}</td>
+                  <td className="p-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        transaction.status === "completed"
+                          ? "bg-green-100 text-green-800"
+                          : transaction.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {transaction.status || "N/A"}
+                    </span>
+                  </td>
                 </tr>
               ))}
           </tbody>

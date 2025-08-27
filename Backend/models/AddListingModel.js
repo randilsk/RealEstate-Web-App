@@ -74,6 +74,27 @@ const ListingSchema = new mongoose.Schema({
       return this.homeType !== 'Land';
     }
   },
+  // Land-specific fields
+  landType: {
+    type: String,
+    required: function() {
+      return this.homeType === 'Land';
+    },
+    enum: ['Residential', 'Commercial', 'Agricultural', 'Industrial', 'Other'],
+  },
+  slope: {
+    type: String,
+    required: function() {
+      return this.homeType === 'Land';
+    },
+    enum: ['Flat', 'Slight Slope', 'Steep'],
+  },
+  roadAccess: {
+    type: String,
+    required: function() {
+      return this.homeType === 'Land';
+    },
+  },
   description: String,
   phone: String,
   status: {

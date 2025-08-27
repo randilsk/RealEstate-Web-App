@@ -6,16 +6,15 @@ import AuthRouter from "./routes/auth.route.js";
 import ListingRoute from "./routes/AddListingRoute.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import reviewRouts from "./routes/reviewRoutes.js"
+import reviewRouts from "./routes/reviewRoutes.js";
 
-import rentRoutes from "./routes/Rentroutes.js"
+import rentRoutes from "./routes/Rentroutes.js";
 import AdminRoute from "./routes/admin.route.js";
-import ApproveRoute from './routes/approve.listingRoute.js';
-import stripeRoutes from './routes/stripe.routes.js';
+import ApproveRoute from "./routes/approve.listingRoute.js";
+import ApproveRentRoute from "./routes/approve.rentRoute.js";
+import stripeRoutes from "./routes/stripe.routes.js";
 
 dotenv.config();
-
-
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -30,15 +29,19 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"], // Allow frontend ports
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://localhost:3002",
+    ], // Allow frontend ports
     credentials: true, // Allow cookies to be sent with requests
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'stripe-signature']
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "stripe-signature"],
   })
 );
 
 // Special handling for Stripe webhooks - must be before express.json()
-app.use('/api/stripe/webhook', express.raw({type: 'application/json'}));
+app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -55,11 +58,10 @@ app.use("/api/auth", AuthRouter);
 app.use("/api/listing", ListingRoute);
 app.use("/api/reviews", reviewRouts);
 app.use("/api/admin", AdminRoute);
-app.use("/api/Rentroutes",rentRoutes);
+app.use("/api/Rentroutes", rentRoutes);
 app.use("/api/approve", ApproveRoute);
+app.use("/api/approveRent", ApproveRentRoute);
 app.use("/api/stripe", stripeRoutes);
-
-
 
 //global error handling middleware
 app.use((err, req, res, next) => {

@@ -53,7 +53,6 @@ export const addRentListing = async (req, res) => {
   }
 };
 
-
 export const getSingleRentListing = async (req, res) => {
   try {
     const rentlisting = await RentListing.findById(req.params.id); // Find listing by ID
@@ -75,9 +74,9 @@ export const updateRentListing = async (req, res) => {
     }
 
     const updatedRentListing = await RentListing.findByIdAndUpdate(
-      req.params.id,       // Find listing by ID
-      req.body,            // Update with normalized request body
-      { new: true }        // Return the updated document
+      req.params.id, // Find listing by ID
+      req.body, // Update with normalized request body
+      { new: true } // Return the updated document
     );
 
     if (!updatedRentListing) {
@@ -91,7 +90,6 @@ export const updateRentListing = async (req, res) => {
   }
 };
 
-
 export const deleteRentListing = async (req, res) => {
   try {
     const deletedRentListing = await RentListing.findByIdAndDelete(
@@ -103,5 +101,32 @@ export const deleteRentListing = async (req, res) => {
     res.status(200).json({ message: "Listing deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete listing", error });
+  }
+};
+
+export const updateRentListingStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["pending", "approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const updatedRentListing = await RentListing.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedRentListing) {
+      return res.status(404).json({ message: "Rent listing not found" });
+    }
+
+    res.status(200).json(updatedRentListing);
+  } catch (error) {
+    console.error("Error updating rent listing status:", error);
+    res.status(500).json({
+      message: "Failed to update rent listing status",
+      error: error.message,
+    });
   }
 };

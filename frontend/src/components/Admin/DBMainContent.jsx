@@ -7,7 +7,6 @@ import axios from 'axios';      //call API
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from "@react-google-maps/api";
 import dayjs from 'dayjs';
 
-
 //modal component for the listings
 const ListingModal = ({ isOpen, onClose, listings }) => {
     if (!isOpen) return null;
@@ -136,6 +135,7 @@ function DBMainContent() {
     const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
     const [pendingListings, setPendingListings] = useState(0);
     const [filterType, setFilterType] = useState('Monthly');
+
     // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -191,7 +191,8 @@ function DBMainContent() {
     const handleListCardClick = () => {
         setIsListingModalOpen(true);
     };
-     const filterByType = (arr, dateField = 'createdAt') => {
+
+    const filterByType = (arr, dateField = 'createdAt') => {
         const now = dayjs();
         return arr.filter(item => {
             const date = dayjs(item[dateField]);
@@ -238,19 +239,22 @@ function DBMainContent() {
     return (
         <div className="flex-1 bg-gray-100">
             {/* Navbar */}
-
-
-            
-            
-<div className="  p-4 flex justify-center items-center text-white mt-5  ">
-    
-   
-</div>
-
-
-
-
-
+            <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+                <div className="w-1/3">
+                    
+                </div>
+                {/* <div className="w-1/3 flex justify-center">
+                    <input 
+                        type="text" 
+                        placeholder="Enter an address, city, district, province" 
+                        className="p-2 border rounded-md w-full text-black" 
+                    />
+                </div> */}
+                <div className="w-1/3 flex justify-end gap-4 text-xl">
+                    <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+                    <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
+                </div>
+            </div>
 
             {/* Dashboard */}
             <div className="p-10">
@@ -270,9 +274,7 @@ function DBMainContent() {
                         value={loading ? "Loading..." : filteredListings.length}  
                         icon={FaTachometerAlt} 
                         onClick={handleListCardClick}
-
-
-iconColor="text-blue-600"
+                        iconColor="text-blue-600"
                         percentChange="+12.5% from last month"
                         trend="up"
                     />
@@ -301,13 +303,7 @@ iconColor="text-blue-600"
                         percentChange="-2.1% from last month"
                         trend="down"
                     />
-
-          
-
-
-
                 </div>
-
 
                 {/* Recent Properties Table */}
                 <div className="bg-white mt-6 p-6 rounded-lg shadow">
@@ -323,9 +319,9 @@ iconColor="text-blue-600"
                             </tr>
                         </thead>
                         <tbody>
-                            {listings
-                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                .slice(0, 5) // Display only the 5 most recent listings
+                            {filteredListings
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                .slice(0, 5)
                                 .map((listing) => (
                                     <tr key={listing._id}><td className="border p-2">{listing._id.slice(-5)}</td><td className="border p-2">{listing.username || 'N/A'}</td><td className="border p-2">{listing.address || 'N/A'}</td><td className="border p-2">Rs. {listing.price ? listing.price.toLocaleString() : 'N/A'}</td><td className="border p-2">{listing.status || 'Pending'}</td></tr>
                                 ))}
@@ -334,7 +330,7 @@ iconColor="text-blue-600"
                 </div>
 
                 {/* Dynamic Map Section */}
-                {isLoaded && listings.length > 0 && (
+                {isLoaded && filteredListings.length > 0 && (
                     <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden mt-6">
                         <div className="p-4">
                             <h4 className="text-xl font-semibold mb-4">Recent Property Locations</h4>
@@ -345,9 +341,9 @@ iconColor="text-blue-600"
                                     zoom={10}
                                     options={mapOptions}
                                 >
-                                    {listings
-                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                        .slice(0, 5) // Display only the 5 most recent listings
+                                    {filteredListings
+                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                        .slice(0, 5)
                                         .map((listing) =>
                                             listing.lat && listing.lng ? (
                                                 <Marker
@@ -398,14 +394,14 @@ iconColor="text-blue-600"
             <UserModal 
                 isOpen={isUserModalOpen} 
                 onClose={() => setIsUserModalOpen(false)} 
-                users={users}
+                users={filteredUsers}
             />
             
             {/* Listing Modal */}
             <ListingModal
                 isOpen={isListingModalOpen} 
                 onClose={() => setIsListingModalOpen(false)} 
-                listings={listings}
+                listings={filteredListings}
             />
         </div>
     );

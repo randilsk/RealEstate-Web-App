@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { Menu, SlidersHorizontal } from "lucide-react";
+import { Menu, SlidersHorizontal, ChevronDown, MapPin, DollarSign, Home, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,18 +24,15 @@ const NavItem = ({ label, bold, className = "" }) => (
   </div>
 );
 
-const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins">
-    <span className="text-black text-sm md:text-base font-normal">{label}</span>
-    <div>
-      <Image
-        src="/icons/dropdown-icon.png"
-        alt="Search Icon"
-        width={14}
-        height={14}
-        className="w-3.5 h-3.5 ml-2"
-      />
+const FilterButton = ({ label, icon: Icon, selectedValue, showSelected = false }) => (
+  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/95 backdrop-blur-sm rounded-full font-poppins shadow-sm hover:shadow-md hover:bg-white hover:scale-[1.02] transition-all duration-200 border border-white/20">
+    <div className="flex items-center gap-2">
+      {Icon && <Icon className="w-4 h-4 text-gray-600" />}
+      <span className="text-gray-700 text-sm md:text-base font-medium">
+        {showSelected && selectedValue !== "All" ? selectedValue : label}
+      </span>
     </div>
+    <ChevronDown className="w-4 h-4 text-gray-500 transition-transform duration-200 group-hover:rotate-180" />
   </div>
 );
 
@@ -153,7 +150,6 @@ const handleDistrictSelection = (district) => {
   );
 };
 
-
   // Handle price selection
   const handlePriceSelection = (price) => {
     setSelectedPrice(price);
@@ -225,13 +221,18 @@ const handleDistrictSelection = (district) => {
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
-            <FilterButton label="District" />
+            <FilterButton label="District" icon={MapPin} selectedValue={selectedDistrict} showSelected />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto ">
+          <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto shadow-xl border-0 rounded-xl">
+            <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Select District</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-100" />
             {districts.map((district) => (
               <DropdownMenuItem
                 key={district}
                 onClick={() => handleDistrictSelection(district)}
+                className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                  selectedDistrict === district ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                }`}
               >
                 {district}
               </DropdownMenuItem>
@@ -243,15 +244,18 @@ const handleDistrictSelection = (district) => {
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
-            <FilterButton label="Monthly Rent" />
+            <FilterButton label="Monthly Rent" icon={DollarSign} selectedValue={priceRanges.find(p => p.value === selectedPrice)?.label} showSelected />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white w-full">
-            <DropdownMenuLabel>Select Rent Range</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+          <DropdownMenuContent className="bg-white w-full shadow-xl border-0 rounded-xl">
+            <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Select Rent Range</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-100" />
             {priceRanges.map((price) => (
               <DropdownMenuItem
                 key={price.value}
                 onClick={() => handlePriceSelection(price.value)}
+                className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                  selectedPrice === price.value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                }`}
               >
                 {price.label}
               </DropdownMenuItem>
@@ -263,26 +267,32 @@ const handleDistrictSelection = (district) => {
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
-            <FilterButton label="Beds and Baths" />
+            <FilterButton label="Beds and Baths" icon={Home} />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white w-full">
-            <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+          <DropdownMenuContent className="bg-white w-full shadow-xl border-0 rounded-xl">
+            <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Number of Bedrooms</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-100" />
             {bedroomOptions.map((bedroom) => (
               <DropdownMenuItem
                 key={bedroom}
                 onClick={() => handleBedroomSelection(bedroom)}
+                className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                  selectedBedroom === bedroom ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                }`}
               >
                 {bedroom} {bedroom !== "All" ? (bedroom === "5+" ? "Bedrooms" : "Bedroom" + (bedroom !== "1" ? "s" : "")) : "Bedrooms"}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-gray-100" />
+            <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Number of Bathrooms</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-100" />
             {bathroomOptions.map((bathroom) => (
               <DropdownMenuItem
                 key={bathroom}
                 onClick={() => handleBathroomSelection(bathroom)}
+                className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                  selectedBathroom === bathroom ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                }`}
               >
                 {bathroom} {bathroom !== "All" ? (bathroom === "4+" ? "Bathrooms" : "Bathroom" + (bathroom !== "1" ? "s" : "")) : "Bathrooms"}
               </DropdownMenuItem>
@@ -294,15 +304,15 @@ const handleDistrictSelection = (district) => {
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-between w-full">
-            <FilterButton label="More" />
+            <FilterButton label="More" icon={MoreHorizontal} />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white w-full">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          <DropdownMenuContent className="bg-white w-full shadow-xl border-0 rounded-xl">
+            <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-100" />
+            <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Billing</DropdownMenuItem>
+            <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Team</DropdownMenuItem>
+            <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Subscription</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -392,7 +402,7 @@ const handleDistrictSelection = (district) => {
         {/* Filters */}
         <div className="hidden md:flex gap-4 items-center">
           {/* Search bar */}
-          <div className="flex items-center flex-1 h-10 px-5 bg-white/90 rounded-full relative">
+          <div className="flex items-center flex-1 h-10 px-5 bg-white/95 backdrop-blur-sm rounded-full relative shadow-sm hover:shadow-md transition-all duration-200 border border-white/20">
             <input
               type="text"
               value={searchLocation}
@@ -403,10 +413,10 @@ const handleDistrictSelection = (district) => {
                 }
               }}
               placeholder="Enter an address, city, district, province"
-              className="w-full bg-transparent border-none outline-none text-black text-base font-normal"
+              className="w-full bg-transparent border-none outline-none text-gray-700 text-base font-normal placeholder:text-gray-500"
             />
             <div
-              className="absolute right-0 pr-4 cursor-pointer"
+              className="absolute right-0 pr-4 cursor-pointer hover:scale-110 transition-transform duration-200"
               onClick={handleSearchIconClick}
             >
               <Image
@@ -414,15 +424,15 @@ const handleDistrictSelection = (district) => {
                 alt="Search Icon"
                 width={20}
                 height={20}
-                className="w-5 h-5"
+                className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity"
               />
             </div>
             {searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl z-50 border border-gray-100 overflow-hidden">
                 {searchResults.map((result, index) => (
                   <div
                     key={index}
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    className="p-3 hover:bg-blue-50 cursor-pointer text-gray-700 border-b border-gray-50 last:border-b-0 transition-colors"
                     onClick={() => handleLocationSelect(result)}
                   >
                     {result.formatted_address}
@@ -435,14 +445,26 @@ const handleDistrictSelection = (district) => {
           {/* District Filter */}
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                <FilterButton label="District" />
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group" asChild>
+                <div className="cursor-pointer">
+                  <FilterButton 
+                    label="District" 
+                    icon={MapPin} 
+                    selectedValue={selectedDistrict} 
+                    showSelected 
+                  />
+                </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto">
+              <DropdownMenuContent className="bg-white w-full max-h-60 overflow-y-auto shadow-xl border-0 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Select District</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-100" />
                 {districts.map((district) => (
                   <DropdownMenuItem
                     key={district}
                     onClick={() => handleDistrictSelection(district)}
+                    className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                      selectedDistrict === district ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                    }`}
                   >
                     {district}
                   </DropdownMenuItem>
@@ -454,16 +476,26 @@ const handleDistrictSelection = (district) => {
           {/* Price Filter */}
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                <FilterButton label="Rent" />
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group" asChild>
+                <div className="cursor-pointer">
+                  <FilterButton 
+                    label="Rent" 
+                    icon={DollarSign} 
+                    selectedValue={priceRanges.find(p => p.value === selectedPrice)?.label} 
+                    showSelected 
+                  />
+                </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white w-auto">
-                <DropdownMenuLabel>Select Rent Range</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuContent className="bg-white w-auto shadow-xl border-0 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Select Rent Range</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-100" />
                 {priceRanges.map((price) => (
                   <DropdownMenuItem
                     key={price.value}
                     onClick={() => handlePriceSelection(price.value)}
+                    className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                      selectedPrice === price.value ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                    }`}
                   >
                     {price.label}
                   </DropdownMenuItem>
@@ -475,27 +507,35 @@ const handleDistrictSelection = (district) => {
           {/* Beds and Baths Filter */}
           <div className="w-52">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                <FilterButton label="Beds and Baths" />
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group" asChild>
+                <div className="cursor-pointer">
+                  <FilterButton label="Beds and Baths" icon={Home} />
+                </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white w-auto">
-                <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuContent className="bg-white w-auto shadow-xl border-0 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Number of Bedrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-100" />
                 {bedroomOptions.map((bedroom) => (
                   <DropdownMenuItem
                     key={bedroom}
                     onClick={() => handleBedroomSelection(bedroom)}
+                    className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                      selectedBedroom === bedroom ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                    }`}
                   >
                     {bedroom} {bedroom !== "All" ? (bedroom === "5+" ? "Bedrooms" : "Bedroom" + (bedroom !== "1" ? "s" : "")) : "Bedrooms"}
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-gray-100" />
+                <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">Number of Bathrooms</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-100" />
                 {bathroomOptions.map((bathroom) => (
                   <DropdownMenuItem
                     key={bathroom}
                     onClick={() => handleBathroomSelection(bathroom)}
+                    className={`px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors ${
+                      selectedBathroom === bathroom ? 'bg-blue-100 text-blue-700 font-medium' : 'text-gray-700'
+                    }`}
                   >
                     {bathroom} {bathroom !== "All" ? (bathroom === "4+" ? "Bathrooms" : "Bathroom" + (bathroom !== "1" ? "s" : "")) : "Bathrooms"}
                   </DropdownMenuItem>
@@ -507,16 +547,18 @@ const handleDistrictSelection = (district) => {
           {/* More Filter */}
           <div className="w-32">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
-                <FilterButton label="More" />
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group" asChild>
+                <div className="cursor-pointer">
+                  <FilterButton label="More" icon={MoreHorizontal} />
+                </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white w-auto">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              <DropdownMenuContent className="bg-white w-auto shadow-xl border-0 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                <DropdownMenuLabel className="text-gray-600 font-semibold px-4 py-2">My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-gray-100" />
+                <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Profile</DropdownMenuItem>
+                <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Billing</DropdownMenuItem>
+                <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Team</DropdownMenuItem>
+                <DropdownMenuItem className="px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors text-gray-700">Subscription</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -525,13 +567,13 @@ const handleDistrictSelection = (district) => {
         {/* Mobile Search and Filter */}
         <div className="md:hidden flex gap-2 items-center">
           {/* Search bar */}
-          <div className="flex items-center flex-1 h-9 px-4 bg-white/90 rounded-full relative">
+          <div className="flex items-center flex-1 h-9 px-4 bg-white/95 backdrop-blur-sm rounded-full relative shadow-sm border border-white/20">
             <input
               type="text"
               value={searchLocation}
               onChange={handleLocationSearch}
               placeholder="Enter an address, city..."
-              className="w-full bg-transparent border-none outline-none text-black text-sm font-normal"
+              className="w-full bg-transparent border-none outline-none text-gray-700 text-sm font-normal placeholder:text-gray-500"
             />
             <div
               className="absolute right-0 pr-4 cursor-pointer"
@@ -542,7 +584,7 @@ const handleDistrictSelection = (district) => {
                 alt="Search Icon"
                 width={18}
                 height={18}
-                className="w-4.5 h-4.5"
+                className="w-4.5 h-4.5 opacity-70"
               />
             </div>
             {searchResults.length > 0 && (
@@ -563,9 +605,9 @@ const handleDistrictSelection = (district) => {
           {/* Filter Button */}
           <Sheet>
             <SheetTrigger className="flex-shrink-0">
-              <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/90 rounded-full">
-                <SlidersHorizontal className="w-4.5 h-4.5 text-black" />
-                <span className="text-black text-sm font-medium">Filters</span>
+              <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/95 backdrop-blur-sm rounded-full shadow-sm border border-white/20 hover:shadow-md transition-all duration-200">
+                <SlidersHorizontal className="w-4.5 h-4.5 text-gray-600" />
+                <span className="text-gray-700 text-sm font-medium">Filters</span>
               </div>
             </SheetTrigger>
             <SheetContent

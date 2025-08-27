@@ -23,23 +23,27 @@ function page() {
   const pathname = usePathname();
   const [hasAppliedFromQuery, setHasAppliedFromQuery] = useState(false);
 
-  useEffect(() => {
-    const getListings = async () => {
-      try {
-        console.log('Fetching rent listings from API...');
-        const data = await fetchAllRentListings();
-        console.log('API response:', data);
-        console.log('Listings count:', data?.length || 0);
-        setListings(data);
-        setFilteredListings(data);
-      } catch (err) {
-        console.error('Error fetching listings:', err);
-        setListings([]);
-        setFilteredListings([]);
-      }
-    };
-    getListings();
-  }, []);
+useEffect(() => {
+  const getListings = async () => {
+    try {
+      console.log('Fetching rent listings from API...');
+      let data = await fetchAllRentListings();
+
+      // ✅ Sort by createdAt descending (latest first)
+      data = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      console.log('Sorted listings count:', data?.length || 0);
+      setListings(data);
+      setFilteredListings(data);
+    } catch (err) {
+      console.error('Error fetching listings:', err);
+      setListings([]);
+      setFilteredListings([]);
+    }
+  };
+  getListings();
+}, []);
+
 
   const filterListingsByLocation = (lat, lng, radius = 5) => {
     const R = 6371;
@@ -362,27 +366,28 @@ function page() {
         </div>
 
         <button
-          onClick={() => setIsCardSectionOpen(!isCardSectionOpen)}
-          className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-main-blue text-white px-8 py-4 rounded-full shadow-lg z-50 hover:bg-[#4b5eef] transition-all duration-300 font-medium text-base flex items-center gap-2 backdrop-blur-sm bg-opacity-90 border-white/20"
-        >
-          {isCardSectionOpen ? (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
-              </svg>
-              Show Map
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
-              </svg>
-              Show Listings
-            </>
-          )}
-        </button>
+  onClick={() => setIsCardSectionOpen(!isCardSectionOpen)}
+  className="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-main-blue text-white px-8 py-4 rounded-full shadow-lg z-50 hover:bg-[#4b5eef] transition-all duration-300 font-medium text-base flex items-center gap-2 backdrop-blur-sm bg-opacity-90 border-white/20"
+>
+  {isCardSectionOpen ? (
+    <>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M9 12l2 2l4 -4" />
+      </svg>
+      Show Map
+    </>
+  ) : (
+    <>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M9 12l2 2l4 -4" />
+      </svg>
+      Show Listings
+    </>
+  )}
+</button>
+
       </div>
     </div>
   );

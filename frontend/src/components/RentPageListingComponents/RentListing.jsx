@@ -37,7 +37,7 @@ function RentListing() {
     district,
     lat,
     lng,
-    price: "",
+    monthlyRent: "",
     images: [],
     homeType: "",
     bedrooms: 0,
@@ -178,8 +178,8 @@ function RentListing() {
           <div className="pb-6 sm:pb-10">
             <input
               type="number"
-              name="price"
-              value={formData.price}
+              name="monthlyRent"
+              value={formData.monthlyRent}
               onChange={handleChange}
               placeholder="Rs."
               className="w-full sm:max-w-md px-2 outline-none bg-transparent border-2 border-gray-400 rounded-md h-10"

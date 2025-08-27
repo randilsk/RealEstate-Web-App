@@ -1,27 +1,21 @@
-import React from 'react';
+import React from "react";
 
-import DBMainContentApproveAdds from '../../../components/Admin/DBMainContentApproveAdds';
-import AdminNavbar from '../AdminNavbar';
-
+import DBMainContentApproveAdds from "../../../components/Admin/DBMainContentApproveAdds";
+import AdminNavbar from "../AdminNavbar";
 
 function Dashboard() {
-    return (
-        <>
-        <div className='flex flex-col'>
-            <div className=''> 
-            <AdminNavbar/>
-            <div className='p-10'>
-            <DBMainContentApproveAdds/>
-                </div>
+  return (
+    <>
+      <div className="flex flex-col">
+        <div className="">
+          <AdminNavbar />
+          <div className="p-10">
+            <DBMainContentApproveAdds />
+          </div>
         </div>
-
-        </div>
-        
-        </>
-    );
-    
+      </div>
+    </>
+  );
 }
 
 export default Dashboard;
-
-           

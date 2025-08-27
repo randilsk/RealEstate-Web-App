@@ -33,7 +33,7 @@ const DeleteAccount = ({ onBack }) => {
     }
 
     try {
-      const res = await fetch(`/api/auth/delete/${currentUser._id}`, {
+      const res = await fetch(`http://localhost:3000/api/auth/delete/${currentUser._id}`, {
         method: 'DELETE',
         credentials: 'include',
         headers: {

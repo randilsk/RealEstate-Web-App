@@ -3,11 +3,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import {
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure
-} from "../../redux/Features/user/userSlice";
+
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
 import Image from 'next/image';

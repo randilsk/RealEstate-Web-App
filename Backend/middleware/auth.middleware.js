@@ -87,3 +87,44 @@ export const verifyTokenForStripe = async (req, res, next) => {
     next(error);
   }
 }; 
+
+// Middleware for profile updates - allows users to update their own profile
+export const verifyTokenForProfile = async (req, res, next) => {
+  try {
+    // Get the token from the cookies
+    const token = req.cookies.access_token;
+    
+    if (!token) {
+      return next(errorHandler(401, 'Unauthorized - No token provided'));
+    }
+    
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Check if the user exists
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    
+    // Check if the user is trying to update their own profile
+    const { userId } = req.params;
+    if (decoded.id !== userId) {
+      return next(errorHandler(403, 'Forbidden - You can only update your own profile'));
+    }
+    
+    // Add the user to the request object
+    req.user = user;
+    
+    // Continue to the next middleware or controller
+    next();
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return next(errorHandler(401, 'Invalid token'));
+    }
+    if (error.name === 'TokenExpiredError') {
+      return next(errorHandler(401, 'Token expired'));
+    }
+    next(error);
+  }
+};

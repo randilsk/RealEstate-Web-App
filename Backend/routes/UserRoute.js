@@ -1,5 +1,6 @@
 import express from "express";
 import { test, updateUserProfile, updateUser, deleteUser, getUsers, getUserTypeByEmail, updateSubscriptionStatus } from "../controllers/UserController.js";
+import { verifyToken, verifyTokenForProfile } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -9,8 +10,8 @@ router.get("/test", test);
 // Get all users
 router.get("/users", getUsers);
 
-// Route to update user profile
-router.put("/update/:userId", updateUserProfile);
+// Route to update user profile (requires authentication)
+router.put("/update/:userId", verifyTokenForProfile, updateUserProfile);
 
 // Get user type by email
 router.get("/user-type", getUserTypeByEmail);

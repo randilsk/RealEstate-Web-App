@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 import {
   signOutUserStart,
   signOutUserSuccess,
-  signOutUserFailure
+  signOutUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure
 } from "../../redux/Features/user/userSlice";
 import signInImage from "../../../public/images/sign_in-images/signIn_Image.png";
 import toast, { Toaster } from "react-hot-toast";
@@ -74,10 +77,18 @@ export default function Profile() {
         console.error(error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           setFormData((prevData) => ({ ...prevData, avatar: downloadURL }));
           setFileUploadError(""); // Clear any previous errors
-          toast.success("Image uploaded successfully");
+          
+          // Save the new avatar to the backend
+          try {
+            await updateUserProfile({ avatar: downloadURL });
+            toast.success("Profile picture updated successfully");
+          } catch (error) {
+            toast.error("Failed to update profile picture");
+            console.error("Error updating avatar:", error);
+          }
         });
       }
     );
@@ -100,6 +111,33 @@ export default function Profile() {
       ...prevData,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const updateUserProfile = async (updateData) => {
+    try {
+      dispatch(updateUserStart());
+      
+      const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(updateData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to update profile');
+      }
+
+      dispatch(updateUserSuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+      throw error;
+    }
   };
 
   // Navigation handlers

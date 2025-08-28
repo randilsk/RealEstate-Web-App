@@ -222,6 +222,15 @@ export default function DBreports() {
     0
   );
 
+  // Calculate OVERALL approval rate using ALL listings (not filtered by time)
+  const overallTotalListings = saleListings.length + rentListings.length;
+  const overallApprovedListings = [...saleListings, ...rentListings].filter(
+    (listing) => listing.status === "approved"
+  ).length;
+  const overallApprovalRate = overallTotalListings > 0 
+    ? ((overallApprovedListings / overallTotalListings) * 100).toFixed(1) 
+    : 0;
+
   // Calculate total revenue from listings
   const totalRevenue = [...saleListings, ...rentListings].reduce(
     (sum, listing) => {
@@ -283,7 +292,7 @@ export default function DBreports() {
                 : "bg-white text-gray-600 border border-gray-200"
             } rounded-md hover:bg-gray-50 transition-colors`}
           >
-            Yearly
+            Month
           </button>
           <button
             onClick={() => setFilterType("Yearly")}
@@ -293,7 +302,7 @@ export default function DBreports() {
                 : "bg-white text-gray-600 border border-gray-200"
             } rounded-md hover:bg-gray-50 transition-colors`}
           >
-            Yearly
+            Year
           </button>
         </div>
       </div>
@@ -367,9 +376,7 @@ export default function DBreports() {
             label: "Approval Rate",
             value: loading
               ? "Loading..."
-              : totalListings > 0
-              ? `${((approvedListings / totalListings) * 100).toFixed(1)}%`
-              : "0%",
+              : `${overallApprovalRate}%`,
             color: "text-blue-600",
           },
         ].map((card, idx) => (

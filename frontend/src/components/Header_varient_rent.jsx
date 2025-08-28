@@ -195,7 +195,9 @@ const handleDistrictSelection = (district) => {
         <Link href={"/"}>
           <NavItem label="Home" />
         </Link>
-        <NavItem label="Help" />
+            <Link href={"/help"}>
+            <NavItem label="Help" />
+            </Link>
         {currentUser ? (
           <Link href="/profile" className="flex items-center gap-2">
             <Image
@@ -356,28 +358,32 @@ const handleDistrictSelection = (district) => {
             </div>
           </Link>
 
-          {/* Desktop Right Navigation */}
-          <div className="hidden md:flex gap-8 items-center">
-            <Link href={"/"}>
-              <NavItem label="Home" />
-            </Link>
-            <NavItem label="Help" />
-            {currentUser ? (
-              <Link href="/profile">
-                <Image
-                  src={currentUser.avatar}
-                  alt="Profile"
-                  width={36}
-                  height={36}
-                  className="rounded-full"
-                />
-              </Link>
-            ) : (
-              <Link href="/sign_in">
-                <NavItem>Sign In</NavItem>
-              </Link>
-            )}
-          </div>
+          
+         {/* Desktop Right Navigation */}
+<div className="hidden md:flex gap-8 items-center">
+  <Link href={"/"}>
+    <NavItem label="Home" />
+  </Link>
+  <Link href={"/help"}>
+    <NavItem label="Help" />
+  </Link>
+  {currentUser ? (
+    <Link href="/profile">
+      <Image
+        src={currentUser.avatar}
+        alt="Profile"
+        width={36}
+        height={36}
+        className="rounded-full"
+      />
+    </Link>
+  ) : (
+    <Link href="/sign_in">
+      <NavItem>Sign In</NavItem>
+    </Link>
+  )}
+</div>
+
 
           {/* Mobile Profile */}
           <div className="md:hidden">

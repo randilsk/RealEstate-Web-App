@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 function HeroSection() {
   const phrases = [
@@ -17,6 +18,23 @@ function HeroSection() {
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  // Framer Motion variants
+  const titleVariants = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: 0.15 },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 24 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 60, damping: 12 },
+    },
+  };
 
   const handleLocationSearch = async (e) => {
     const value = e.target.value;
@@ -79,104 +97,127 @@ function HeroSection() {
   };
 
   return (
-    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative pl-4 pr-5 md:(pl-8 pr-5) lg:pl-12 pr-5 min-h-[80vh] items-center">
-      {/* Left Section */}
-      <div className="flex flex-col flex-1 gap-6 md:gap-8 w-full md:w-1/2">
-        {/* Title Text */}
-        <div className="mt-6 md:mt-10 lg:mt-[80px]">
-          <div className="inline-block text-center md:text-left w-full md:w-auto">
+    <div className="relative overflow-hidden">
+      {/* Subtle background gradient and abstract blobs */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-white to-white/90" />
+      <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-[#3b50df]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-[#3b50df]/5 blur-3xl" />
+
+      <div className="pt-10 md:pt-16 px-4 sm:px-6 lg:px-12 min-h-[85vh] flex flex-col md:flex-row items-center gap-10">
+        {/* Left: Headline + Search */}
+        <div className="flex-1 w-full flex flex-col items-center md:items-start">
+          {/* Headline */}
+          <motion.div
+            variants={titleVariants}
+            initial="hidden"
+            animate="show"
+            className="text-center md:text-left"
+          >
             {phrases.map((phrase, index) => (
-              <span
+              <motion.span
                 key={index}
-                className={`${commonStyles} ${phrase.color} text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[76px] drop-shadow-sm`}
-                style={{
-                  animationDelay: `${index * 0.2}s`,
-                  animation: 'fadeInUp 0.8s ease-out forwards'
-                }}
+                variants={wordVariants}
+                className={`${commonStyles} ${phrase.color} text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[95px] tracking-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.05)]`}
               >
                 {phrase.text}
-              </span>
+              </motion.span>
             ))}
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Search Bar */}
-        <div className="relative w-full md:w-3/4 lg:w-2/4 mx-auto md:mx-0">
-          <div className={`h-[50px] md:h-[60px] px-4 md:px-6 py-2 md:py-2.5 bg-white/90 backdrop-blur-sm rounded-[50px] flex items-center gap-3 md:gap-4 shadow-lg border border-white/20 transition-all duration-300 ${isSearchFocused ? 'shadow-xl scale-105 bg-white/95' : 'hover:shadow-xl hover:bg-white/95'}`}>
-            <div className="flex-1 min-w-0">
-              <input
-                type="text"
-                value={searchLocation}
-                onChange={handleLocationSearch}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearchIconClick();
-                }}
-                placeholder="Enter address, city, district, province"
-                className="w-full p-2 bg-transparent border-none outline-none placeholder:text-gray-600 text-gray-800 text-sm md:text-base font-medium"
-              />
-            </div>
-            <div className={`w-[40px] h-[40px] md:w-[48px] md:h-[48px] flex justify-center items-center flex-shrink-0 bg-[#3b50df] rounded-full cursor-pointer transition-all duration-300 hover:bg-[#2a3cb8] hover:scale-110 active:scale-95`}
-              onClick={handleSearchIconClick}
+          {/* Floating Glass Search Bar */}
+          <div className="relative w-full md:max-w-xl lg:max-w-lg mt-6 md:mt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className={`group h-[56px] md:h-[64px] px-4 md:px-6 bg-white/60 backdrop-blur-xl rounded-full flex items-center gap-3 md:gap-4 shadow-[0_10px_30px_-10px_rgba(59,80,223,0.25)] border border-white/30 transition-all duration-300 ${
+                isSearchFocused
+                  ? "ring-4 ring-[#3b50df]/30 shadow-[0_20px_40px_-15px_rgba(59,80,223,0.35)] bg-white/70"
+                  : "hover:bg-white/70 hover:shadow-[0_16px_36px_-16px_rgba(59,80,223,0.28)]"
+              }`}
             >
-              <Image
-                src="/icons/search-icon.svg"
-                alt="Search Icon"
-                width={24}
-                height={24}
-                className="w-5 h-5 md:w-6 md:h-6 filter brightness-0 invert"
-              />
-            </div>
-          </div>
-          {searchResults.length > 0 && (
-            <div className="absolute left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 z-50 overflow-hidden">
-              {searchResults.map((result, index) => (
-                <div
-                  key={index}
-                  className="p-4 hover:bg-gray-50 cursor-pointer text-sm md:text-base text-gray-700 border-b border-gray-100 last:border-b-0 transition-colors duration-200"
-                  onClick={() => handleLocationSelect(result)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-[#3b50df] rounded-full flex-shrink-0"></div>
-                    <span className="truncate">{result.formatted_address}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+              <div className="flex-1 min-w-0">
+                <input
+                  type="text"
+                  value={searchLocation}
+                  onChange={handleLocationSearch}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearchIconClick();
+                  }}
+                  placeholder="Enter address, city, district, province"
+                  className="w-full bg-transparent border-none outline-none placeholder:text-gray-500/80 text-gray-800 text-base md:text-lg font-medium"
+                />
+              </div>
+              <div
+                className={`w-[44px] h-[44px] md:w-[52px] md:h-[52px] flex justify-center items-center flex-shrink-0 bg-[#3b50df] rounded-full cursor-pointer transition-all duration-300 hover:bg-[#2a3cb8] hover:scale-105 active:scale-95 shadow-[0_8px_20px_-6px_rgba(59,80,223,0.5)]`}
+                onClick={handleSearchIconClick}
+              >
+                <Image
+                  src="/icons/search-icon.svg"
+                  alt="Search Icon"
+                  width={24}
+                  height={24}
+                  className="w-5 h-5 md:w-6 md:h-6 filter brightness-0 invert"
+                />
+              </div>
+            </motion.div>
 
-      {/* Right Section */}
-      <div className="flex-1 flex mt-8 md:mt-0 relative">
-        <div className="w-full h-full relative group">
-          <Image
-            className="object-contain md:object-cover w-full h-auto transition-transform duration-500 group-hover:scale-105 drop-shadow-lg"
-            src="/images/home-image/home-page-image2.png"
-            alt="Home Page Image"
-            width={1000}
-            height={1000}
-            priority
-          />
-          {/* Subtle overlay gradient for depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 pointer-events-none rounded-lg"></div>
+            {/* Animated Suggestion Dropdown */}
+            <AnimatePresence>
+              {searchResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 right-0 mt-3 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 z-50 overflow-hidden"
+                >
+                  <div className="p-1 max-h-80 overflow-auto">
+                    {searchResults.map((result, index) => (
+                      <motion.button
+                        key={index}
+                        whileHover={{ scale: 1.01 }}
+                        className="w-full text-left p-4 md:p-4 rounded-xl hover:bg-gray-50/70 cursor-pointer text-sm md:text-base text-gray-700 border-b border-gray-100 last:border-b-0 flex items-start gap-3 transition-colors"
+                        onClick={() => handleLocationSelect(result)}
+                      >
+                        <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#3b50df]/10 text-[#3b50df]">
+                          {/* Pin icon via inline SVG to avoid extra deps */}
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                            <path fillRule="evenodd" d="M11.47 3.84a.75.75 0 0 1 1.06 0l4.69 4.69a.75.75 0 0 1 0 1.06l-6.72 6.72a.75.75 0 0 1-.265.17l-3.3 1.1a.75.75 0 0 1-.949-.949l1.1-3.3a.75.75 0 0 1 .17-.265l6.72-6.72Zm1.59-.53a2.25 2.25 0 0 0-3.18 0L5.19 8.01a2.25 2.25 0 0 0-.51.795l-1.1 3.3a2.25 2.25 0 0 0 2.846 2.846l3.3-1.1c.294-.098.566-.275.795-.51l5.69-5.69V18a.75.75 0 0 0 1.5 0V7.5c0-.199-.079-.39-.22-.53l-4.72-4.72Z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                        <span className="truncate leading-6 flex-1">{result.formatted_address}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Right: Image Card */}
+        <div className="flex-1 w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="relative group mx-auto w-full max-w-[720px] rounded-3xl overflow-hidden shadow-[0_20px_60px_-20px_rgba(0,0,0,0.3)]"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#3b50df]/10 via-transparent to-white/0 pointer-events-none z-10" />
+            <Image
+              className="object-contain md:object-cover w-full h-auto transition-transform duration-500 group-hover:scale-[1.04] md:group-hover:-rotate-[1deg]"
+              src="/images/home-image/home-page-image2.png"
+              alt="Home Page Image"
+              width={1200}
+              height={900}
+              priority
+            />
+          </motion.div>
         </div>
       </div>
-      
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

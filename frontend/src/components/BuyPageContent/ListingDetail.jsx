@@ -436,8 +436,21 @@ export default function ListingDetail({ listing, allListings, loading, showAllPh
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
               Home
             </Link>
-            <span className="text-gray-600 hover:text-blue-600 transition-colors duration-200 cursor-pointer font-medium">Help</span>
-            <span className="text-gray-600 hover:text-blue-600 transition-colors duration-200 cursor-pointer font-medium">About Us</span>
+            
+              <Link
+              href="/help"
+              className="text-gray-600 hover:text-blue-600 transition-colors duration-200 cursor-pointer font-medium"
+            >
+              Help
+            </Link>
+
+            <Link
+              href="/AboutUs"
+              className="text-gray-600 hover:text-blue-600 transition-colors duration-200 cursor-pointer font-medium"
+            >
+              AboutUs
+            </Link>
+            
             <Link href="/policies/privacy_policy" className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
               Privacy Policy
             </Link>

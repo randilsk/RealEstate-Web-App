@@ -156,18 +156,27 @@ export default function DBreports() {
       .map(([name, value]) => ({ name, value }))
       .filter((d) => d.value > 0);
 
-    // Process bar chart data (monthly revenue/rent)
-    const processedBarChartData = sortedMonths
-      .filter(
-        (month) =>
-          monthlyRevenue[month] !== undefined && monthlyRevenue[month] > 0
-      )
-      .map((month) => ({ month, revenue: monthlyRevenue[month] }));
+         // Process bar chart data (monthly revenue/rent) - ALWAYS show all 12 months
+     const processedBarChartData = sortedMonths.map((month) => {
+       // Always include the month, even if revenue is 0
+       const revenue = monthlyRevenue[month] || 0;
+       return { 
+         month: month, 
+         revenue: revenue,
+         monthLabel: month
+       };
+     });
 
-    setLineChartDynamicData(processedLineChartData);
-    setPieChartDynamicData(processedPieChartData);
-    setPropertyTypeData(processedPropertyTypeData);
-    setBarChartDynamicData(processedBarChartData);
+         setLineChartDynamicData(processedLineChartData);
+     setPieChartDynamicData(processedPieChartData);
+     setPropertyTypeData(processedPropertyTypeData);
+     setBarChartDynamicData(processedBarChartData);
+     
+     // Debug: Log the processed data to ensure all months are included
+     console.log('Monthly Revenue Data:', processedBarChartData);
+     console.log('All months included:', processedBarChartData.length === 12);
+     console.log('Months array:', sortedMonths);
+     console.log('Monthly revenue object:', monthlyRevenue);
   };
 
   // Fetch transactions data
@@ -392,156 +401,218 @@ export default function DBreports() {
         ))}
       </div>
 
-      {/* Charts Section */}
-      <div className="flex flex-col lg:flex-row gap-4">
-        {/* Line Chart - Listings Growth */}
-        <div className="bg-white p-3 rounded-xl shadow-md flex-1">
-          <h2 className="text-sm font-semibold mb-2">
-            Listings Growth ({filterType})
-          </h2>
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={lineChartDynamicData}
-                margin={{ top: 5, right: 5, bottom: 5, left: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="listings"
-                  stroke="#3B50DF"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                  activeDot={{ r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+             {/* Charts Section - Row 1: Line and Bar Charts */}
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+         {/* Line Chart - Listings Growth */}
+         <div className="bg-white p-4 rounded-xl shadow-md">
+           <h2 className="text-lg font-semibold mb-4 text-gray-800">
+             Listings Growth ({filterType})
+           </h2>
+           <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+               <LineChart
+                 data={lineChartDynamicData}
+                 margin={{ top: 10, right: 20, bottom: 10, left: 10 }}
+               >
+                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                 <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="#666" />
+                 <YAxis tick={{ fontSize: 12 }} stroke="#666" />
+                 <Tooltip 
+                   contentStyle={{ 
+                     backgroundColor: 'white', 
+                     border: '1px solid #ccc',
+                     borderRadius: '8px',
+                     boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                   }}
+                 />
+                 <Line
+                   type="monotone"
+                   dataKey="listings"
+                   stroke="#3B50DF"
+                   strokeWidth={3}
+                   dot={{ r: 4, fill: '#3B50DF' }}
+                   activeDot={{ r: 6, fill: '#3B50DF' }}
+                 />
+               </LineChart>
+             </ResponsiveContainer>
+           </div>
+         </div>
 
-        {/* Bar Chart - Monthly Revenue */}
-        <div className="bg-white p-3 rounded-xl shadow-md flex-1">
-          <h2 className="text-sm font-semibold mb-2">
-            Monthly Revenue/Rent ({filterType})
-          </h2>
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
+                   {/* Bar Chart - Monthly Revenue */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Monthly Revenue/Rent ({filterType})
+            </h2>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={barChartDynamicData}
-                margin={{ top: 5, right: 5, bottom: 5, left: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip
-                  formatter={(value) => `Rs. ${value.toLocaleString()}`}
-                />
-                <Bar dataKey="revenue" fill="#10B981" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+                   data={barChartDynamicData}
+                   margin={{ top: 10, right: 20, bottom: 25, left: 25 }}
+                   barSize={20}
+                   barGap={0}
+                   layout="horizontal"
+                 >
+                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                   <XAxis 
+                     dataKey="month" 
+                     tick={{ fontSize: 10 }} 
+                     stroke="#666"
+                     interval={0}
+                     angle={-45}
+                     textAnchor="middle"
+                     height={60}
+                     type="category"
+                     scale="band"
+                     axisLine={false}
+                     tickLine={false}
+                     // Fix positioning by adjusting padding
+                     padding={{ left: 10, right: 10 }}
+                   />
+                   <YAxis 
+                     tick={{ fontSize: 10 }} 
+                     stroke="#666"
+                     tickFormatter={(value) => `Rs. ${(value/1000).toFixed(0)}K`}
+                     width={60}
+                     domain={[0, 'dataMax + 1000']}
+                   />
+                   <Tooltip
+                     formatter={(value) => `Rs. ${value.toLocaleString()}`}
+                     contentStyle={{ 
+                       backgroundColor: 'white', 
+                       border: '1px solid #ccc',
+                       borderRadius: '8px',
+                       boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                     }}
+                     labelFormatter={(label) => `Month: ${label}`}
+                   />
+                   <Bar 
+                     dataKey="revenue" 
+                     fill="#10B981" 
+                     radius={[4, 4, 0, 0]}
+                     name="Revenue"
+                     // Fix bar positioning to align with month labels
+                     barSize={18}
+                     barGap={0}
+                   />
+                 </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+       </div>
 
-        {/* Pie Chart - Property Distribution by District */}
-        <div className="bg-white p-3 rounded-xl shadow-md flex-1 overflow-x-auto">
-          <h2 className="text-sm font-semibold mb-2">
-            Property Distribution by District
-          </h2>
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                <Pie
-                  data={pieChartDynamicData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={60}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieChartDynamicData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Legend
-                  layout="vertical"
-                  verticalAlign="middle"
-                  align="right"
-                  formatter={(value, entry, index) => {
-                    const total = pieChartDynamicData.reduce(
-                      (sum, d) => sum + d.value,
-                      0
-                    );
-                    const percent =
-                      total > 0
-                        ? (
-                            (pieChartDynamicData[index].value / total) *
-                            100
-                          ).toFixed(1)
-                        : 0;
-                    return `${value}: ${percent}%`;
-                  }}
-                />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Property Type Distribution */}
-      <div className="bg-white p-3 rounded-xl shadow-md">
-        <h2 className="text-sm font-semibold mb-2">
-          Property Type Distribution
-        </h2>
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-              <Pie
-                data={propertyTypeData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {propertyTypeData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={index === 0 ? "#3B82F6" : "#F59E0B"}
+               {/* Charts Section - Row 2: Pie Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Pie Chart - Property Distribution by District */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Property Distribution by District
+            </h2>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <Pie
+                    data={pieChartDynamicData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {pieChartDynamicData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
+                    formatter={(value, entry, index) => {
+                      const total = pieChartDynamicData.reduce(
+                        (sum, d) => sum + d.value,
+                        0
+                      );
+                      const percent =
+                        total > 0
+                          ? (
+                              (pieChartDynamicData[index].value / total) *
+                              100
+                            ).toFixed(1)
+                          : 0;
+                      return `${value}: ${percent}%`;
+                    }}
                   />
-                ))}
-              </Pie>
-              <Legend
-                layout="horizontal"
-                verticalAlign="bottom"
-                align="center"
-                formatter={(value, entry, index) => {
-                  const total = propertyTypeData.reduce(
-                    (sum, d) => sum + d.value,
-                    0
-                  );
-                  const percent =
-                    total > 0
-                      ? ((propertyTypeData[index].value / total) * 100).toFixed(
-                          1
-                        )
-                      : 0;
-                  return `${value}: ${percent}%`;
-                }}
-              />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #ccc',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Property Type Distribution */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Property Type Distribution
+            </h2>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                  <Pie
+                    data={propertyTypeData}
+                    cx="50%"
+                    cy="50%"
+                    fill="#8884d8"
+                    dataKey="value"
+                    outerRadius={120}
+                    labelLine={false}
+                  >
+                    {propertyTypeData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={index === 0 ? "#3B82F6" : "#F59E0B"}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
+                    formatter={(value, entry, index) => {
+                      const total = propertyTypeData.reduce(
+                        (sum, d) => sum + d.value,
+                        0
+                      );
+                      const percent =
+                        total > 0
+                          ? ((propertyTypeData[index].value / total) * 100).toFixed(
+                            1
+                          )
+                          : 0;
+                      return `${value}: ${percent}%`;
+                    }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #ccc',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
-      </div>
 
       {/* Recent Listings Table */}
       <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">

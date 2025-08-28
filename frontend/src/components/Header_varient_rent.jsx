@@ -198,6 +198,9 @@ const handleDistrictSelection = (district) => {
             <Link href={"/help"}>
             <NavItem label="Help" />
             </Link>
+            <Link href={"/AboutUs"}>
+            <NavItem label="About Us" />
+            </Link>
         {currentUser ? (
           <Link href="/profile" className="flex items-center gap-2">
             <Image
@@ -366,6 +369,9 @@ const handleDistrictSelection = (district) => {
   </Link>
   <Link href={"/help"}>
     <NavItem label="Help" />
+  </Link>
+  <Link href={"/AboutUs"}>
+    <NavItem label="About Us" />
   </Link>
   {currentUser ? (
     <Link href="/profile">

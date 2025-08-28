@@ -99,40 +99,46 @@ function Header_varient_1() {
   };
 
   const MobileNavContent = () => (
-    <div className="flex flex-col gap-4 py-4">
-      <div className="flex flex-col gap-3">
-        <NavItem className="font-medium">
-          <Link href={"/buy"}>Buy</Link>
-        </NavItem>
-        <NavItem className="font-medium">
-          <Link href={"/rent"}>Rent</Link>
-        </NavItem>
-        <NavItem className="font-medium">
-          <Link href={"/sell"}>List</Link>
-        </NavItem>
-        <Link href={"/"}>
-          <NavItem className="font-medium">Home</NavItem>
-        </Link>
+  <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-3">
+      <NavItem className="font-medium">
+        <Link href={"/buy"}>Buy</Link>
+      </NavItem>
+      <NavItem className="font-medium">
+        <Link href={"/rent"}>Rent</Link>
+      </NavItem>
+      <NavItem className="font-medium">
+        <Link href={"/sell"}>List</Link>
+      </NavItem>
+      <Link href={"/"}>
+        <NavItem className="font-medium">Home</NavItem>
+      </Link>
+      <Link href={"/help"}>
         <NavItem className="font-medium">Help</NavItem>
-        {currentUser ? (
-          <Link href="/profile" className="flex items-center gap-2">
-            <Image
-              src={currentUser.avatar}
-              alt="Profile"
-              width={28}
-              height={28}
-              className="rounded-full"
-            />
-            <span className="text-white">Profile</span>
-          </Link>
-        ) : (
-          <Link href="/sign_in">
-            <NavItem className="font-medium">Sign In</NavItem>
-          </Link>
-        )}
-      </div>
+      </Link>
+      <Link href={"/AboutUs"}>
+      <NavItem className="font-medium">About Us</NavItem>
+      </Link>
+      {currentUser ? (
+        <Link href="/profile" className="flex items-center gap-2">
+          <Image
+            src={currentUser.avatar}
+            alt="Profile"
+            width={28}
+            height={28}
+            className="rounded-full"
+          />
+          <span className="text-white">Profile</span>
+        </Link>
+      ) : (
+        <Link href="/sign_in">
+          <NavItem className="font-medium">Sign In</NavItem>
+        </Link>
+      )}
     </div>
-  );
+  </div>
+);
+
 
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
@@ -479,28 +485,34 @@ function Header_varient_1() {
             </div>
           </Link>
 
-          {/* Desktop Right Navigation */}
+         {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
-            <Link href={"/"}>
-              <NavItem className="font-medium">Home</NavItem>
-            </Link>
+        <Link href={"/"}>
+          <NavItem className="font-medium">Home</NavItem>
+        </Link>
+        <Link href={"/help"}>
             <NavItem className="font-medium">Help</NavItem>
+        </Link>
+        <Link href={"/AboutUs"}>
+         <NavItem className="font-medium">About Us</NavItem>
+            </Link>
             {currentUser ? (
-              <Link href="/profile">
-                <Image
-                  src={currentUser.avatar}
-                  alt="Profile"
-                  width={36}
-                  height={36}
-                  className="rounded-full"
-                />
-              </Link>
-            ) : (
-              <Link href="/sign_in">
-                <NavItem>Sign In</NavItem>
-              </Link>
-            )}
-          </div>
+          <Link href="/profile">
+      <Image
+        src={currentUser.avatar}
+        alt="Profile"
+        width={36}
+        height={36}
+        className="rounded-full"
+      />
+    </Link>
+  ) : (
+    <Link href="/sign_in">
+      <NavItem className="font-medium">Sign In</NavItem>
+    </Link>
+  )}
+</div>
+
 
           {/* Mobile Profile */}
           <div className="md:hidden">

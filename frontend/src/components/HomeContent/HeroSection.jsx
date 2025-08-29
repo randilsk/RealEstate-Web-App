@@ -79,7 +79,8 @@ function HeroSection() {
   };
 
   return (
-    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative pl-4 pr-5 md:(pl-8 pr-5) lg:pl-12 pr-5 min-h-[80vh] items-center">
+    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative pl-4 pr-5 md:pl-8 md:pr-5 lg:pl-12 min-h-[80vh] items-center">
+
       {/* Left Section */}
       <div className="flex flex-col flex-1 gap-6 md:gap-8 w-full md:w-1/2">
         {/* Title Text */}

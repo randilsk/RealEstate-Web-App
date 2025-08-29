@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
-const RentListingSchema = new mongoose.Schema({
+const ApprovedRentSchema = new mongoose.Schema({
+  listingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "RentListing",
+    required: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -32,20 +37,17 @@ const RentListingSchema = new mongoose.Schema({
   buildYear: Number,
   description: String,
   phone: String,
-
   status: {
-    // <--- Add this field
     type: String,
-    enum: ["pending", "approved", "rejected"], // Define allowed values
-    default: "pending", // Set a default value if desired
+    enum: ["pending", "approved", "rejected"],
+    default: "approved",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-const RentListing = mongoose.model("RentListing", RentListingSchema);
+const ApprovedRent = mongoose.model("ApprovedRent", ApprovedRentSchema);
 
-export default RentListing;
+export default ApprovedRent;

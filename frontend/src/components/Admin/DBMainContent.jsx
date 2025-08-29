@@ -1,417 +1,548 @@
+
 'use client'
 
 import Image from 'next/image';
-import React, { useState, useEffect } from "react"; //Hook Componets
-import { FaTachometerAlt, FaUsers, FaDollarSign, FaCog, FaBell, FaUserCircle, FaTimes, FaMapMarkerAlt } from 'react-icons/fa';
-import axios from 'axios';      //call API
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from "@react-google-maps/api";
-import dayjs from 'dayjs';
 
+import React, { useState, useEffect } from "react"; //Hook Componets
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaDollarSign,
+  FaCog,
+  FaBell,
+  FaUserCircle,
+  FaTimes,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import axios from "axios"; //call API
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  useJsApiLoader,
+} from "@react-google-maps/api";
+import dayjs from "dayjs";
 
 //modal component for the listings
 const ListingModal = ({ isOpen, onClose, listings }) => {
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-3/4 max-h-[80vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">Listing Information</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                        <FaTimes size={24} />
-                    </button>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Username</th>
-                                <th className="border p-2">Email</th>
-                                <th className="border p-2">Date</th>
-                                <th className="border p-2">Price</th>
-                                <th className="border p-2">District</th>
-                                <th className="border p-2">Options</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listings.map((listing, index) => (
-                                <tr key={index}>
-                                    <td className="border p-2">{listing.username}</td>
-                                    <td className="border p-2">{listing.email}</td>
-                                    <td className="border p-2">
-                                        {new Date(listing.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="border p-2">{listing.price}</td>
-                                    <td className="border p-2">{listing.district}</td>
-                                    <td className="border p-2">
-                                        <button className="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-3/4 max-h-[80vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Listing Information</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <FaTimes size={24} />
+          </button>
         </div>
-    );
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">Username</th>
+                <th className="border p-2">Email</th>
+                <th className="border p-2">Date</th>
+                <th className="border p-2">Price</th>
+                <th className="border p-2">District</th>
+                <th className="border p-2">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listings.map((listing, index) => (
+                <tr key={index}>
+                  <td className="border p-2">{listing.username}</td>
+                  <td className="border p-2">{listing.email}</td>
+                  <td className="border p-2">
+                    {new Date(listing.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="border p-2">{listing.price}</td>
+                  <td className="border p-2">{listing.district}</td>
+                  <td className="border p-2">
+                    <button className="bg-blue-500 text-white px-2 py-1 rounded">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 };
-
-
 
 // Modal Component to pop up Active User
 const UserModal = ({ isOpen, onClose, users }) => {
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-3/4 max-h-[80vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">User Information</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                        <FaTimes size={24} />
-                    </button>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Username</th>
-                                <th className="border p-2">Email</th>
-                                <th className="border p-2">Avatar</th>
-                                <th className="border p-2">Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user, index) => (
-                                <tr key={index}>
-                                    <td className="border p-2">{user.username}</td>
-                                    <td className="border p-2">{user.email}</td>
-                                    <td className="border p-2">
-                                        <Image 
-                                            src={user.avatar} 
-                                            alt={user.username} 
-                                            width={40}
-                                            height={40}
-                                            className="rounded-full object-cover"
-                                        />
-                                    </td>
-                                    <td className="border p-2">
-                                        {new Date(user.createdAt).toLocaleDateString()}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-3/4 max-h-[80vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">User Information</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <FaTimes size={24} />
+          </button>
         </div>
-    );
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">Username</th>
+                <th className="border p-2">Email</th>
+                <th className="border p-2">Avatar</th>
+                <th className="border p-2">Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr key={index}>
+                  <td className="border p-2">{user.username}</td>
+                  <td className="border p-2">{user.email}</td>
+                  <td className="border p-2">
+                    <Image
+                      src={user.avatar}
+                      alt={user.username}
+                      width={40}
+                      height={40}
+                      className="rounded-full object-cover"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // Reusable Card Component
 const StatCard = ({ title, value, icon: Icon, onClick }) => {
-    return (
-        <div 
-            onClick={onClick}
-            className="bg-white p-4 rounded-lg shadow text-center hover:bg-gray-100 transition duration-200 cursor-pointer"
-        >
-            <div className="text-2xl mb-2 flex justify-center text-blue-600">
-                <Icon />
-            </div>
-            <p className="text-gray-600">{title}</p>
-            <p className="text-xl font-bold">{value}</p>
-        </div>
-    );
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white p-4 rounded-lg shadow text-center hover:bg-gray-100 transition duration-200 cursor-pointer"
+    >
+      <div className="text-2xl mb-2 flex justify-center text-blue-600">
+        <Icon />
+      </div>
+      <p className="text-gray-600">{title}</p>
+      <p className="text-xl font-bold">{value}</p>
+    </div>
+  );
 };
 
 function DBMainContent() {
-    const [userCount, setUserCount] = useState(0);
-    const [listCount, setListCount] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
-    const [listings, setListings] = useState([]);
-    const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-    const [isListingModalOpen, setIsListingModalOpen] = useState(false);
-    const [selectedListing, setSelectedListing] = useState(null);
-    const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
-    const [pendingListings, setPendingListings] = useState(0);
-    const [filterType, setFilterType] = useState('Monthly');
-    // Load Google Maps API
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  const [userCount, setUserCount] = useState(0);
+  const [listCount, setListCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isListingModalOpen, setIsListingModalOpen] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [center, setCenter] = useState({ lat: 6.9271, lng: 79.8612 }); // Default to Colombo
+  const [pendingListings, setPendingListings] = useState(0);
+  const [filterType, setFilterType] = useState("Monthly");
+
+  // Load Google Maps API
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  });
+
+  // fetch data from backend
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/auth/users");
+      setUsers(response.data);
+      setUserCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchListings = async () => {
+    try {
+      // Fetch both sale and rent listings
+      const [saleResponse, rentResponse] = await Promise.all([
+        axios.get("http://localhost:3000/api/listing/getallListing"),
+        axios.get("http://localhost:3000/api/Rentroutes/getAllRentListing"),
+      ]);
+
+      const saleListings = saleResponse.data.map((listing) => ({
+        ...listing,
+        type: "sale",
+      }));
+      const rentListings = rentResponse.data.map((listing) => ({
+        ...listing,
+        type: "rent",
+      }));
+
+      // Combine all listings
+      const allListings = [...saleListings, ...rentListings];
+
+      console.log("Sale listings fetched:", saleListings.length);
+      console.log("Rent listings fetched:", rentListings.length);
+      console.log("Total listings:", allListings.length);
+      console.log(
+        "Pending listings:",
+        allListings.filter((listing) => listing.status === "pending").length
+      );
+
+      setListings(allListings);
+      setListCount(allListings.length);
+      setPendingListings(
+        allListings.filter((listing) => listing.status === "pending").length
+      );
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+      console.error("Error details:", error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //refrech the fetched data
+  useEffect(() => {
+    fetchUsers();
+    const interval = setInterval(fetchUsers, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetchListings();
+    const interval = setInterval(fetchListings, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleUserCardClick = () => {
+    setIsUserModalOpen(true);
+  };
+
+  const handleListCardClick = () => {
+    setIsListingModalOpen(true);
+  };
+
+  const filterByType = (arr, dateField = "createdAt") => {
+    const now = dayjs();
+    return arr.filter((item) => {
+      const date = dayjs(item[dateField]);
+      if (filterType === "Today") {
+        return date.isSame(now, "day");
+      } else if (filterType === "Monthly") {
+        return date.isSame(now, "month");
+      } else if (filterType === "Yearly") {
+        return date.isSame(now, "year");
+      }
+      return true;
     });
+  };
+  const filteredListings = filterByType(listings);
+  const filteredUsers = filterByType(users);
 
-    // fetch data from backend
-    const fetchUsers = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/api/auth/users');
-            setUsers(response.data);
-            setUserCount(response.data.length);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-    const fetchListings = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/api/listing/getallListing');
-            console.log('Listings fetched:', response.data); // Debug log
-            console.log('Number of listings:', response.data.length); // Log number of listings
-            console.log('Pending listings:', response.data.filter(listing => listing.status === 'pending').length); // Log pending listings
-            setListings(response.data);
-            setListCount(response.data.length);
-            setPendingListings(response.data.filter(listing => listing.status === 'pending').length);
-        } catch (error) {
-            console.error('Error fetching listings:', error);
-            console.error('Error details:', error.response?.data || error.message); // More detailed error logging
-        } finally {
-            setLoading(false);
-        }
-    };
+  // Map options
+  const mapOptions = {
+    disableDefaultUI: false,
+    zoomControl: true,
+    mapTypeControl: true,
+    scaleControl: true,
+    streetViewControl: true,
+    rotateControl: true,
+    fullscreenControl: true,
+  };
 
-    //refrech the fetched data
-    useEffect(() => {
-        fetchUsers();
-        const interval = setInterval(fetchUsers, 30000);
-        return () => clearInterval(interval);
-    }, []);
-    
-    useEffect(() => {
-        fetchListings();
-        const interval = setInterval(fetchListings, 30000);
-        return () => clearInterval(interval);
-    }, []);
+  // Map container style
+  const mapContainerStyle = {
+    width: "100%",
+    height: "400px",
+  };
 
-    const handleUserCardClick = () => {
-        setIsUserModalOpen(true);
-    };
-    
-    const handleListCardClick = () => {
-        setIsListingModalOpen(true);
-    };
-     const filterByType = (arr, dateField = 'createdAt') => {
-        const now = dayjs();
-        return arr.filter(item => {
-            const date = dayjs(item[dateField]);
-            if (filterType === 'Today') {
-                return date.isSame(now, 'day');
-            } else if (filterType === 'Monthly') {
-                return date.isSame(now, 'month');
-            } else if (filterType === 'Yearly') {
-                return date.isSame(now, 'year');
-            }
-            return true;
-        });
-    };
-    const filteredListings = filterByType(listings);
-    const filteredUsers = filterByType(users);
+  // Handle marker click
+  const handleMarkerClick = (listing) => {
+    setSelectedListing(listing);
+  };
 
-    // Map options
-    const mapOptions = {
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: true,
-        rotateControl: true,
-        fullscreenControl: true,
-    };
+  // Handle info window close
+  const handleInfoWindowClose = () => {
+    setSelectedListing(null);
+  };
 
-    // Map container style
-    const mapContainerStyle = {
-        width: "100%",
-        height: "400px",
-    };
-
-    // Handle marker click
-    const handleMarkerClick = (listing) => {
-        setSelectedListing(listing);
-    };
-
-    // Handle info window close
-    const handleInfoWindowClose = () => {
-        setSelectedListing(null);
-    };
-
-    return (
-        <div className="flex-1 bg-gray-100">
-            {/* Navbar */}
-
-
-            
-            
-<div className="  p-4 flex justify-center items-center text-white mt-5  ">
-    
-   
-</div>
-
-
-
-
-
-
-            {/* Dashboard */}
-            <div className="p-10">
-                {/* Cards Section */}
-                <div className="flex flex-wrap items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
-                    <div className="flex gap-2 mt-4 sm:mt-0">
-                        <button onClick={() => setFilterType('Today')} className={`px-4 py-2 ${filterType === 'Today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Today</button>
-                        <button onClick={() => setFilterType('Monthly')} className={`px-4 py-2 ${filterType === 'Monthly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Monthly</button>
-                        <button onClick={() => setFilterType('Yearly')} className={`px-4 py-2 ${filterType === 'Yearly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-200'} rounded-md hover:bg-gray-50 transition-colors`}>Yearly</button>
-                    </div>
-                </div>
-
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard 
-                        title="Total Listings" 
-                        value={loading ? "Loading..." : filteredListings.length}  
-                        icon={FaTachometerAlt} 
-                        onClick={handleListCardClick}
-
-
-iconColor="text-blue-600"
-                        percentChange="+12.5% from last month"
-                        trend="up"
+  return (
+    <div className="flex-1 bg-gray-100">
+      {/* Navbar */}
+      <div className="bg-[#3B50DF] shadow-md p-4 flex justify-between items-center text-white">
+        <div className="w-1/3"></div>
+        {/* <div className="w-1/3 flex justify-center">
+                    <input 
+                        type="text" 
+                        placeholder="Enter an address, city, district, province" 
+                        className="p-2 border rounded-md w-full text-black" 
                     />
-                    <StatCard 
-                        title="Active Users" 
-                        value={loading ? "Loading..." : filteredUsers.length} 
-                        icon={FaUsers} 
-                        onClick={handleUserCardClick}
-                        iconColor="text-indigo-600"
-                        percentChange="+8.3% from last month"
-                        trend="up"
-                    />
-                    <StatCard 
-                        title="Revenue" 
-                        value="$0" 
-                        icon={FaDollarSign} 
-                        iconColor="text-green-600"
-                        percentChange="+5.2% from last month"
-                        trend="up"
-                    />
-                    <StatCard 
-                        title="Total Pending Listings" 
-                        value={pendingListings} 
-                        icon={FaCog} 
-                        iconColor="text-amber-600"
-                        percentChange="-2.1% from last month"
-                        trend="down"
-                    />
-
-          
-
-
-
-                </div>
-
-
-                {/* Recent Properties Table */}
-                <div className="bg-white mt-6 p-6 rounded-lg shadow">
-                    <h3 className="text-xl font-bold mb-4">Recent Properties</h3>
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">ID</th>
-                                <th className="border p-2">User Name</th>
-                                <th className="border p-2">Location</th>
-                                <th className="border p-2">Price</th>
-                                <th className="border p-2">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listings
-                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                .slice(0, 5) // Display only the 5 most recent listings
-                                .map((listing) => (
-                                    <tr key={listing._id}><td className="border p-2">{listing._id.slice(-5)}</td><td className="border p-2">{listing.username || 'N/A'}</td><td className="border p-2">{listing.address || 'N/A'}</td><td className="border p-2">Rs. {listing.price ? listing.price.toLocaleString() : 'N/A'}</td><td className="border p-2">{listing.status || 'Pending'}</td></tr>
-                                ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Dynamic Map Section */}
-                {isLoaded && listings.length > 0 && (
-                    <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden mt-6">
-                        <div className="p-4">
-                            <h4 className="text-xl font-semibold mb-4">Recent Property Locations</h4>
-                            <div className="w-full h-[400px] rounded-lg overflow-hidden">
-                                <GoogleMap
-                                    mapContainerStyle={mapContainerStyle}
-                                    center={center}
-                                    zoom={10}
-                                    options={mapOptions}
-                                >
-                                    {listings
-                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by creation date (most recent first)
-                                        .slice(0, 5) // Display only the 5 most recent listings
-                                        .map((listing) =>
-                                            listing.lat && listing.lng ? (
-                                                <Marker
-                                                    key={listing._id}
-                                                    position={{ lat: listing.lat, lng: listing.lng }}
-                                                    icon={{
-                                                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                                                        scaledSize: new window.google.maps.Size(40, 40),
-                                                    }}
-                                                    title={listing.address}
-                                                    onClick={() => handleMarkerClick(listing)}
-                                                />
-                                            ) : null
-                                        )}
-
-                                    {selectedListing && (
-                                        <InfoWindow
-                                            position={{ lat: selectedListing.lat, lng: selectedListing.lng }}
-                                            onCloseClick={handleInfoWindowClose}
-                                        >
-                                            <div className="p-2 max-w-xs">
-                                                <h3 className="font-bold text-lg">{selectedListing.address}</h3>
-                                                <p className="text-sm">
-                                                    {selectedListing.city}, {selectedListing.district}
-                                                </p>
-                                                {selectedListing.price && (
-                                                    <p className="text-sm font-semibold">
-                                                        Price: Rs. {selectedListing.price.toLocaleString()}
-                                                    </p>
-                                                )}
-                                                {selectedListing.homeType && (
-                                                    <p className="text-sm">Type: {selectedListing.homeType}</p>
-                                                )}
-                                                {selectedListing.bedrooms && (
-                                                    <p className="text-sm">Bedrooms: {selectedListing.bedrooms}</p>
-                                                )}
-                                            </div>
-                                        </InfoWindow>
-                                    )}
-                                </GoogleMap>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* User Modal */}
-            <UserModal 
-                isOpen={isUserModalOpen} 
-                onClose={() => setIsUserModalOpen(false)} 
-                users={users}
-            />
-            
-            {/* Listing Modal */}
-            <ListingModal
-                isOpen={isListingModalOpen} 
-                onClose={() => setIsListingModalOpen(false)} 
-                listings={listings}
-            />
+                </div> */}
+        <div className="w-1/3 flex justify-end gap-4 text-xl">
+          <FaBell className="cursor-pointer hover:text-blue-200 transition-colors" />
+          <FaUserCircle className="cursor-pointer hover:text-blue-200 transition-colors" />
         </div>
-    );
+      </div>
+
+      {/* Dashboard */}
+      <div className="p-10">
+        {/* Cards Section */}
+        <div className="flex flex-wrap items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Analytics Overview
+          </h2>
+          <div className="flex gap-2 mt-4 sm:mt-0">
+            <button
+              onClick={() => setFilterType("Today")}
+              className={`px-4 py-2 ${
+                filterType === "Today"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600 border border-gray-200"
+              } rounded-md hover:bg-gray-50 transition-colors`}
+            >
+              Today
+            </button>
+            <button
+              onClick={() => setFilterType("Monthly")}
+              className={`px-4 py-2 ${
+                filterType === "Monthly"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600 border border-gray-200"
+              } rounded-md hover:bg-gray-50 transition-colors`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setFilterType("Yearly")}
+              className={`px-4 py-2 ${
+                filterType === "Yearly"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600 border border-gray-200"
+              } rounded-md hover:bg-gray-50 transition-colors`}
+            >
+              Yearly
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            title="Total Listings"
+            value={loading ? "Loading..." : filteredListings.length}
+            icon={FaTachometerAlt}
+            onClick={handleListCardClick}
+            iconColor="text-blue-600"
+            percentChange="+12.5% from last month"
+            trend="up"
+          />
+          <StatCard
+            title="Active Users"
+            value={loading ? "Loading..." : filteredUsers.length}
+            icon={FaUsers}
+            onClick={handleUserCardClick}
+            iconColor="text-indigo-600"
+            percentChange="+8.3% from last month"
+            trend="up"
+          />
+          <StatCard
+            title="Revenue"
+            value="$0"
+            icon={FaDollarSign}
+            iconColor="text-green-600"
+            percentChange="+5.2% from last month"
+            trend="up"
+          />
+          <StatCard
+            title="Total Pending Listings"
+            value={pendingListings}
+            icon={FaCog}
+            iconColor="text-amber-600"
+            percentChange="-2.1% from last month"
+            trend="down"
+          />
+        </div>
+
+        {/* Recent Properties Table */}
+        <div className="bg-white mt-6 p-6 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-4">Recent Properties</h3>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">ID</th>
+                <th className="border p-2">User Name</th>
+                <th className="border p-2">Location</th>
+                <th className="border p-2">Type</th>
+                <th className="border p-2">Price</th>
+                <th className="border p-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredListings
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 5)
+                .map((listing) => (
+                  <tr key={listing._id}>
+                    <td className="border p-2">{listing._id.slice(-5)}</td>
+                    <td className="border p-2">{listing.username || "N/A"}</td>
+                    <td className="border p-2">{listing.address || "N/A"}</td>
+                    <td className="border p-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          listing.type === "rent"
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {listing.type === "rent" ? "Rent" : "Sale"}
+                      </span>
+                    </td>
+                    <td className="border p-2">
+                      {listing.type === "rent"
+                        ? `Rs. ${
+                            listing.monthlyRent
+                              ? listing.monthlyRent.toLocaleString()
+                              : "N/A"
+                          }/month`
+                        : `Rs. ${
+                            listing.price
+                              ? listing.price.toLocaleString()
+                              : "N/A"
+                          }`}
+                    </td>
+                    <td className="border p-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          listing.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : listing.status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {listing.status || "Pending"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Dynamic Map Section */}
+        {isLoaded && filteredListings.length > 0 && (
+          <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden mt-6">
+            <div className="p-4">
+              <h4 className="text-xl font-semibold mb-4">
+                Recent Property Locations
+              </h4>
+              <div className="w-full h-[400px] rounded-lg overflow-hidden">
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={center}
+                  zoom={10}
+                  options={mapOptions}
+                >
+                  {filteredListings
+                    .sort(
+                      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                    )
+                    .slice(0, 5)
+                    .map((listing) =>
+                      listing.lat && listing.lng ? (
+                        <Marker
+                          key={listing._id}
+                          position={{ lat: listing.lat, lng: listing.lng }}
+                          icon={{
+                            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                            scaledSize: new window.google.maps.Size(40, 40),
+                          }}
+                          title={listing.address}
+                          onClick={() => handleMarkerClick(listing)}
+                        />
+                      ) : null
+                    )}
+
+                  {selectedListing && (
+                    <InfoWindow
+                      position={{
+                        lat: selectedListing.lat,
+                        lng: selectedListing.lng,
+                      }}
+                      onCloseClick={handleInfoWindowClose}
+                    >
+                      <div className="p-2 max-w-xs">
+                        <h3 className="font-bold text-lg">
+                          {selectedListing.address}
+                        </h3>
+                        <p className="text-sm">
+                          {selectedListing.city}, {selectedListing.district}
+                        </p>
+                        <p className="text-sm font-medium text-blue-600">
+                          Type:{" "}
+                          {selectedListing.type === "rent" ? "Rent" : "Sale"}
+                        </p>
+                        {selectedListing.price && (
+                          <p className="text-sm font-semibold">
+                            Price: Rs. {selectedListing.price.toLocaleString()}
+                          </p>
+                        )}
+                        {selectedListing.monthlyRent && (
+                          <p className="text-sm font-semibold">
+                            Rent: Rs.{" "}
+                            {selectedListing.monthlyRent.toLocaleString()}/month
+                          </p>
+                        )}
+                        {selectedListing.homeType && (
+                          <p className="text-sm">
+                            Type: {selectedListing.homeType}
+                          </p>
+                        )}
+                        {selectedListing.bedrooms && (
+                          <p className="text-sm">
+                            Bedrooms: {selectedListing.bedrooms}
+                          </p>
+                        )}
+                      </div>
+                    </InfoWindow>
+                  )}
+                </GoogleMap>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* User Modal */}
+      <UserModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        users={filteredUsers}
+      />
+
+      {/* Listing Modal */}
+      <ListingModal
+        isOpen={isListingModalOpen}
+        onClose={() => setIsListingModalOpen(false)}
+        listings={filteredListings}
+      />
+    </div>
+  );
 }
 
-
 export default DBMainContent;
-
-

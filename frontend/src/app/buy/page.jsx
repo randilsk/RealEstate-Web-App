@@ -6,7 +6,7 @@ import CardSection from "../../components/BuyPageContent/CardSection.jsx";
 import { fetchAllListings } from "@/lib/api";
 import { useSearchParams } from "next/navigation";
 
-function page() {
+function Page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
   const [listings, setListings] = useState([]); // stores data from the backend
   const [filteredListings, setFilteredListings] = useState([]); //hold current displayed listings
@@ -492,4 +492,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -6,7 +6,7 @@ function AboutSectionHome() {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Help", href: "/help" },
-    { label: "About Us", href: "/about" },
+    { label: "About Us", href: "/AboutUs" },
     { label: "Cookies", href: "/cookies" },
     { label: "Mobile App", href: "/mobile-app" },
     { label: "Advertise", href: "/advertise" },

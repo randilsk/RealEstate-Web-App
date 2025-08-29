@@ -328,8 +328,6 @@ function DBusers() {
 
     // Function to format role display
     const formatRole = (role) => {
-        if (!role) return 'User';
-        // Capitalize first letter and handle special cases
         const roleMap = {
             'seller': 'Seller',
             'buyer': 'Buyer',

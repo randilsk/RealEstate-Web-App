@@ -14,32 +14,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-const NavItem = ({ label, bold, className = "" }) => (
+const NavItem = ({ children, className = "" }) => (
   <div
-    className={`text-white text-base md:text-lg font-poppins ${
-      bold ? "font-bold" : ""
-    } ${className}`}
+    className={`text-white text-base md:text-lg font-poppins transition-colors hover:text-gray-200 ${className}`}
   >
-    {label}
+    {children}
   </div>
 );
 
 const FilterButton = ({ label }) => (
-  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins">
+  <div className="flex items-center justify-between w-full h-9 px-4 bg-white/90 rounded-full font-poppins transition-transform duration-300 ease-in-out group-hover:scale-105">
     <span className="text-black text-sm md:text-base font-normal">{label}</span>
-    <div>
-      <Image
-        src="/icons/dropdown-icon.png"
-        alt="Search Icon"
-        width={14}
-        height={14}
-        className="w-3.5 h-3.5 ml-2"
-      />
-    </div>
+    <Image
+      src="/icons/dropdown-icon.png"
+      alt="Dropdown Icon"
+      width={14}
+      height={14}
+      className="w-3.5 h-3.5 ml-2 transition-transform duration-300 ease-in-out group-hover:rotate-180"
+    />
   </div>
 );
 
-function Header_varient_1({ showFilters = true, showDistrictOnly = false, districtHasNone = false }) {
+function Header_varient_1() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -102,90 +98,53 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
     );
   };
 
-  const handleDistrictSelection = (districtName) => {
-    if (districtName === "All") {
-      // If "All" is selected, clear all individual district selections
-      setSelectedDistricts(new Set());
-      
-      // For rent page, dispatch "None" to reset the map to initial state
-      if (districtHasNone) {
-        window.dispatchEvent(
-          new CustomEvent("districtSelected", {
-            detail: { districtName: "None" },
-          })
-        );
-      } else {
-        // For other pages, dispatch "All"
-        window.dispatchEvent(
-          new CustomEvent("districtSelected", {
-            detail: { districtName: "All" },
-          })
-        );
-      }
-    } else {
-      // If an individual district is selected, remove "All" from selections
-      const newSelectedDistricts = new Set(selectedDistricts);
-      newSelectedDistricts.delete("All");
-      
-      // Toggle the selected district
-      if (newSelectedDistricts.has(districtName)) {
-        newSelectedDistricts.delete(districtName);
-      } else {
-        newSelectedDistricts.add(districtName);
-      }
-      
-      setSelectedDistricts(newSelectedDistricts);
-
-      // Dispatch the district selection event
-      window.dispatchEvent(
-        new CustomEvent("districtSelected", {
-          detail: { districtName: districtName },
-        })
-      );
-    }
-  };
-
   const MobileNavContent = () => (
-    <div className="flex flex-col gap-4 py-4">
-      <div className="flex flex-col gap-3">
-        <NavItem>
-          <Link href={"/buy"}>Buy</Link>
-        </NavItem>
-        <NavItem>
-          <Link href={"/rent"}> Rent</Link>
-        </NavItem>
-        <NavItem>
-          <Link href={"/sell"}>List</Link>
-        </NavItem>
-        <Link href={"/"}>
-          <NavItem label="Home" />
+  <div className="flex flex-col gap-4 py-4">
+    <div className="flex flex-col gap-3">
+      <NavItem className="font-medium">
+        <Link href={"/buy"}>Buy</Link>
+      </NavItem>
+      <NavItem className="font-medium">
+        <Link href={"/rent"}>Rent</Link>
+      </NavItem>
+      <NavItem className="font-medium">
+        <Link href={"/sell"}>List</Link>
+      </NavItem>
+      <Link href={"/"}>
+        <NavItem className="font-medium">Home</NavItem>
+      </Link>
+      <Link href={"/help"}>
+        <NavItem className="font-medium">Help</NavItem>
+      </Link>
+      <Link href={"/AboutUs"}>
+      <NavItem className="font-medium">About Us</NavItem>
+      </Link>
+      {currentUser ? (
+        <Link href="/profile" className="flex items-center gap-2">
+          <Image
+            src={currentUser.avatar}
+            alt="Profile"
+            width={28}
+            height={28}
+            className="rounded-full"
+          />
+          <span className="text-white">Profile</span>
         </Link>
-        <NavItem label="Help" />
-        {currentUser ? (
-          <Link href="/profile" className="flex items-center gap-2">
-            <Image
-              src={currentUser.avatar}
-              alt="Profile"
-              width={28}
-              height={28}
-              className="rounded-full"
-            />
-            <span className="text-white">Profile</span>
-          </Link>
-        ) : (
-          <Link href="/sign_in">
-            <NavItem>Sign In</NavItem>
-          </Link>
-        )}
-      </div>
+      ) : (
+        <Link href="/sign_in">
+          <NavItem className="font-medium">Sign In</NavItem>
+        </Link>
+      )}
     </div>
-  );
+  </div>
+);
+
 
   const MobileFiltersContent = () => (
     <div className="flex flex-col gap-3 p-4">
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="District" />
           </DropdownMenuTrigger>
 
@@ -219,6 +178,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               "Vavuniya",
             ].map((district) => (
               <DropdownMenuItem
+                className="cursor-pointer data-[highlighted]:bg-gray-100"
                 key={district}
                 onClick={() => handleDistrictSelection(district)}
               >
@@ -231,13 +191,14 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Price" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -249,6 +210,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               All Prices
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -260,6 +222,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               Under Rs. 1M
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -271,6 +234,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               Rs. 1M - 5M
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -282,6 +246,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               Rs. 5M - 10M
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -293,6 +258,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               Rs. 10M - 20M
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("priceSelected", {
@@ -309,13 +275,14 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="Beds and Baths" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -327,6 +294,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               All Bedrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -338,6 +306,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               1 Bedroom
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -349,6 +318,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               2 Bedrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -360,6 +330,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               3 Bedrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -371,6 +342,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               4 Bedrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bedroomSelected", {
@@ -385,6 +357,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
             <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -396,6 +369,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               All Bathrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -407,6 +381,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               1 Bathroom
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -418,6 +393,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               2 Bathrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -429,6 +405,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               3 Bathrooms
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer data-[highlighted]:bg-gray-100"
               onClick={() =>
                 window.dispatchEvent(
                   new CustomEvent("bathroomSelected", {
@@ -445,16 +422,24 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
 
       <div className="w-full">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center justify-between w-full">
+          <DropdownMenuTrigger className="flex items-center justify-between w-full group">
             <FilterButton label="More" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white w-full">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Billing
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Team
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+              Subscription
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -482,46 +467,52 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           <div className="hidden md:flex gap-8">
             <Link href={"/buy"}>
               {" "}
-              <NavItem label="Buy" />
+              <NavItem className="font-medium">Buy</NavItem>
             </Link>
             <Link href={"/rent"}>
-              <NavItem label="Rent" />
+              <NavItem className="font-medium">Rent</NavItem>
             </Link>
             <Link href={"/sell"}>
               {" "}
-              <NavItem label="List" />
+              <NavItem className="font-medium">List</NavItem>
             </Link>
           </div>
 
           {/* Logo */}
           <Link href={"/"} className="flex items-center gap-2">
-            <div className="text-white text-xl md:text-2xl font-bold">
+            <div className="text-white text-xl md:text-2xl font-extrabold tracking-tight">
               Urban Nest
             </div>
           </Link>
 
-          {/* Desktop Right Navigation */}
+         {/* Desktop Right Navigation */}
           <div className="hidden md:flex gap-8 items-center">
-            <Link href={"/"}>
-              <NavItem label="Home" />
+        <Link href={"/"}>
+          <NavItem className="font-medium">Home</NavItem>
+        </Link>
+        <Link href={"/help"}>
+            <NavItem className="font-medium">Help</NavItem>
+        </Link>
+        <Link href={"/AboutUs"}>
+         <NavItem className="font-medium">About Us</NavItem>
             </Link>
-            <NavItem label="Help" />
             {currentUser ? (
-              <Link href="/profile">
-                <Image
-                  src={currentUser.avatar}
-                  alt="Profile"
-                  width={36}
-                  height={36}
-                  className="rounded-full"
-                />
-              </Link>
-            ) : (
-              <Link href="/sign_in">
-                <NavItem>Sign In</NavItem>
-              </Link>
-            )}
-          </div>
+          <Link href="/profile">
+      <Image
+        src={currentUser.avatar}
+        alt="Profile"
+        width={36}
+        height={36}
+        className="rounded-full"
+      />
+    </Link>
+  ) : (
+    <Link href="/sign_in">
+      <NavItem className="font-medium">Sign In</NavItem>
+    </Link>
+  )}
+</div>
+
 
           {/* Mobile Profile */}
           <div className="md:hidden">
@@ -585,12 +576,11 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               </div>
             )}
           </div>
-          {showFilters && (
-          <>
+
           {/* Filter Buttons */}
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="District" />
               </DropdownMenuTrigger>
 
@@ -623,26 +613,33 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   "Trincomalee",
                   "Vavuniya",
                 ].map((district) => (
-                                     <DropdownMenuItem
-                     key={district}
-                     onClick={() => handleDistrictSelection(district)}
-                   >
-                     {district}
-                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer data-[highlighted]:bg-gray-100"
+                    key={district}
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent("districtSelected", {
+                          detail: { districtName: district },
+                        })
+                      )
+                    }
+                  >
+                    {district}
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          {!showDistrictOnly && (
           <div className="w-36">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Price" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Select Price Range</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -654,6 +651,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   All Prices
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -665,6 +663,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   Under Rs. 1M
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -676,6 +675,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   Rs. 1M - 5M
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -687,6 +687,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   Rs. 5M - 10M
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -698,6 +699,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   Rs. 10M - 20M
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("priceSelected", {
@@ -711,17 +713,16 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          )}
-          {!showDistrictOnly && (
           <div className="w-52">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="Beds and Baths" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>Number of Bedrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -733,6 +734,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   All Bedrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -744,6 +746,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   1 Bedroom
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -755,6 +758,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   2 Bedrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -766,6 +770,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   3 Bedrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -777,6 +782,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   4 Bedrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bedroomSelected", {
@@ -791,6 +797,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                 <DropdownMenuLabel>Number of Bathrooms</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -802,6 +809,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   All Bathrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -813,6 +821,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   1 Bathroom
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -824,6 +833,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   2 Bathrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -835,6 +845,7 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
                   3 Bathrooms
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  className="cursor-pointer data-[highlighted]:bg-gray-100"
                   onClick={() =>
                     window.dispatchEvent(
                       new CustomEvent("bathroomSelected", {
@@ -848,26 +859,29 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          )}
-          {!showDistrictOnly && (
           <div className="w-32">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full">
+              <DropdownMenuTrigger className="flex items-center justify-between w-full group">
                 <FilterButton label="More" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white w-auto">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Team
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer data-[highlighted]:bg-gray-100">
+                  Subscription
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          )}
-          </>
-          )}
         </div>
 
         {/* Mobile Search and Filter */}
@@ -909,7 +923,6 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
           </div>
 
           {/* Filter Button */}
-          {showFilters && (
           <Sheet>
             <SheetTrigger className="flex-shrink-0">
               <div className="flex items-center justify-center gap-1.5 h-9 px-4 bg-white/90 rounded-full">
@@ -922,10 +935,8 @@ function Header_varient_1({ showFilters = true, showDistrictOnly = false, distri
               className="bg-main-blue h-[80vh] rounded-t-2xl"
             >
               <MobileFiltersContent />
-
             </SheetContent>
           </Sheet>
-          )}
         </div>
       </div>
     </div>

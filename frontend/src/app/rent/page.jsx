@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Header_varient_1 from "../../components/Header_varient_1.jsx";
+import Header_varient_rent from "../../components/Header_varient_rent.jsx"; // New dedicated header
 import MapSectionRent from "@/components/RentPageComponent/MapSectionRent";
 import CardSectionRent from "@/components/RentPageComponent/CardSectionRent";
 import { fetchAllRentListings } from "@/lib/api";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-function page() {
+function Page() {
   const [isCardSectionOpen, setIsCardSectionOpen] = useState(false);
   const [listings, setListings] = useState([]);
   const [filteredListings, setFilteredListings] = useState([]);
@@ -18,6 +18,9 @@ function page() {
     bedroom: null,
     bathroom: null,
   });
+  // 🎬 ADD: State to track when listings change for animation trigger
+  const [listingsKey, setListingsKey] = useState(0);
+  
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,12 +29,37 @@ function page() {
   useEffect(() => {
     const getListings = async () => {
       try {
-        console.log('Fetching rent listings from API...');
+        console.log("Fetching rent listings from API...");
         const data = await fetchAllRentListings();
-        console.log('API response:', data);
-        console.log('Listings count:', data?.length || 0);
+        console.log("API response:", data);
+        console.log("Listings count:", data?.length || 0);
         setListings(data);
         setFilteredListings(data);
+        // 🎬 ADD: Trigger animation when listings load
+        setListingsKey(prev => prev + 1);
+      } catch (err) {
+        console.error("Error fetching listings:", err);
+        setListings([]);
+        setFilteredListings([]);
+      }
+    };
+    getListings();
+  }, []);
+
+  useEffect(() => {
+    const getListings = async () => {
+      try {
+        console.log('Fetching rent listings from API...');
+        let data = await fetchAllRentListings();
+
+        // ✅ Sort by createdAt descending (latest first)
+        data = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        console.log('Sorted listings count:', data?.length || 0);
+        setListings(data);
+        setFilteredListings(data);
+        // 🎬 ADD: Trigger animation when listings load
+        setListingsKey(prev => prev + 1);
       } catch (err) {
         console.error('Error fetching listings:', err);
         setListings([]);
@@ -45,21 +73,25 @@ function page() {
     const R = 6371;
     const filtered = listings.filter((listing) => {
       if (!listing.lat || !listing.lng) return false;
-      const dLat = (listing.lat - lat) * Math.PI / 180;
-      const dLng = (listing.lng - lng) * Math.PI / 180;
+      const dLat = ((listing.lat - lat) * Math.PI) / 180;
+      const dLng = ((listing.lng - lng) * Math.PI) / 180;
       const a =
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat * Math.PI / 180) * Math.cos(listing.lat * Math.PI / 180) *
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat * Math.PI) / 180) *
+          Math.cos((listing.lat * Math.PI) / 180) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       const distance = R * c;
       return distance <= radius;
     });
     setFilteredListings(filtered);
     setIsFiltered(true);
+    // 🎬 ADD: Trigger animation when search results change
+    setListingsKey(prev => prev + 1);
   };
 
-  // Apply filters (district, price, bedroom, bathroom)
+  // Apply filters with rent-specific price ranges
   const applyFilters = (newFilters) => {
     const updatedFilters = { ...activeFilters, ...newFilters };
     setActiveFilters(updatedFilters);
@@ -68,30 +100,35 @@ function page() {
 
     // District
     if (updatedFilters.district && updatedFilters.district !== "All") {
-      const normalizedDistrictName = updatedFilters.district.toLowerCase().replace(/[-\s]/g, "");
+      const normalizedDistrictName = updatedFilters.district
+        .toLowerCase()
+        .replace(/[-\s]/g, "");
       filtered = filtered.filter((listing) => {
         if (!listing.district) return false;
-        const normalizedListingDistrict = String(listing.district).toLowerCase().replace(/[-\s]/g, "");
+        const normalizedListingDistrict = String(listing.district)
+          .toLowerCase()
+          .replace(/[-\s]/g, "");
         return normalizedListingDistrict === normalizedDistrictName;
       });
     }
 
-    // Price
+    // Price (Monthly Rent) - Updated ranges for rent
     if (updatedFilters.price && updatedFilters.price !== "All") {
       filtered = filtered.filter((listing) => {
-        if (listing.price == null) return false;
-        const price = Number(listing.price);
+        // Check both price and MonthlyRent fields
+        const rentAmount = listing.MonthlyRent || listing.price || 0;
+        const price = Number(rentAmount);
         switch (updatedFilters.price) {
-          case "0-1000000":
-            return price <= 1000000;
-          case "1000000-5000000":
-            return price > 1000000 && price <= 5000000;
-          case "5000000-10000000":
-            return price > 5000000 && price <= 10000000;
-          case "10000000-20000000":
-            return price > 10000000 && price <= 20000000;
-          case "20000000+":
-            return price > 20000000;
+          case "0-50000":
+            return price <= 50000;
+          case "50000-100000":
+            return price > 50000 && price <= 100000;
+          case "100000-200000":
+            return price > 100000 && price <= 200000;
+          case "200000-500000":
+            return price > 200000 && price <= 500000;
+          case "500000+":
+            return price > 500000;
           default:
             return true;
         }
@@ -122,7 +159,9 @@ function page() {
     // Bathroom (attached + detached)
     if (updatedFilters.bathroom && updatedFilters.bathroom !== "All") {
       filtered = filtered.filter((listing) => {
-        const totalBathrooms = Number(listing.attachedBathrooms || 0) + Number(listing.detachedBathrooms || 0);
+        const totalBathrooms =
+          Number(listing.attachedBathrooms || 0) +
+          Number(listing.detachedBathrooms || 0);
         switch (updatedFilters.bathroom) {
           case "1":
             return totalBathrooms === 1;
@@ -141,12 +180,15 @@ function page() {
     setFilteredListings(filtered);
     setIsFiltered(
       updatedFilters.district !== null ||
-      updatedFilters.price !== null ||
-      updatedFilters.bedroom !== null ||
-      updatedFilters.bathroom !== null
+        updatedFilters.price !== null ||
+        updatedFilters.bedroom !== null ||
+        updatedFilters.bathroom !== null
     );
 
-    // Persist filters to URL (rent-only)
+    // 🎬 ADD: Trigger animation when filter results change
+    setListingsKey(prev => prev + 1);
+
+    // Persist filters to URL
     try {
       const params = new URLSearchParams(window.location.search);
       const setOrDelete = (key, value) => {
@@ -161,21 +203,49 @@ function page() {
       setOrDelete("bedroom", updatedFilters.bedroom);
       setOrDelete("bathroom", updatedFilters.bathroom);
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-    } catch {}
+    } catch (error) {
+      console.error("Error updating URL:", error);
+    }
+
+    console.log(
+      "Applied filters:",
+      updatedFilters,
+      "Filtered count:",
+      filtered.length
+    );
   };
 
   const clearAllFilters = () => {
     setFilteredListings(listings);
     setIsFiltered(false);
-    setActiveFilters({ district: null, price: null, bedroom: null, bathroom: null });
+    setActiveFilters({
+      district: null,
+      price: null,
+      bedroom: null,
+      bathroom: null,
+    });
     setSearchArea(null);
 
-    // Clear filter params from URL (rent-only)
+    // 🎬 ADD: Trigger animation when filters are cleared
+    setListingsKey(prev => prev + 1);
+
+    // Clear filter params from URL
     try {
       const params = new URLSearchParams(window.location.search);
-      ["district", "price", "bedroom", "bathroom"].forEach((k) => params.delete(k));
+      ["district", "price", "bedroom", "bathroom"].forEach((k) =>
+        params.delete(k)
+      );
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-    } catch {}
+    } catch (error) {
+      console.error("Error clearing URL params:", error);
+    }
+
+    // Dispatch event to clear district polygons on map
+    window.dispatchEvent(
+      new CustomEvent("districtSelected", {
+        detail: { districtName: "All" },
+      })
+    );
   };
 
   useEffect(() => {
@@ -183,17 +253,55 @@ function page() {
       const { lat, lng } = event.detail;
       filterListingsByLocation(lat, lng, 5);
       setSearchArea({ center: { lat, lng }, radius: 5000 });
+      // Clear other filters when location search is used
+      setActiveFilters({
+        district: null,
+        price: null,
+        bedroom: null,
+        bathroom: null,
+      });
     };
+
     const handleDistrictSelected = (event) => {
       const { districtName } = event.detail || {};
-      if (districtName === 'None' || districtName === 'All') {
-        applyFilters({ district: null });
+
+      // Handle "All" selection - reset to show all properties and clear search area
+      if (districtName === "All") {
+        // Reset filtered listings to show all properties
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        // Clear the search area to reset map to initial state
         setSearchArea(null);
+        // Reset active filters
+        setActiveFilters({
+          district: null,
+          price: null,
+          bedroom: null,
+          bathroom: null,
+        });
+        // 🎬 ADD: Trigger animation when showing all listings
+        setListingsKey(prev => prev + 1);
+        
+        // Clear URL params
+        try {
+          const params = new URLSearchParams(window.location.search);
+          ["district", "price", "bedroom", "bathroom"].forEach((k) =>
+            params.delete(k)
+          );
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        } catch (error) {
+          console.error("Error clearing URL params:", error);
+        }
         return;
       }
-      applyFilters({ district: districtName });
-      setSearchArea(null);
+
+      // Handle specific district selection
+      if (districtName && districtName !== "None") {
+        applyFilters({ district: districtName });
+        setSearchArea(null); // Clear any previous location search area
+      }
     };
+
     const handlePriceSelected = (event) => {
       const { priceRange } = event.detail || {};
       applyFilters({ price: priceRange });
@@ -206,11 +314,13 @@ function page() {
       const { bathroomCount } = event.detail || {};
       applyFilters({ bathroom: bathroomCount });
     };
+
     window.addEventListener("locationSelected", handleLocationSelected);
     window.addEventListener("districtSelected", handleDistrictSelected);
     window.addEventListener("priceSelected", handlePriceSelected);
     window.addEventListener("bedroomSelected", handleBedroomSelected);
     window.addEventListener("bathroomSelected", handleBathroomSelected);
+
     return () => {
       window.removeEventListener("locationSelected", handleLocationSelected);
       window.removeEventListener("districtSelected", handleDistrictSelected);
@@ -222,9 +332,18 @@ function page() {
 
   const handleZoomChange = (zoom) => {
     if (zoom <= 11 && isFiltered) {
-      setFilteredListings(listings);
-      setIsFiltered(false);
-      setSearchArea(null);
+      if (
+        !activeFilters.district &&
+        !activeFilters.price &&
+        !activeFilters.bedroom &&
+        !activeFilters.bathroom
+      ) {
+        setFilteredListings(listings);
+        setIsFiltered(false);
+        setSearchArea(null);
+        // 🎬 ADD: Trigger animation when zoom resets listings
+        setListingsKey(prev => prev + 1);
+      }
     }
   };
 
@@ -245,9 +364,9 @@ function page() {
     }
   }, [searchParams]);
 
-  // Apply filters from URL once when listings are available (rent-only)
+  // Apply filters from URL once when listings are available
   useEffect(() => {
-    if (!hasAppliedFromQuery && listings) {
+    if (!hasAppliedFromQuery && listings.length > 0) {
       const district = searchParams.get("district");
       const price = searchParams.get("price");
       const bedroom = searchParams.get("bedroom");
@@ -264,37 +383,51 @@ function page() {
     }
   }, [hasAppliedFromQuery, listings, searchParams]);
 
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      setSearchArea(null);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 flex flex-col">
       <div className="flex-none">
-        <Header_varient_1 showFilters={true} districtHasNone={true} />
+        <Header_varient_rent />
       </div>
 
       <div className="flex-1 flex relative overflow-hidden">
-        <div 
+        <div
           className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
-            isCardSectionOpen 
-              ? 'translate-x-[-100%] md:translate-x-0 md:w-1/2' 
-              : 'translate-x-0 md:w-1/2'
+            isCardSectionOpen
+              ? "translate-x-[-100%] md:translate-x-0 md:w-1/2"
+              : "translate-x-0 md:w-1/2"
           }`}
         >
-          <MapSectionRent listings={filteredListings} searchArea={searchArea} onZoomChange={handleZoomChange} />
+          <MapSectionRent
+            listings={filteredListings}
+            searchArea={searchArea}
+            onZoomChange={handleZoomChange}
+          />
         </div>
 
-        <div 
+        <div
           className={`w-full h-full absolute inset-0 transition-all duration-500 ease-in-out transform ${
-            isCardSectionOpen 
-              ? 'translate-x-0 md:translate-x-[100%] md:w-1/2' 
-              : 'translate-x-[100%] md:translate-x-[100%] md:w-1/2'
+            isCardSectionOpen
+              ? "translate-x-0 md:translate-x-[100%] md:w-1/2"
+              : "translate-x-[100%] md:translate-x-[100%] md:w-1/2"
           }`}
         >
-          <CardSectionRent 
+          <CardSectionRent
             listings={filteredListings}
             isFiltered={isFiltered}
             onClearFilter={clearAllFilters}
             activeFilters={activeFilters}
             totalListings={listings.length}
             originalListings={listings}
+            // 🎬 ADD: Pass animation props to CardSectionRent
+            listingsKey={listingsKey}
+            animationType="slideUp"
           />
         </div>
 
@@ -304,7 +437,16 @@ function page() {
         >
           {isCardSectionOpen ? (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                 <path d="M9 12l2 2l4 -4" />
               </svg>
@@ -312,19 +454,26 @@ function page() {
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M9 12l2 2l4 -4" />
               </svg>
               Show Listings
             </>
           )}
         </button>
+
       </div>
     </div>
   );
 }
 
-export default page;
-
-
+export default Page;

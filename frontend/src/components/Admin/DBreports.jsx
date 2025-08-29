@@ -67,9 +67,11 @@ export default function DBreports() {
   // Fetch both sale and rent listings
   const fetchListings = async () => {
     try {
-      const [saleResponse, rentResponse] = await Promise.all([
+      const [saleResponse, rentResponse, approvedSaleResponse, approvedRentResponse] = await Promise.all([
         axios.get("http://localhost:3000/api/listing/getallListing"),
         axios.get("http://localhost:3000/api/Rentroutes/getAllRentListing"),
+        axios.get("http://localhost:3000/api/approve/getAllApprove"),
+        axios.get("http://localhost:3000/api/approveRent/getAllApprovedRent"),
       ]);
 
       const saleData = saleResponse.data.map((listing) => ({
@@ -80,15 +82,37 @@ export default function DBreports() {
         ...listing,
         type: "rent",
       }));
+      
+      // Add approved listings from approved collections
+      const approvedSaleData = approvedSaleResponse.data.map((listing) => ({
+        ...listing,
+        type: "sale",
+        status: "approved", // Ensure status is set to approved
+      }));
+      const approvedRentData = approvedRentResponse.data.map((listing) => ({
+        ...listing,
+        type: "rent",
+        status: "approved", // Ensure status is set to approved
+      }));
 
-      setSaleListings(saleData);
-      setRentListings(rentData);
+      setSaleListings([...saleData, ...approvedSaleData]);
+      setRentListings([...rentData, ...approvedRentData]);
 
-      const allListings = [...saleData, ...rentData];
+      const allListings = [...saleData, ...rentData, ...approvedSaleData, ...approvedRentData];
       setTotalListings(allListings.length);
-      setApprovedListings(
-        allListings.filter((listing) => listing.status === "approved").length
-      );
+      
+      const approvedCount = allListings.filter((listing) => listing.status === "approved").length;
+      setApprovedListings(approvedCount);
+      
+      // Debug logging
+      console.log('Listings data:', {
+        sale: saleData.length,
+        rent: rentData.length,
+        approvedSale: approvedSaleData.length,
+        approvedRent: approvedRentData.length,
+        total: allListings.length,
+        approved: approvedCount
+      });
 
       // Process data for charts
       processChartData(allListings);
@@ -164,7 +188,7 @@ export default function DBreports() {
        const revenue = monthlyRevenue[month] || 0;
        return { 
          month: month, 
-         revenue: revenue,
+         revenue: 0,
          monthLabel: month
        };
      });
@@ -199,7 +223,10 @@ export default function DBreports() {
   const filterByType = (arr, dateField = "createdAt") => {
     const now = dayjs();
     return arr.filter((item) => {
-      const date = dayjs(item[dateField] || item.date);
+      // For approved properties, use approvedAt if available, otherwise fall back to createdAt
+      const dateToUse = item.status === "approved" && item.approvedAt ? item.approvedAt : item[dateField];
+      const date = dayjs(dateToUse || item.date);
+      
       if (filterType === "Today") {
         return date.isSame(now, "day");
       } else if (filterType === "Monthly") {
@@ -253,7 +280,7 @@ export default function DBreports() {
             : listing.monthlyRent || 0)
         );
       }
-      return sum;
+      return 0;
     },
     0
   );
@@ -262,6 +289,7 @@ export default function DBreports() {
     const fetchData = async () => {
       setLoading(true);
       await Promise.all([fetchUsers(), fetchListings(), fetchTransactions()]);
+      setLastUpdated(new Date());
       setLoading(false);
     };
 
@@ -272,9 +300,20 @@ export default function DBreports() {
     return () => clearInterval(interval);
   }, []);
 
+  // Refresh data when filter type changes
+  useEffect(() => {
+    if (!loading) {
+      // Re-fetch data when filter changes to ensure accurate counts
+      fetchListings();
+    }
+  }, [filterType]);
+
+
 
 
   const [generatingPDF, setGeneratingPDF] = useState(false);
+  const [showRefreshNotification, setShowRefreshNotification] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const generatePDF = async () => {
     setGeneratingPDF(true);
@@ -329,8 +368,18 @@ export default function DBreports() {
         </div>
       </div>
 
+      {/* Refresh Notification */}
+      {showRefreshNotification && (
+        <div className="mx-6 mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md flex items-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Data refreshed successfully! Counts updated.
+        </div>
+      )}
+
       {/* Filter Buttons */}
-      <div className="flex justify-end mt-4 mr-6">
+      <div className="flex justify-end mt-4 mx-6">
         <div className="flex gap-2">
           <button
             onClick={() => setFilterType("Today")}
@@ -364,6 +413,13 @@ export default function DBreports() {
           </button>
         </div>
       </div>
+
+      {/* Last Updated Info */}
+      {lastUpdated && (
+        <div className="mx-6 text-sm text-gray-500 text-center">
+          Last updated: {dayjs(lastUpdated).format('MMMM DD, YYYY at h:mm:ss A')}
+        </div>
+      )}
 
       <div className="text-center">
         <h1 className="text-3xl font-bold">Admin Report Page</h1>
@@ -443,9 +499,10 @@ export default function DBreports() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {[
           {
-            label: "Approved Listings",
+            label: "Approved Properties",
             value: loading ? "Loading..." : filteredApprovedListings,
             color: "text-green-600",
+            subtitle: loading ? "" : `${filterType}: ${filteredApprovedListings} | Total: ${overallApprovedListings}`,
           },
           {
             label: "Total Revenue",
@@ -477,6 +534,9 @@ export default function DBreports() {
             <p className={`text-lg font-bold ${card.color} mt-1`}>
               {card.value}
             </p>
+            {card.subtitle && (
+              <p className="text-xs text-gray-400 mt-1">{card.subtitle}</p>
+            )}
           </div>
         ))}
       </div>

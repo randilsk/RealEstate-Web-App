@@ -83,6 +83,7 @@ export const addApprovedListing = async (req, res) => {
     const { _id, status, ...approvedData } = listing;
     approvedData.listingId = listingId; // keep reference to original
     approvedData.status = "approved";
+    approvedData.approvedAt = new Date(); // Add approval timestamp
 
     // Create new ApprovedListing
     const newApprovedListing = new ApprovedListing(approvedData);

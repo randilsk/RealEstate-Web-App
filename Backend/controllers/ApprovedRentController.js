@@ -75,6 +75,7 @@ export const addApprovedRentListing = async (req, res) => {
     const { _id, status, ...approvedData } = rentListing;
     approvedData.listingId = listingId; // keep reference to original
     approvedData.status = "approved";
+    approvedData.approvedAt = new Date(); // Add approval timestamp
 
     // Create new ApprovedRent
     const newApprovedRentListing = new ApprovedRent(approvedData);

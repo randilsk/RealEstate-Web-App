@@ -18,7 +18,7 @@ export default function HelpContact() {
             href="mailto:support@example.com"
             className="mt-4 inline-flex rounded-full bg-[#3b50df] px-4 py-2 text-sm font-medium text-white hover:bg-[#3246c6] transition"
           >
-            support@example.com
+            askus@urbannest.com
           </a>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6">

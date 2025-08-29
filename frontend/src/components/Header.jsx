@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import default_image from "../../public/images/profile_images/default_profile.jpg"
 
 const NavItem = ({ children, isBold, onClick = () => {} }) => (
   <div
@@ -121,7 +122,7 @@ function Header() {
             <Link href="/profile" className="group">
               <div className="relative">
                 <Image
-                  src={currentUser.avatar}
+                  src={currentUser.avatar? currentUser.avatar : default_image}
                   alt="Profile"
                   width={40}
                   height={40}

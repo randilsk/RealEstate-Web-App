@@ -18,6 +18,9 @@ function Page() {
     bedroom: null,
     bathroom: null,
   });
+  // 🎬 ADD: State to track when listings change for animation trigger
+  const [listingsKey, setListingsKey] = useState(0);
+  
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -32,6 +35,8 @@ function Page() {
         console.log("Listings count:", data?.length || 0);
         setListings(data);
         setFilteredListings(data);
+        // 🎬 ADD: Trigger animation when listings load
+        setListingsKey(prev => prev + 1);
       } catch (err) {
         console.error("Error fetching listings:", err);
         setListings([]);
@@ -40,27 +45,29 @@ function Page() {
     };
     getListings();
   }, []);
-useEffect(() => {
-  const getListings = async () => {
-    try {
-      console.log('Fetching rent listings from API...');
-      let data = await fetchAllRentListings();
 
-      // ✅ Sort by createdAt descending (latest first)
-      data = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  useEffect(() => {
+    const getListings = async () => {
+      try {
+        console.log('Fetching rent listings from API...');
+        let data = await fetchAllRentListings();
 
-      console.log('Sorted listings count:', data?.length || 0);
-      setListings(data);
-      setFilteredListings(data);
-    } catch (err) {
-      console.error('Error fetching listings:', err);
-      setListings([]);
-      setFilteredListings([]);
-    }
-  };
-  getListings();
-}, []);
+        // ✅ Sort by createdAt descending (latest first)
+        data = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+        console.log('Sorted listings count:', data?.length || 0);
+        setListings(data);
+        setFilteredListings(data);
+        // 🎬 ADD: Trigger animation when listings load
+        setListingsKey(prev => prev + 1);
+      } catch (err) {
+        console.error('Error fetching listings:', err);
+        setListings([]);
+        setFilteredListings([]);
+      }
+    };
+    getListings();
+  }, []);
 
   const filterListingsByLocation = (lat, lng, radius = 5) => {
     const R = 6371;
@@ -80,6 +87,8 @@ useEffect(() => {
     });
     setFilteredListings(filtered);
     setIsFiltered(true);
+    // 🎬 ADD: Trigger animation when search results change
+    setListingsKey(prev => prev + 1);
   };
 
   // Apply filters with rent-specific price ranges
@@ -176,6 +185,9 @@ useEffect(() => {
         updatedFilters.bathroom !== null
     );
 
+    // 🎬 ADD: Trigger animation when filter results change
+    setListingsKey(prev => prev + 1);
+
     // Persist filters to URL
     try {
       const params = new URLSearchParams(window.location.search);
@@ -213,6 +225,9 @@ useEffect(() => {
       bathroom: null,
     });
     setSearchArea(null);
+
+    // 🎬 ADD: Trigger animation when filters are cleared
+    setListingsKey(prev => prev + 1);
 
     // Clear filter params from URL
     try {
@@ -264,6 +279,9 @@ useEffect(() => {
           bedroom: null,
           bathroom: null,
         });
+        // 🎬 ADD: Trigger animation when showing all listings
+        setListingsKey(prev => prev + 1);
+        
         // Clear URL params
         try {
           const params = new URLSearchParams(window.location.search);
@@ -323,6 +341,8 @@ useEffect(() => {
         setFilteredListings(listings);
         setIsFiltered(false);
         setSearchArea(null);
+        // 🎬 ADD: Trigger animation when zoom resets listings
+        setListingsKey(prev => prev + 1);
       }
     }
   };
@@ -405,6 +425,9 @@ useEffect(() => {
             activeFilters={activeFilters}
             totalListings={listings.length}
             originalListings={listings}
+            // 🎬 ADD: Pass animation props to CardSectionRent
+            listingsKey={listingsKey}
+            animationType="slideUp"
           />
         </div>
 
@@ -441,13 +464,12 @@ useEffect(() => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                 <path d="M9 12l2 2l4 -4" />
               </svg>
               Show Listings
             </>
           )}
-</button>
+        </button>
 
       </div>
     </div>

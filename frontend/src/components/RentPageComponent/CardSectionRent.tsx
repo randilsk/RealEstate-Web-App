@@ -13,6 +13,10 @@ type Listing = {
 
 interface CardSectionRentProps {
   listings: Listing[];
+  listingsKey?: string;      // 🎬 animation key
+  animationType?: string;    // 🎬 animation type
+  duration?: number;         // 🎬 animation duration
+  delay?: number;            // 🎬 optional delay
   isFiltered?: boolean;
   onClearFilter?: () => void;
   activeFilters?: {
@@ -27,6 +31,10 @@ interface CardSectionRentProps {
 
 function CardSectionRent({ 
   listings, 
+  listingsKey = "default",
+  animationType = "fadeScale",
+  duration = 1000,             // 🎬 default slow animation
+  delay = 50,                  // 🎬 default no delay
   isFiltered = false, 
   onClearFilter = () => {}, 
   activeFilters = {}, 
@@ -98,8 +106,15 @@ function CardSectionRent({
         <div className="p-4">
           <div className="flex flex-wrap justify-center gap-6">
             {listings && listings.length > 0 ? (
-              listings.map((listing) => (
-                <RentCard key={listing._id} listing={listing} />
+              listings.map((listing, index) => (
+                <RentCard
+                  key={`${listingsKey}-${listing._id}`}
+                  listing={listing}
+                  index={index}
+                  animationType={'fadeScale'}
+                  duration={duration}     // 🎬 now passed from props
+                  delay={delay}           // 🎬 optional
+                />
               ))
             ) : (
               <div className="text-center py-16 text-gray-600 font-medium">

@@ -19,7 +19,9 @@ import {
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { FaBell, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaDownload } from "react-icons/fa";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function DBreports() {
   const [totalListings, setTotalListings] = useState(0);
@@ -270,8 +272,55 @@ export default function DBreports() {
     return () => clearInterval(interval);
   }, []);
 
+
+
+  const [generatingPDF, setGeneratingPDF] = useState(false);
+
+  const generatePDF = async () => {
+    setGeneratingPDF(true);
+    try {
+      const element = document.getElementById("admin-report-page");
+      if (!element) {
+        console.error("Element with ID 'admin-report-page' not found.");
+        return;
+      }
+
+      const canvas = await html2canvas(element, { 
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`admin_report_${dayjs().format('YYYY-MM-DD_HH-mm')}.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Error generating PDF. Please try again.");
+    } finally {
+      setGeneratingPDF(false);
+    }
+  };
+
   return (
-    <div className="space-y-6 w-full">
+    <div id="admin-report-page" className="space-y-6 w-full">
       {/* Navbar */}
       <div className="bg-[#3B50DF] w-full shadow-md p-4 flex justify-end text-white">
         <div className="w-1/3 flex justify-end gap-4 text-xl">
@@ -316,7 +365,38 @@ export default function DBreports() {
         </div>
       </div>
 
-      <h1 className="text-3xl font-bold text-center">Admin Report Page</h1>
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Admin Report Page</h1>
+        <p className="text-gray-600 mt-2">
+          Generated on: {dayjs().format('MMMM DD, YYYY at h:mm A')}
+        </p>
+        <p className="text-gray-500 text-sm">
+          Filter: {filterType} | Total Listings: {overallTotalListings} | Approval Rate: {overallApprovalRate}%
+        </p>
+      </div>
+
+      {/* Executive Summary */}
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl border border-indigo-100">
+        <h2 className="text-xl font-semibold text-indigo-800 mb-4">Executive Summary</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div>
+            <p className="text-2xl font-bold text-indigo-600">{overallTotalListings}</p>
+            <p className="text-sm text-gray-600">Total Properties</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-green-600">{overallApprovedListings}</p>
+            <p className="text-sm text-gray-600">Approved Properties</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-blue-600">{users.length}</p>
+            <p className="text-sm text-gray-600">Total Users</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-purple-600">Rs. {totalRevenue.toLocaleString()}</p>
+            <p className="text-sm text-gray-600">Total Revenue</p>
+          </div>
+        </div>
+      </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -401,7 +481,12 @@ export default function DBreports() {
         ))}
       </div>
 
-             {/* Charts Section - Row 1: Line and Bar Charts */}
+             {/* Section Divider */}
+      <div className="border-t-2 border-indigo-200 pt-6">
+        <h2 className="text-2xl font-bold text-center text-indigo-800 mb-6">Analytics & Charts</h2>
+      </div>
+
+      {/* Charts Section - Row 1: Line and Bar Charts */}
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
          {/* Line Chart - Listings Growth */}
          <div className="bg-white p-4 rounded-xl shadow-md">
@@ -614,6 +699,11 @@ export default function DBreports() {
           </div>
         </div>
 
+      {/* Section Divider */}
+      <div className="border-t-2 border-indigo-200 pt-6">
+        <h2 className="text-2xl font-bold text-center text-indigo-800 mb-6">Detailed Data Tables</h2>
+      </div>
+
       {/* Recent Listings Table */}
       <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
         <h2 className="text-lg font-semibold mb-3">
@@ -784,6 +874,39 @@ export default function DBreports() {
           </tbody>
         </table>
       </div>
-    </div>
-  );
-}
+
+             {/* Download Report Button */}
+       <div className="flex flex-col items-center mt-8 space-y-4">
+         <div className="text-center">
+           <h3 className="text-lg font-semibold text-gray-800 mb-2">Download Complete Report</h3>
+           <p className="text-gray-600 text-sm max-w-md">
+             Generate a comprehensive PDF report containing all charts, tables, and metrics for offline viewing and sharing.
+           </p>
+         </div>
+         <button
+           onClick={generatePDF}
+           disabled={generatingPDF}
+           className={`px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-3 ${
+             generatingPDF
+               ? "bg-gray-400 cursor-not-allowed transform scale-95"
+               : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg transform hover:scale-105"
+           } text-white font-medium`}
+         >
+           <FaDownload className="text-lg" />
+           {generatingPDF ? "Generating PDF..." : "Download Report as PDF"}
+         </button>
+         {generatingPDF && (
+           <div className="text-sm text-gray-500">
+             Please wait while we prepare your report...
+           </div>
+                  )}
+       </div>
+
+       {/* Footer Note */}
+       <div className="text-center py-8 text-gray-500 text-sm border-t border-gray-200">
+         <p>This report was automatically generated by the Real Estate Admin System</p>
+         <p className="mt-1">For questions or support, please contact the system administrator</p>
+       </div>
+     </div>
+   );
+ }

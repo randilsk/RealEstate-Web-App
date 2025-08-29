@@ -51,7 +51,7 @@ export default function Home() {
 
       // Clean up URL parameters (client-side only)
       if (typeof window !== 'undefined') {
-        const url = new URL(window.location);
+        const url = new URL(window.location.href);
         url.searchParams.delete('subscription');
         url.searchParams.delete('session_id');
         window.history.replaceState({}, '', url);
@@ -102,7 +102,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="bg-main-bg min-h-screen">
+      <div className="bg-white min-h-screen">
         {showSuccessMessage && (
           <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
             <div className="flex items-center">

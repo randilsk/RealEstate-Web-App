@@ -1,183 +1,167 @@
 "use client"
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { useLocationSearch } from "@/hooks/useLocationSearch";
+import { titleVariants, wordVariants, fadeInUp, slideInFromRight } from "@/constants/animations";
+import SearchBar from "@/components/ui/SearchBar";
 
 function HeroSection() {
   const phrases = [
-    { text: "Spot It.", color: "text-black" },
-    { text: "Love It.", color: "text-[#3b50df]" },
-    { text: "Live It.", color: "text-black" },
+    { text: "Find Your", color: "text-gray-900" },
+    { text: "Dream Home", color: "text-[#3b50df]" },
+    { text: "Today.", color: "text-gray-900" },
   ];
 
-  const commonStyles =
-    "block font-extrabold font-poppins leading-tight transition-all duration-300 hover:scale-105";
-
-  const router = useRouter();
-  const [searchLocation, setSearchLocation] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-  const handleLocationSearch = async (e) => {
-    const value = e.target.value;
-    setSearchLocation(value);
-  
-    if (value.length > 2) {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(value)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-        );
-        const data = await response.json();
-        if (data.results) {
-          setSearchResults(data.results);
-        }
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
-      }
-    } else {
-      setSearchResults([]);
-    }
-  };
-  
-  const handleLocationSelect = (location) => {
-    setSearchLocation(location.formatted_address);
-    setSearchResults([]);
-    
-    // Dispatch to update map
-    window.dispatchEvent(
-      new CustomEvent("locationSelected", {
-        detail: {
-          lat: location.geometry.location.lat,
-          lng: location.geometry.location.lng,
-          address: location.formatted_address,
-        },
-      })
-    );
-  
-    // Redirect to Buy page
-    router.push(`/buy?lat=${location.geometry.location.lat}&lng=${location.geometry.location.lng}&address=${encodeURIComponent(location.formatted_address)}`);
-  };
-  
-  
-  const handleSearchIconClick = async () => {
-    if (searchLocation.trim().length > 2) {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchLocation)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-        );
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          const location = data.results[0];
-          handleLocationSelect(location);
-        } else {
-          console.warn("No location found.");
-        }
-      } catch (error) {
-        console.error("Search error:", error);
-      }
-    }
-  };
+  const searchHook = useLocationSearch();
 
   return (
-    <div className="hero-section pt-6 md:pt-12 flex flex-col md:flex-row relative pl-4 pr-5 md:pl-8 md:pr-5 lg:pl-12 min-h-[80vh] items-center">
-
-      {/* Left Section */}
-      <div className="flex flex-col flex-1 gap-6 md:gap-8 w-full md:w-1/2">
-        {/* Title Text */}
-        <div className="mt-6 md:mt-10 lg:mt-[80px]">
-          <div className="inline-block text-center md:text-left w-full md:w-auto">
-            {phrases.map((phrase, index) => (
-              <span
-                key={index}
-                className={`${commonStyles} ${phrase.color} text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[76px] drop-shadow-sm`}
-                style={{
-                  animationDelay: `${index * 0.2}s`,
-                  animation: 'fadeInUp 0.8s ease-out forwards'
-                }}
-              >
-                {phrase.text}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-full md:w-3/4 lg:w-2/4 mx-auto md:mx-0">
-          <div className={`h-[50px] md:h-[60px] px-4 md:px-6 py-2 md:py-2.5 bg-white/90 backdrop-blur-sm rounded-[50px] flex items-center gap-3 md:gap-4 shadow-lg border border-white/20 transition-all duration-300 ${isSearchFocused ? 'shadow-xl scale-105 bg-white/95' : 'hover:shadow-xl hover:bg-white/95'}`}>
-            <div className="flex-1 min-w-0">
-              <input
-                type="text"
-                value={searchLocation}
-                onChange={handleLocationSearch}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearchIconClick();
-                }}
-                placeholder="Enter address, city, district, province"
-                className="w-full p-2 bg-transparent border-none outline-none placeholder:text-gray-600 text-gray-800 text-sm md:text-base font-medium"
-              />
-            </div>
-            <div className={`w-[40px] h-[40px] md:w-[48px] md:h-[48px] flex justify-center items-center flex-shrink-0 bg-[#3b50df] rounded-full cursor-pointer transition-all duration-300 hover:bg-[#2a3cb8] hover:scale-110 active:scale-95`}
-              onClick={handleSearchIconClick}
-            >
-              <Image
-                src="/icons/search-icon.svg"
-                alt="Search Icon"
-                width={24}
-                height={24}
-                className="w-5 h-5 md:w-6 md:h-6 filter brightness-0 invert"
-              />
-            </div>
-          </div>
-          {searchResults.length > 0 && (
-            <div className="absolute left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 z-50 overflow-hidden">
-              {searchResults.map((result, index) => (
-                <div
-                  key={index}
-                  className="p-4 hover:bg-gray-50 cursor-pointer text-sm md:text-base text-gray-700 border-b border-gray-100 last:border-b-0 transition-colors duration-200"
-                  onClick={() => handleLocationSelect(result)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-[#3b50df] rounded-full flex-shrink-0"></div>
-                    <span className="truncate">{result.formatted_address}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Right Section */}
-      <div className="flex-1 flex mt-8 md:mt-0 relative">
-        <div className="w-full h-full relative group">
-          <Image
-            className="object-contain md:object-cover w-full h-auto transition-transform duration-500 group-hover:scale-105 drop-shadow-lg"
-            src="/images/home-image/home-page-image2.png"
-            alt="Home Page Image"
-            width={1000}
-            height={1000}
-            priority
-          />
-          {/* Subtle overlay gradient for depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 pointer-events-none rounded-lg"></div>
-        </div>
+    <div className="relative h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+      {/* Enhanced Background Elements */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent" />
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-100/30 via-transparent to-transparent" />
       </div>
       
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+      {/* Floating Elements */}
+      <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-r from-[#3b50df]/8 to-purple-400/5 blur-3xl animate-pulse" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-l from-blue-400/6 to-[#3b50df]/4 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-0 sm:pt-8 md:pt-12 lg:pt-16 pb-12 lg:pb-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
+          
+          {/* Left Content */}
+          <motion.div 
+            variants={fadeInUp}
+            initial="hidden"
+            animate="show"
+            className="space-y-8 text-center lg:text-left"
+          >
+            {/* Main Headline */}
+            <motion.div
+              variants={titleVariants}
+              initial="hidden"
+              animate="show"
+              className="space-y-2"
+            >
+              {phrases.map((phrase, index) => (
+                <motion.h1
+                  key={index}
+                  variants={wordVariants}
+                  className={`${phrase.color} text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-poppins leading-tight tracking-tight`}
+                >
+                  {phrase.text}
+                </motion.h1>
+              ))}
+            </motion.div>
+
+            {/* Subtitle */}
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+            >
+              Discover the perfect property that matches your lifestyle. From cozy apartments to luxury homes, we help you find your ideal space.
+            </motion.p>
+
+            {/* Search Bar */}
+            <div className="pt-4">
+              <SearchBar {...searchHook} />
+            </div>
+
+            {/* Quick Stats */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-8 pt-6"
+            >
+              <div className="text-center">
+                <div className="text-2xl lg:text-3xl font-bold text-[#3b50df]">10K+</div>
+                <div className="text-sm text-gray-600">Properties</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl lg:text-3xl font-bold text-[#3b50df]">5K+</div>
+                <div className="text-sm text-gray-600">Happy Clients</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl lg:text-3xl font-bold text-[#3b50df]">50+</div>
+                <div className="text-sm text-gray-600">Cities</div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Content - Enhanced Image */}
+          <motion.div
+            variants={slideInFromRight}
+            initial="hidden"
+            animate="show"
+            className="relative"
+          >
+            <div className="relative group">
+              {/* Decorative Elements */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-[#3b50df]/20 to-purple-600/20 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-[#3b50df] to-purple-600 rounded-2xl opacity-10 rotate-12" />
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-tr from-blue-500 to-[#3b50df] rounded-full opacity-8 -rotate-12" />
+              
+              {/* Main Image Container */}
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-4 shadow-2xl border border-white/50">
+                <div className="relative overflow-hidden rounded-2xl">
+                  <Image
+                    className="object-cover w-full h-auto transition-all duration-700 group-hover:scale-105"
+                    src="/images/home-image/real-estate.jpeg"
+                    alt="Modern Real Estate"
+                    width={1200}
+                    height={900}
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+                </div>
+              </div>
+
+              {/* Floating Cards */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
+                className="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Verified Properties</div>
+                    <div className="text-sm text-gray-600">100% Authentic</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8, y: -20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 1.4, duration: 0.6 }}
+                className="absolute -top-4 -right-4 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Quick Search</div>
+                    <div className="text-sm text-gray-600">Find in Seconds</div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 }

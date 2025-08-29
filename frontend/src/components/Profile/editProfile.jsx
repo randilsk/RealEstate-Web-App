@@ -9,6 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import slide_image_5 from "../../../public/images/profile_images/profile1.jpg";
 import EditProfil from '../Profile/changeProfile.jsx';
 import DeleteAccount from './DeleteAccount';
+import default_avatar from "../../../public/images/profile_images/default_profile.jpg"
 
 export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
@@ -140,7 +141,7 @@ export default function MoreOptions({ onBack, onEditProfile, onUserListings }) {
                 className="relative mb-4"
               >
                 <Image
-                  src={currentUser?.avatar || "/default-avatar.png"}
+                  src={currentUser?.avatar ||  default_avatar}
                   alt="profile"
                   className="rounded-full h-16 w-16 object-cover border-2 border-white/30 shadow-xl"
                   width={64}

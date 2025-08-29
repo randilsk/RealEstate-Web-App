@@ -33,6 +33,7 @@ const DeleteAccount = ({ onBack }) => {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(
         `http://localhost:3000/api/auth/delete/${currentUser._id}`,
         {
@@ -40,6 +41,7 @@ const DeleteAccount = ({ onBack }) => {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`,
             Accept: "application/json",
           },
         }

@@ -9,6 +9,7 @@ import { updateUserStart, updateUserSuccess, updateUserFailure } from "../../red
 import signInImage from "../../../public/images/profile_images/profile1.jpg";
 import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
+import default_avatar from "../../../public/images/profile_images/default_profile.jpg"
 
 export default function EditProfile({ onBack }) {
   const fileRef = useRef(null);
@@ -65,7 +66,7 @@ export default function EditProfile({ onBack }) {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      if (selectedFile.size > 2 * 1024 * 1024) {
+      if (selectedFile.size > 4 * 1024 * 1024) {
         setFileUploadError("File size exceeds 2MB limit");
         toast.error("File size exceeds 2MB limit");
         return;
@@ -115,12 +116,15 @@ export default function EditProfile({ onBack }) {
 
   const updateUserProfile = async (userId, data) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
         `http://localhost:3000/api/user/update/${userId}`,
         {
           method: "PUT",
+           
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, 
           },
           credentials: "include",
           body: JSON.stringify(data),
@@ -180,8 +184,18 @@ export default function EditProfile({ onBack }) {
         ...prev,
         username: currentUser.username || "",
       }));
+      
     }
   }, [currentUser, formData.username]);
+  React.useEffect(() => {
+    if (currentUser && !formData.avatar) {
+      setFormData((prev) => ({
+        ...prev,
+        avatar: currentUser.avatar || "",
+      }));
+      
+    }
+  }, [currentUser, formData.avatar]);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -223,7 +237,7 @@ export default function EditProfile({ onBack }) {
                 <Image
                   onClick={() => fileRef.current.click()}
                   src={
-                    formData.avatar || currentUser?.avatar || "/default-avatar.png"
+                    formData.avatar || currentUser?.avatar || default_avatar
                   }
                   alt="profile"
                   className="rounded-full h-24 w-24 object-cover cursor-pointer border-4 border-white/30 shadow-lg hover:opacity-80 transition-opacity"

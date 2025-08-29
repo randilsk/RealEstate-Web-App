@@ -17,6 +17,8 @@ import slide_image_2 from '../../../public/images/home/home1.jpg';
 import slide_image_3 from '../../../public/images/home/home2.jpg';
 import slide_image_4 from '../../../public/images/home/home3.jpg';
 import slide_image_5 from '../../../public/images/home/home4.jpg';
+import { useDispatch } from 'react-redux';
+import { signUpStart, signUpSuccess, signUpFailure, signInSuccess } from '../../redux/Features/user/userSlice';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -24,6 +26,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,9 +36,11 @@ export default function SignUp() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); //prevent page from reloading after submit
+    e.preventDefault();
     try {
+      dispatch(signUpStart());
       setLoading(true);
+      
       const res = await fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
         headers: {
@@ -44,16 +49,26 @@ export default function SignUp() {
         credentials: "include",
         body: JSON.stringify(formData),
       });
+      
       const data = await res.json();
+      
       if (data.success === false) {
+        dispatch(signUpFailure(data.message));
         setError(data.message);
         setLoading(false);
         return;
       }
+      
+      // If signup successful, also sign the user in automatically
+      dispatch(signUpSuccess(data));
+      dispatch(signInSuccess(data)); // This will set the user as logged in
+      
       setLoading(false);
       setError(null);
       router.push("/");
+      
     } catch (error) {
+      dispatch(signUpFailure(error.message));
       setLoading(false);
       setError(error.message);
     }
@@ -86,14 +101,14 @@ export default function SignUp() {
             onChange={handleChange}
           />
           <input
-            type="text"
+            type="email"
             placeholder="email"
             className="border p-3 rounded-lg w-full max-w-[400px]"
             id="email"
             onChange={handleChange}
           />
           <input
-            type="text"
+            type="password"
             placeholder="password"
             className="border p-3 rounded-lg w-full max-w-[400px]"
             id="password"

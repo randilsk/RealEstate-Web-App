@@ -29,6 +29,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import default_avatar from "../../../public/images/profile_images/default_profile.jpg"
 
 import { motion } from "framer-motion";
 
@@ -393,7 +394,7 @@ export default function Profile() {
                 <div className="relative">
                   <Image
                     onClick={() => fileRef.current.click()}
-                    src={formData.avatar || currentUser?.avatar || "/default-avatar.png"}
+                    src={formData.avatar || currentUser?.avatar || default_avatar}
                     alt="profile"
                     className="rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-white/30 shadow-xl hover:scale-105 transition-transform duration-300"
                     width={128}

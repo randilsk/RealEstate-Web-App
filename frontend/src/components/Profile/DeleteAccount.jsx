@@ -15,6 +15,7 @@ const DeleteAccount = ({ onBack }) => {
 
   const handleEmailVerification = async () => {
     try {
+      const token = localStorage.getItem("token");
       if (email !== currentUser.email) {
         toast.error("Email does not match your account email");
         return;

@@ -16,7 +16,7 @@ function HeroSection() {
   const searchHook = useLocationSearch();
 
   return (
-    <div className="relative h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+    <div className="relative h-auto min-h-[calc(100vh-4rem)] md:h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent" />
@@ -24,10 +24,10 @@ function HeroSection() {
       </div>
       
       {/* Floating Elements */}
-      <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-r from-[#3b50df]/8 to-purple-400/5 blur-3xl animate-pulse" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-l from-blue-400/6 to-[#3b50df]/4 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-r from-[#3b50df]/8 to-purple-400/5 blur-3xl animate-pulse hidden md:block" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-l from-blue-400/6 to-[#3b50df]/4 blur-3xl animate-pulse hidden md:block" style={{ animationDelay: '2s' }} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-0 sm:pt-8 md:pt-12 lg:pt-16 pb-12 lg:pb-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-8 md:pt-12 lg:pt-16 pb-12 lg:pb-20">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
           
           {/* Left Content */}
@@ -48,7 +48,7 @@ function HeroSection() {
                 <motion.h1
                   key={index}
                   variants={wordVariants}
-                  className={`${phrase.color} text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-poppins leading-tight tracking-tight`}
+                  className={`${phrase.color} text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-poppins leading-tight tracking-tight`}
                 >
                   {phrase.text}
                 </motion.h1>
@@ -60,7 +60,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+              className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0"
             >
               Discover the perfect property that matches your lifestyle. From cozy apartments to luxury homes, we help you find your ideal space.
             </motion.p>
@@ -75,7 +75,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-8 pt-6"
+              className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 md:gap-8 pt-6 px-2 sm:px-0"
             >
               <div className="text-center">
                 <div className="text-2xl lg:text-3xl font-bold text-[#3b50df]">10K+</div>
@@ -99,14 +99,14 @@ function HeroSection() {
             animate="show"
             className="relative"
           >
-            <div className="relative group">
+            <div className="relative group mt-8 md:mt-0">
               {/* Decorative Elements */}
               <div className="absolute -inset-4 bg-gradient-to-r from-[#3b50df]/20 to-purple-600/20 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-[#3b50df] to-purple-600 rounded-2xl opacity-10 rotate-12" />
               <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-tr from-blue-500 to-[#3b50df] rounded-full opacity-8 -rotate-12" />
               
               {/* Main Image Container */}
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-4 shadow-2xl border border-white/50">
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-2 sm:p-3 md:p-4 shadow-2xl border border-white/50">
                 <div className="relative overflow-hidden rounded-2xl">
                   <Image
                     className="object-cover w-full h-auto transition-all duration-700 group-hover:scale-105"
@@ -125,7 +125,7 @@ function HeroSection() {
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.6 }}
-                className="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/50"
+                className="absolute -bottom-4 -left-2 sm:-left-4 bg-white/90 backdrop-blur-xl rounded-2xl p-2 sm:p-3 md:p-4 shadow-xl border border-white/50"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -144,7 +144,7 @@ function HeroSection() {
                 initial={{ opacity: 0, scale: 0.8, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ delay: 1.4, duration: 0.6 }}
-                className="absolute -top-4 -right-4 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/50"
+                className="absolute -top-4 -right-2 sm:-right-4 bg-white/90 backdrop-blur-xl rounded-2xl p-2 sm:p-3 md:p-4 shadow-xl border border-white/50"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">

@@ -36,6 +36,25 @@ function HomeRecommendation() {
   const [loadingListings, setLoadingListings] = useState(false);
   const [listingsError, setListingsError] = useState(null);
 
+  // Screen size state for responsive design
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check screen size on mount and resize
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener
+    window.addEventListener('resize', checkScreenSize);
+
+    // Clean up
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   // Fetch recent listings when component mounts or when user logs in
   useEffect(() => {
     const loadRecentListings = async () => {
@@ -302,7 +321,7 @@ function HomeRecommendation() {
           </div>
         ) : (
           // Logged in - Show hero section with recommendations
-          <div className="w-full flex flex-col justify-center items-center min-h-[500px] text-center">
+          <div className="w-full flex flex-col justify-center items-center min-h-[500px] text-center hero-section">
             <div
               ref={heroSectionRef}
               className={`flex flex-col justify-center items-center gap-6 max-w-4xl px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out ${
@@ -390,7 +409,7 @@ function HomeRecommendation() {
               {/* Recommendations Carousel */}
               <div
                 ref={carouselSectionRef}
-                className={`mt-16 w-full max-w-7xl transition-all duration-1000 delay-1400 ease-out ${
+                className={`mt-8 md:mt-16 w-full max-w-7xl transition-all duration-1000 delay-1400 ease-out ${
                   carouselAnimated
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-12"
@@ -483,10 +502,10 @@ function HomeRecommendation() {
                     </div>
                   </div>
 
-                  {/* Navigation Buttons */}
+                  {/* Navigation Buttons - Hidden on mobile, shown on larger screens */}
                   <button
                     onClick={prevSlide}
-                    className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-2 sm:p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
+                    className={`hidden md:block absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-2 sm:p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
                       currentSlide === 0
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:scale-110"
@@ -498,7 +517,7 @@ function HomeRecommendation() {
 
                   <button
                     onClick={nextSlide}
-                    className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-2 sm:p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
+                    className={`hidden md:block absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-2 sm:p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
                       currentSlide ===
                       Math.ceil(recentListings.length / getVisibleCards()) - 1
                         ? "opacity-50 cursor-not-allowed"
@@ -512,9 +531,40 @@ function HomeRecommendation() {
                     <ChevronRightIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:text-main-blue transition-colors duration-300" />
                   </button>
 
+                  {/* Mobile navigation buttons */}
+                  <div className="md:hidden flex justify-center mt-6 gap-4">
+                    <button
+                      onClick={prevSlide}
+                      className={`bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
+                        currentSlide === 0
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:scale-110"
+                      }`}
+                      disabled={currentSlide === 0}
+                    >
+                      <ChevronLeftIcon className="w-6 h-6 text-white group-hover:text-main-blue transition-colors duration-300" />
+                    </button>
+
+                    <button
+                      onClick={nextSlide}
+                      className={`bg-main-blue/80 hover:bg-white backdrop-blur-sm border-2 border-white/30 hover:border-main-blue rounded-full p-3 transition-all duration-300 group z-10 shadow-xl hover:shadow-2xl ${
+                        currentSlide ===
+                        Math.ceil(recentListings.length / getVisibleCards()) - 1
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:scale-110"
+                      }`}
+                      disabled={
+                        currentSlide ===
+                        Math.ceil(recentListings.length / getVisibleCards()) - 1
+                      }
+                    >
+                      <ChevronRightIcon className="w-6 h-6 text-white group-hover:text-main-blue transition-colors duration-300" />
+                    </button>
+                  </div>
+
                   {/* Dots Indicator - only show if we have listings */}
                   {recentListings.length > 0 && (
-                    <div className="flex justify-center mt-8 gap-2 sm:gap-3">
+                    <div className="flex justify-center mt-6 md:mt-8 gap-2 sm:gap-3">
                       {Array.from({
                         length: Math.ceil(
                           recentListings.length / getVisibleCards()
@@ -536,7 +586,7 @@ function HomeRecommendation() {
 
                 {/* View All Button */}
                 <div
-                  className={`text-center mt-12 transition-all duration-1000 delay-2000 ${
+                  className={`text-center mt-8 md:mt-12 transition-all duration-1000 delay-2000 ${
                     carouselAnimated
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-6"

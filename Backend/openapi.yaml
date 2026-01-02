@@ -1,0 +1,2116 @@
+openapi: 3.0.3
+info:
+  title: Real Estate Web App API
+  description: |
+    A comprehensive RESTful API for a real estate platform that supports property listings for sale and rent,
+    user management, reviews, admin operations, and Stripe payment integration for subscriptions.
+  version: 1.0.0
+  contact:
+    name: Real Estate API Support
+    email: support@urbannest.com
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints (signup, signin, signout)
+  - name: Users
+    description: User profile and account management
+  - name: Listings (Sale)
+    description: Property listings for sale
+  - name: Listings (Rent)
+    description: Property listings for rent
+  - name: Approved Listings (Sale)
+    description: Approved property listings for sale
+  - name: Approved Listings (Rent)
+    description: Approved property listings for rent
+  - name: Reviews
+    description: User reviews and testimonials
+  - name: Admin
+    description: Admin authentication and management
+  - name: Stripe
+    description: Payment and subscription management with Stripe
+
+paths:
+  # Authentication Routes
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: "john_doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "password123"
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/signin:
+    post:
+      tags:
+        - Authentication
+      summary: Sign in a user
+      description: Authenticate user with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        '200':
+          description: Successfully signed in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers:
+            Set-Cookie:
+              description: Authentication token
+              schema:
+                type: string
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/google:
+    post:
+      tags:
+        - Authentication
+      summary: Google OAuth authentication
+      description: Sign in or sign up using Google OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                photo:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /auth/signout:
+    get:
+      tags:
+        - Authentication
+      summary: Sign out a user
+      description: Clear authentication cookies and sign out the current user
+      responses:
+        '200':
+          description: Successfully signed out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User has been logged out!"
+
+  /auth/delete/{userId}:
+    delete:
+      tags:
+        - Authentication
+      summary: Delete user account
+      description: Permanently delete a user account
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: User deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+  /auth/verify-password/{userId}:
+    post:
+      tags:
+        - Authentication
+      summary: Verify user password
+      description: Verify the user's current password
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Password verified
+        '401':
+          description: Invalid password
+
+  /auth/users:
+    get:
+      tags:
+        - Authentication
+      summary: Get all users
+      description: Retrieve a list of all registered users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  # User Routes
+  /user/test:
+    get:
+      tags:
+        - Users
+      summary: Test endpoint
+      description: Test if the user API is working
+      responses:
+        '200':
+          description: API is working
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /user/users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve all users in the system
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /user/update/{userId}:
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      description: Update user profile information (requires authentication)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                avatar:
+                  type: string
+                subscription:
+                  type: string
+                  enum: [free, premium]
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /user/user-type:
+    get:
+      tags:
+        - Users
+      summary: Get user type by email
+      description: Retrieve user subscription type by email
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User type retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userType:
+                    type: string
+                    enum: [free, premium]
+
+  /user/update-subscription:
+    put:
+      tags:
+        - Users
+      summary: Update user subscription status
+      description: Update the subscription status of a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                subscription:
+                  type: string
+                  enum: [free, premium]
+      responses:
+        '200':
+          description: Subscription updated successfully
+
+  /user/users/{userId}:
+    put:
+      tags:
+        - Users
+      summary: Admin update user
+      description: Admin endpoint to update any user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated
+    delete:
+      tags:
+        - Users
+      summary: Admin delete user
+      description: Admin endpoint to delete any user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+
+  # Listing Routes (Sale)
+  /listing/getallListing:
+    get:
+      tags:
+        - Listings (Sale)
+      summary: Get all sale listings
+      description: Retrieve all property listings for sale
+      responses:
+        '200':
+          description: List of sale listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Listing'
+
+  /listing/getListedUsers:
+    get:
+      tags:
+        - Listings (Sale)
+      summary: Get users with listings
+      description: Retrieve all users who have created listings
+      responses:
+        '200':
+          description: List of users with listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /listing/user/{email}:
+    get:
+      tags:
+        - Listings (Sale)
+      summary: Get user's sale listings
+      description: Retrieve all sale listings created by a specific user
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User's sale listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Listing'
+
+  /listing/{id}:
+    get:
+      tags:
+        - Listings (Sale)
+      summary: Get single sale listing
+      description: Retrieve a specific sale listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sale listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '404':
+          description: Listing not found
+    put:
+      tags:
+        - Listings (Sale)
+      summary: Update sale listing
+      description: Update an existing sale listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListingInput'
+      responses:
+        '200':
+          description: Listing updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+    delete:
+      tags:
+        - Listings (Sale)
+      summary: Delete sale listing
+      description: Delete a sale listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing deleted successfully
+
+  /listing:
+    post:
+      tags:
+        - Listings (Sale)
+      summary: Create sale listing
+      description: Create a new property listing for sale with image upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - email
+                - address
+                - homeType
+              properties:
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+                city:
+                  type: string
+                district:
+                  type: string
+                lat:
+                  type: number
+                lng:
+                  type: number
+                price:
+                  type: number
+                homeType:
+                  type: string
+                  enum: [Single Family, Multi Family, Apartment, Land, Other]
+                bedrooms:
+                  type: integer
+                attachedBathrooms:
+                  type: integer
+                detachedBathrooms:
+                  type: integer
+                floors:
+                  type: integer
+                houseArea:
+                  type: number
+                landArea:
+                  type: number
+                parking:
+                  type: string
+                buildYear:
+                  type: integer
+                landType:
+                  type: string
+                  enum: [Residential, Commercial, Agricultural, Industrial, Other]
+                slope:
+                  type: string
+                  enum: [Flat, Slight Slope, Steep]
+                roadAccess:
+                  type: string
+                description:
+                  type: string
+                phone:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Listing created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+
+  /listing/{id}/status:
+    put:
+      tags:
+        - Listings (Sale)
+      summary: Update listing status
+      description: Update the approval status of a listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: Status updated successfully
+
+  # Rent Listing Routes
+  /Rentroutes/getAllRentListing:
+    get:
+      tags:
+        - Listings (Rent)
+      summary: Get all rent listings
+      description: Retrieve all property listings for rent
+      responses:
+        '200':
+          description: List of rent listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RentListing'
+
+  /Rentroutes/user/{email}:
+    get:
+      tags:
+        - Listings (Rent)
+      summary: Get user's rent listings
+      description: Retrieve all rent listings created by a specific user
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User's rent listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RentListing'
+
+  /Rentroutes/{id}:
+    get:
+      tags:
+        - Listings (Rent)
+      summary: Get single rent listing
+      description: Retrieve a specific rent listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rent listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentListing'
+    put:
+      tags:
+        - Listings (Rent)
+      summary: Update rent listing
+      description: Update an existing rent listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentListingInput'
+      responses:
+        '200':
+          description: Rent listing updated successfully
+    delete:
+      tags:
+        - Listings (Rent)
+      summary: Delete rent listing
+      description: Delete a rent listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rent listing deleted successfully
+
+  /Rentroutes:
+    post:
+      tags:
+        - Listings (Rent)
+      summary: Create rent listing
+      description: Create a new property listing for rent with image upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - email
+                - address
+              properties:
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+                city:
+                  type: string
+                district:
+                  type: string
+                lat:
+                  type: number
+                lng:
+                  type: number
+                monthlyRent:
+                  type: number
+                homeType:
+                  type: string
+                bedrooms:
+                  type: integer
+                attachedBathrooms:
+                  type: integer
+                detachedBathrooms:
+                  type: integer
+                floors:
+                  type: integer
+                houseArea:
+                  type: number
+                landArea:
+                  type: number
+                parking:
+                  type: string
+                buildYear:
+                  type: integer
+                description:
+                  type: string
+                phone:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Rent listing created successfully
+
+  /Rentroutes/{id}/status:
+    put:
+      tags:
+        - Listings (Rent)
+      summary: Update rent listing status
+      description: Update the approval status of a rent listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: Status updated successfully
+
+  # Approved Listings (Sale)
+  /approve/getAllApprove:
+    get:
+      tags:
+        - Approved Listings (Sale)
+      summary: Get all approved sale listings
+      description: Retrieve all approved property listings for sale
+      responses:
+        '200':
+          description: List of approved sale listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovedListing'
+
+  /approve/user/{email}:
+    get:
+      tags:
+        - Approved Listings (Sale)
+      summary: Get user's approved sale listings
+      description: Retrieve approved sale listings for a specific user
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User's approved sale listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovedListing'
+
+  /approve/{id}:
+    get:
+      tags:
+        - Approved Listings (Sale)
+      summary: Get single approved sale listing
+      description: Retrieve a specific approved sale listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovedListing'
+    put:
+      tags:
+        - Approved Listings (Sale)
+      summary: Update approved sale listing
+      description: Update an approved sale listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovedListingInput'
+      responses:
+        '200':
+          description: Approved listing updated successfully
+    delete:
+      tags:
+        - Approved Listings (Sale)
+      summary: Delete approved sale listing
+      description: Delete an approved sale listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved listing deleted successfully
+
+  /approve:
+    post:
+      tags:
+        - Approved Listings (Sale)
+      summary: Add approved sale listing
+      description: Add a listing to the approved list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovedListingInput'
+      responses:
+        '201':
+          description: Listing approved successfully
+
+  /approve/{id}/status:
+    patch:
+      tags:
+        - Approved Listings (Sale)
+      summary: Update approved listing status
+      description: Update the status of an approved listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: Status updated successfully
+
+  # Approved Listings (Rent)
+  /approveRent/getAllApprovedRent:
+    get:
+      tags:
+        - Approved Listings (Rent)
+      summary: Get all approved rent listings
+      description: Retrieve all approved property listings for rent
+      responses:
+        '200':
+          description: List of approved rent listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovedRentListing'
+
+  /approveRent/user/{email}:
+    get:
+      tags:
+        - Approved Listings (Rent)
+      summary: Get user's approved rent listings
+      description: Retrieve approved rent listings for a specific user
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User's approved rent listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApprovedRentListing'
+
+  /approveRent/{id}:
+    get:
+      tags:
+        - Approved Listings (Rent)
+      summary: Get single approved rent listing
+      description: Retrieve a specific approved rent listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved rent listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovedRentListing'
+    put:
+      tags:
+        - Approved Listings (Rent)
+      summary: Update approved rent listing
+      description: Update an approved rent listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovedRentListingInput'
+      responses:
+        '200':
+          description: Approved rent listing updated successfully
+    delete:
+      tags:
+        - Approved Listings (Rent)
+      summary: Delete approved rent listing
+      description: Delete an approved rent listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved rent listing deleted successfully
+
+  /approveRent:
+    post:
+      tags:
+        - Approved Listings (Rent)
+      summary: Add approved rent listing
+      description: Add a rent listing to the approved list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovedRentListingInput'
+      responses:
+        '201':
+          description: Rent listing approved successfully
+
+  /approveRent/{id}/status:
+    patch:
+      tags:
+        - Approved Listings (Rent)
+      summary: Update approved rent listing status
+      description: Update the status of an approved rent listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: Status updated successfully
+
+  # Review Routes
+  /reviews/reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Get all reviews
+      description: Retrieve all reviews submitted by users
+      responses:
+        '200':
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+
+  /reviews/add-reviews:
+    post:
+      tags:
+        - Reviews
+      summary: Add a review
+      description: Submit a new review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - rating
+                - comment
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                comment:
+                  type: string
+                  example: "Great service!"
+      responses:
+        '201':
+          description: Review added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Invalid input
+
+  # Admin Routes
+  /admin/signup:
+    post:
+      tags:
+        - Admin
+      summary: Admin signup
+      description: Register a new admin account (requires @urbannest.com email)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                  pattern: '^[a-zA-Z0-9._%+-]+@urbannest\.com$'
+                  example: "admin@urbannest.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                role:
+                  type: string
+                  enum: [admin, super-admin]
+                  default: admin
+      responses:
+        '201':
+          description: Admin created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '400':
+          description: Invalid email domain or input
+
+  /admin/signin:
+    post:
+      tags:
+        - Admin
+      summary: Admin signin
+      description: Authenticate an admin user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "admin@urbannest.com"
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Admin signed in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          description: Invalid credentials
+
+  /admin/signout:
+    post:
+      tags:
+        - Admin
+      summary: Admin signout
+      description: Sign out the current admin user
+      responses:
+        '200':
+          description: Admin signed out successfully
+
+  /admin/profile:
+    get:
+      tags:
+        - Admin
+      summary: Get admin profile
+      description: Retrieve the profile of the authenticated admin
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Admin profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          description: Unauthorized
+
+  # Stripe Routes
+  /stripe/config:
+    get:
+      tags:
+        - Stripe
+      summary: Get Stripe configuration
+      description: Retrieve Stripe publishable key
+      responses:
+        '200':
+          description: Stripe configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publishableKey:
+                    type: string
+
+  /stripe/checkout-session:
+    get:
+      tags:
+        - Stripe
+      summary: Get checkout session
+      description: Retrieve a Stripe checkout session by ID
+      parameters:
+        - name: sessionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Checkout session details
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /stripe/create-checkout-session:
+    post:
+      tags:
+        - Stripe
+      summary: Create checkout session
+      description: Create a new Stripe checkout session for subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - priceId
+                - customerEmail
+              properties:
+                priceId:
+                  type: string
+                  description: Stripe price ID
+                customerEmail:
+                  type: string
+                  format: email
+                customerName:
+                  type: string
+                planType:
+                  type: string
+                  enum: [basic, pro, premium]
+      responses:
+        '200':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+                  url:
+                    type: string
+
+  /stripe/webhook:
+    post:
+      tags:
+        - Stripe
+      summary: Stripe webhook
+      description: Handle Stripe webhook events (subscription updates, payments)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed
+        '400':
+          description: Invalid webhook signature
+
+  /stripe/subscription:
+    get:
+      tags:
+        - Stripe
+      summary: Get user subscription
+      description: Retrieve user's active subscription
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Subscription details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+  /stripe/payments:
+    get:
+      tags:
+        - Stripe
+      summary: Get user payments
+      description: Retrieve payment history for a user
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Payment history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+
+  /stripe/customer-portal:
+    post:
+      tags:
+        - Stripe
+      summary: Create customer portal session
+      description: Create a Stripe customer portal session for subscription management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customerId
+              properties:
+                customerId:
+                  type: string
+                returnUrl:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Customer portal session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+
+  /stripe/cancel-subscription:
+    post:
+      tags:
+        - Stripe
+      summary: Cancel subscription
+      description: Cancel a user's subscription at period end
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subscriptionId
+              properties:
+                subscriptionId:
+                  type: string
+      responses:
+        '200':
+          description: Subscription cancelled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /stripe/reactivate-subscription:
+    post:
+      tags:
+        - Stripe
+      summary: Reactivate subscription
+      description: Reactivate a cancelled subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subscriptionId
+              properties:
+                subscriptionId:
+                  type: string
+      responses:
+        '200':
+          description: Subscription reactivated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /stripe/test-auth:
+    get:
+      tags:
+        - Stripe
+      summary: Test authentication
+      description: Test endpoint for authentication
+      responses:
+        '200':
+          description: Authentication working
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: JWT token stored in HTTP-only cookie
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        avatar:
+          type: string
+          format: uri
+          example: "https://example.com/avatar.jpg"
+        subscription:
+          type: string
+          enum: [free, premium]
+          default: free
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Admin:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@urbannest\.com$'
+        role:
+          type: string
+          enum: [admin, super-admin]
+        isActive:
+          type: boolean
+        lastLogin:
+          type: string
+          format: date-time
+        permissions:
+          type: array
+          items:
+            type: string
+            enum: [manage_users, manage_properties, manage_bookings, view_analytics, system_settings]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Listing:
+      type: object
+      properties:
+        _id:
+          type: string
+        user:
+          type: string
+          description: User ID reference
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        price:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        homeType:
+          type: string
+          enum: [Single Family, Multi Family, Apartment, Land, Other]
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        landType:
+          type: string
+          enum: [Residential, Commercial, Agricultural, Industrial, Other]
+        slope:
+          type: string
+          enum: [Flat, Slight Slope, Steep]
+        roadAccess:
+          type: string
+        description:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          default: pending
+        createdAt:
+          type: string
+          format: date-time
+
+    ListingInput:
+      type: object
+      required:
+        - email
+        - address
+        - homeType
+      properties:
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        price:
+          type: number
+        homeType:
+          type: string
+          enum: [Single Family, Multi Family, Apartment, Land, Other]
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        landType:
+          type: string
+          enum: [Residential, Commercial, Agricultural, Industrial, Other]
+        slope:
+          type: string
+          enum: [Flat, Slight Slope, Steep]
+        roadAccess:
+          type: string
+        description:
+          type: string
+        phone:
+          type: string
+
+    RentListing:
+      type: object
+      properties:
+        _id:
+          type: string
+        user:
+          type: string
+          description: User ID reference
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        monthlyRent:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        homeType:
+          type: string
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          default: pending
+        createdAt:
+          type: string
+          format: date-time
+
+    RentListingInput:
+      type: object
+      required:
+        - email
+        - address
+      properties:
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        monthlyRent:
+          type: number
+        homeType:
+          type: string
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+
+    ApprovedListing:
+      type: object
+      properties:
+        _id:
+          type: string
+        listingId:
+          type: string
+          description: Original listing ID reference
+        user:
+          type: string
+          description: User ID reference
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        price:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        homeType:
+          type: string
+          enum: [Single Family, Multi Family, Apartment, Land, Other]
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          default: pending
+        createdAt:
+          type: string
+          format: date-time
+
+    ApprovedListingInput:
+      type: object
+      required:
+        - listingId
+        - email
+        - address
+        - homeType
+      properties:
+        listingId:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        price:
+          type: number
+        homeType:
+          type: string
+          enum: [Single Family, Multi Family, Apartment, Land, Other]
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+
+    ApprovedRentListing:
+      type: object
+      properties:
+        _id:
+          type: string
+        listingId:
+          type: string
+          description: Original rent listing ID reference
+        user:
+          type: string
+          description: User ID reference
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        monthlyRent:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        homeType:
+          type: string
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          default: approved
+        createdAt:
+          type: string
+          format: date-time
+
+    ApprovedRentListingInput:
+      type: object
+      required:
+        - listingId
+        - email
+        - address
+      properties:
+        listingId:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        monthlyRent:
+          type: number
+        homeType:
+          type: string
+        bedrooms:
+          type: integer
+        attachedBathrooms:
+          type: integer
+        detachedBathrooms:
+          type: integer
+        floors:
+          type: integer
+        houseArea:
+          type: number
+        landArea:
+          type: number
+        parking:
+          type: string
+        buildYear:
+          type: integer
+        description:
+          type: string
+        phone:
+          type: string
+
+    Review:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Subscription:
+      type: object
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+          nullable: true
+        customerEmail:
+          type: string
+          format: email
+        customerName:
+          type: string
+        stripeCustomerId:
+          type: string
+        stripeSubscriptionId:
+          type: string
+        stripePriceId:
+          type: string
+        status:
+          type: string
+          enum: [active, canceled, incomplete, incomplete_expired, past_due, trialing, unpaid]
+        planType:
+          type: string
+          enum: [basic, pro, premium]
+        amount:
+          type: number
+        currency:
+          type: string
+          default: usd
+        currentPeriodStart:
+          type: string
+          format: date-time
+        currentPeriodEnd:
+          type: string
+          format: date-time
+        cancelAtPeriodEnd:
+          type: boolean
+        lastPaymentDate:
+          type: string
+          format: date-time
+        nextBillingDate:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Payment:
+      type: object
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+          nullable: true
+        customerEmail:
+          type: string
+          format: email
+        stripeCustomerId:
+          type: string
+        subscriptionId:
+          type: string
+          nullable: true
+        stripePaymentIntentId:
+          type: string
+        stripeInvoiceId:
+          type: string
+        stripeChargeId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [succeeded, pending, failed, refunded, canceled]
+        paymentMethod:
+          type: string
+        description:
+          type: string
+        receiptUrl:
+          type: string
+          format: uri
+        failureReason:
+          type: string
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "An error occurred"
+        stack:
+          type: string
+          description: Error stack trace (only in development mode)
